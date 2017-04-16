@@ -1,0 +1,38 @@
+---
+title: "Starting a blog(down)"
+author: "Tamas Szilagyi"
+date: 2017-04-16T21:13:14-05:00
+categories: ["R"]
+tags: ["R Markdown", "plot", "regression"]
+output: html_document
+---
+
+# Starting a blog
+
+Having learnt tons from the open source community through blog posts, videos and attending conferences, I have decided to start a blog myself. The focus will be on all things related data analytics, in particular the use of open source tools such as `R` or `Python` to conduct a variety analysis' in a reproducible and scalable way.
+
+# It's never been easier...
+
+To get your own blog up and running, if you're an everyday `RStudio` user, like myself. 
+
+I have first heard about [blogdown](https://github.com/rstudio/blogdown) on twitter, and seeing that it would only take three lines of code to get going, I was sold. You create a directory for your site, set it as your home directory using `setwd("path_to_blog")` and then simply run:
+
+```{r, eval = FALSE}
+#1 install blogdown
+devtools::install_github('rstudio/blogdown')
+#2 install hugo
+blogdown::install_hugo()
+#3 create new site
+blogdown::new_site()
+```
+
+That's it. You now have a complete folder structure initialized in your working directory:
+
+![alt](content/blog/2017/img/folderstruct.png)
+
+You future blog posts will reside in the `content/post` folder. There are already two dummy posts as `.Rmd` files that you can start editing out of the box. Everytime you save changes, your site is automatically rebuilt. If you come back to work on your existing site you can simply use `serve_site()` and your site is regenerated accordingly.
+
+You can further customize the look of your blog by installing a custom theme from  http://themes.gohugo.io using the function `install_theme('username/theme')`. For my blog I picked [nishanths/cocoa-hugo-theme](https://github.com/nishanths/cocoa-hugo-theme) which I like very much for its minimalistic design. 
+
+The only thing left to do now is to edit the `config.toml` file  to set the name of your blog, avatars or even link it to a `Google Analytics` view and start collecting data. One important not to forget if you are include `R` codechunks in your posts, to set `highlightjslanguages = ["r"]`, as `R` is not part of the common set in `highlightjs`, the syntax highlighting library used in most themes.
+

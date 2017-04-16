@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="Don&#39;t panic">
+
+<base href="../../">
+<title>
+
+
+     Starting a blog(down) 
+
+</title>
+<link rel="canonical" href="../../blog/starting-a-blogdown/">
+
+
+<script type="text/javascript">
+    var baseURL = '\/';
+    var host = baseURL.substring(0, baseURL.length - 1).replace(/\//g, '');
+    if ((host === window.location.host) && (window.location.protocol !== 'https:')) {
+        window.location.protocol = 'https:';
+    }
+</script>
+
+
+
+
+    <link rel="stylesheet" href="../../css/vs.css">
+    <script src="../../js/highlight.pack.js"></script>
+    <script>
+  hljs.initHighlightingOnLoad();
+    </script>
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="../../css/reset.css?t=1492349462">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1492349462">
+    <link rel="stylesheet" href="../../css/main.css?t=1492349462">
+    
+        <link rel="stylesheet" href="../../css/override.css?t=1492349462">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="../../img/favicon.ico"
+
+>
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+              <a href="../../"><img class="avatar" src="../../img/profile_pic.png" /></a>
+            
+            <a href="../../"><div class="name">Tamas Szilagyi</div></a>
+            
+            <nav>
+                <ul>
+                    <a href="../../blog/"><li>Blog</li></a>
+                    <a href="../../about/"><li>About</li></a>
+                    <a href="../../code/"><li>Code</li></a>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+
+        
+            <a href="//github.com/mtoto" target="_blank"><img class="icon" src="../../img/github.svg" alt="github" /></a>
+        
+
+        
+            <a href="//twitter.com/tudosgar" target="_blank"><img class="icon" src="../../img/twitter.svg" alt="twitter" /></a>
+        
+
+        
+            <a href="//linkedin.com/in/tszilagyi" target="_blank"><img class="icon" src="../../img/linkedin.svg" alt="linkedin" /></a>
+        
+
+        
+
+        
+
+        
+            <a href="mailto:tszilagyi@outlook.com"><img class="icon" src="../../img/email.svg" alt="email" /></a>
+        
+
+        
+            <a href="../../index.xml"><img class="icon" src="../../img/rss.svg" alt="rss" /></a>
+        
+        </div>
+    </div>
+</section>
+    
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Starting a blog(down)
+
+</div>
+
+                    <div class="initials"><a href="../../"></a></div>
+                </div>
+                <div class="meta">
+                    <div class="date" title="Sun Apr 16 2017 21:13:14 -0500">Apr 16, 2017</div>
+                    <div class="reading-time"><div class="middot"></div>2 minutes read</div>
+                </div>
+            </div>
+            <div class="markdown">
+                <!-- BLOGDOWN-HEAD -->
+<!-- /BLOGDOWN-HEAD -->
+
+<!-- BLOGDOWN-BODY-BEFORE -->
+<!-- /BLOGDOWN-BODY-BEFORE -->
+<div id="starting-a-blog" class="section level1">
+<h1>Starting a blog</h1>
+<p>Having learnt tons from the open source community through blog posts, videos and attending conferences, I have decided to start a blog myself. The focus will be on all things related data analytics, in particular the use of open source tools such as <code>R</code> or <code>Python</code> to conduct a variety analysis’ in a reproducible and scalable way.</p>
+</div>
+<div id="its-never-been-easier" class="section level1">
+<h1>It’s never been easier…</h1>
+<p>To get your own blog up and running, if you’re an everyday <code>RStudio</code> user, like myself.</p>
+<p>I have first heard about <a href="https://github.com/rstudio/blogdown">blogdown</a> on twitter, and seeing that it would only take three lines of code to get going, I was sold. You create a directory for your site, set it as your home directory using <code>setwd(&quot;path_to_blog&quot;)</code> and then simply run:</p>
+<pre class="r"><code>#1 install blogdown
+devtools::install_github(&#39;rstudio/blogdown&#39;)
+#2 install hugo
+blogdown::install_hugo()
+#3 create new site
+blogdown::new_site()</code></pre>
+<p>That’s it. You now have a complete folder structure initialized in your working directory:</p>
+<div class="figure">
+<img src="content/blog/2017/img/folderstruct.png" alt="alt" />
+<p class="caption">alt</p>
+</div>
+<p>You future blog posts will reside in the <code>content/post</code> folder. There are already two dummy posts as <code>.Rmd</code> files that you can start editing out of the box. Everytime you save changes, your site is automatically rebuilt. If you come back to work on your existing site you can simply use <code>serve_site()</code> and your site is regenerated accordingly.</p>
+<p>You can further customize the look of your blog by installing a custom theme from <a href="http://themes.gohugo.io" class="uri">http://themes.gohugo.io</a> using the function <code>install_theme('username/theme')</code>. For my blog I picked <a href="https://github.com/nishanths/cocoa-hugo-theme">nishanths/cocoa-hugo-theme</a> which I like very much for its minimalistic design.</p>
+<p>The only thing left to do now is to edit the <code>config.toml</code> file to set the name of your blog, avatars or even link it to a <code>Google Analytics</code> view and start collecting data. One important not to forget if you are include <code>R</code> codechunks in your posts, to set <code>highlightjslanguages = [&quot;r&quot;]</code>, as <code>R</code> is not part of the common set in <code>highlightjs</code>, the syntax highlighting library used in most themes.</p>
+</div>
+
+                <br>
+                <p><a href="../../blog/">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'cocoaexamplesite';
+    var disqus_identifier = '\/blog\/starting-a-blogdown\/';
+    var disqus_title = 'Starting a blog(down)';
+    var disqus_url = '\/blog\/starting-a-blogdown\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+   <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    });
+    </script>
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-123-45', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/languages/r.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+
+<link rel="stylesheet" href="//css/vs.css">
+<script src="../../js/highlight.pack.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+

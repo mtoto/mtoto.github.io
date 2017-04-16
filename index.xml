@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tamas Szilagyi</title>
+    <link>/index.xml</link>
+    <description>Recent content on Tamas Szilagyi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 16 Apr 2017 21:13:14 -0500</lastBuildDate>
+    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Starting a blog(down)</title>
+      <link>/blog/starting-a-blogdown/</link>
+      <pubDate>Sun, 16 Apr 2017 21:13:14 -0500</pubDate>
+      
+      <guid>/blog/starting-a-blogdown/</guid>
+      <description>&lt;!-- BLOGDOWN-HEAD --&gt;
+&lt;!-- /BLOGDOWN-HEAD --&gt;
+
+&lt;!-- BLOGDOWN-BODY-BEFORE --&gt;
+&lt;!-- /BLOGDOWN-BODY-BEFORE --&gt;
+&lt;div id=&#34;starting-a-blog&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Starting a blog&lt;/h1&gt;
+&lt;p&gt;Having learnt tons from the open source community through blog posts, videos and attending conferences, I have decided to start a blog myself. The focus will be on all things related data analytics, in particular the use of open source tools such as &lt;code&gt;R&lt;/code&gt; or &lt;code&gt;Python&lt;/code&gt; to conduct a variety analysis’ in a reproducible and scalable way.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;its-never-been-easier&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;It’s never been easier…&lt;/h1&gt;
+&lt;p&gt;To get your own blog up and running, if you’re an everyday &lt;code&gt;RStudio&lt;/code&gt; user, like myself.&lt;/p&gt;
+&lt;p&gt;I have first heard about &lt;a href=&#34;https://github.com/rstudio/blogdown&#34;&gt;blogdown&lt;/a&gt; on twitter, and seeing that it would only take three lines of code to get going, I was sold. You create a directory for your site, set it as your home directory using &lt;code&gt;setwd(&amp;quot;path_to_blog&amp;quot;)&lt;/code&gt; and then simply run:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#1 install blogdown
+devtools::install_github(&amp;#39;rstudio/blogdown&amp;#39;)
+#2 install hugo
+blogdown::install_hugo()
+#3 create new site
+blogdown::new_site()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That’s it. You now have a complete folder structure initialized in your working directory:&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;content/blog/2017/img/folderstruct.png&#34; alt=&#34;alt&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;alt&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;You future blog posts will reside in the &lt;code&gt;content/post&lt;/code&gt; folder. There are already two dummy posts as &lt;code&gt;.Rmd&lt;/code&gt; files that you can start editing out of the box. Everytime you save changes, your site is automatically rebuilt. If you come back to work on your existing site you can simply use &lt;code&gt;serve_site()&lt;/code&gt; and your site is regenerated accordingly.&lt;/p&gt;
+&lt;p&gt;You can further customize the look of your blog by installing a custom theme from &lt;a href=&#34;http://themes.gohugo.io&#34; class=&#34;uri&#34;&gt;http://themes.gohugo.io&lt;/a&gt; using the function &lt;code&gt;install_theme(&#39;username/theme&#39;)&lt;/code&gt;. For my blog I picked &lt;a href=&#34;https://github.com/nishanths/cocoa-hugo-theme&#34;&gt;nishanths/cocoa-hugo-theme&lt;/a&gt; which I like very much for its minimalistic design.&lt;/p&gt;
+&lt;p&gt;The only thing left to do now is to edit the &lt;code&gt;config.toml&lt;/code&gt; file to set the name of your blog, avatars or even link it to a &lt;code&gt;Google Analytics&lt;/code&gt; view and start collecting data. One important not to forget if you are include &lt;code&gt;R&lt;/code&gt; codechunks in your posts, to set &lt;code&gt;highlightjslanguages = [&amp;quot;r&amp;quot;]&lt;/code&gt;, as &lt;code&gt;R&lt;/code&gt; is not part of the common set in &lt;code&gt;highlightjs&lt;/code&gt;, the syntax highlighting library used in most themes.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
+      
+      <guid>/about/</guid>
+      <description>&lt;p&gt;This is a &amp;ldquo;hello world&amp;rdquo; example website for the &lt;a href=&#34;https://github.com/rstudio/blogdown&#34;&gt;&lt;strong&gt;blogdown&lt;/strong&gt;&lt;/a&gt; package. The theme was forked from &lt;a href=&#34;https://github.com/jrutheiser/hugo-lithium-theme&#34;&gt;@jrutheiser/hugo-lithium-theme&lt;/a&gt; and modified by &lt;a href=&#34;https://github.com/yihui/hugo-lithium-theme&#34;&gt;Yihui Xie&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
