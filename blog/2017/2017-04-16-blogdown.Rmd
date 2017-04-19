@@ -15,7 +15,11 @@ Having learnt tons from the open source community through blog posts, videos and
 
 To get your own blog up and running, if you're an everyday `RStudio` user, like myself. 
 
-I have first heard about [blogdown](https://github.com/rstudio/blogdown) on twitter, and seeing that it would only take three lines of code to get going, I was sold. You create a directory for your site, set it as your home directory using `setwd("path_to_blog")` and then simply run:
+I have first heard about [blogdown](https://github.com/rstudio/blogdown) on twitter, and seeing that it would only take three lines of code to get going, I was sold. 
+
+## Setup 
+
+You create a directory for your site, set it as your home directory using `setwd("path_to_blog")` and then simply run:
 
 ```{r, eval = FALSE}
 #1 install blogdown
@@ -28,11 +32,15 @@ blogdown::new_site()
 
 That's it. You now have a complete folder structure initialized in your working directory:
 
-![alt](content/blog/2017/img/folderstruct.png)
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/img/folderstruct.png)
 
 You future blog posts will reside in the `content/post` folder. There are already two dummy posts as `.Rmd` files that you can start editing out of the box. Everytime you save changes, your site is automatically rebuilt. If you come back to work on your existing site you can simply use `serve_site()` and your site is regenerated accordingly.
 
-You can further customize the look of your blog by installing a custom theme from  http://themes.gohugo.io using the function `install_theme('username/theme')`. For my blog I picked [nishanths/cocoa-hugo-theme](https://github.com/nishanths/cocoa-hugo-theme) which I like very much for its minimalistic design. 
+## Customization
 
-The only thing left to do now is to edit the `config.toml` file  to set the name of your blog, avatars or even link it to a `Google Analytics` view and start collecting data. One important not to forget if you are include `R` codechunks in your posts, to set `highlightjslanguages = ["r"]`, as `R` is not part of the common set in `highlightjs`, the syntax highlighting library used in most themes.
+You can further customize the look of your blog by installing a custom theme from  http://themes.gohugo.io using the function `install_theme('username/theme')`. For mine I picked [nishanths/cocoa-hugo-theme](https://github.com/nishanths/cocoa-hugo-theme) which I like very much for its minimalistic design. 
+
+## Configuration
+
+The only thing left to do now is to edit the `config.toml` file  to set the name of your blog, avatars or even link it to a `Google Analytics` view (and start collecting data!). If you are going to include `R` codechunks in your posts, don't forget to set `highlightjslanguages = ["r"]` as well. That's because `R` is not part of the common set in `highlightjs`, the syntax highlighting library used in most themes.
 

@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1492351027">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1492351027">
-    <link rel="stylesheet" href="../../css/main.css?t=1492351027">
+    <link rel="stylesheet" href="../../css/reset.css?t=1492435288">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1492435288">
+    <link rel="stylesheet" href="../../css/main.css?t=1492435288">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1492351027">
+        <link rel="stylesheet" href="../../css/override.css?t=1492435288">
     
 
 
@@ -82,7 +82,6 @@
                 <ul>
                     <a href="../../blog/"><li>Blog</li></a>
                     <a href="../../about/"><li>About</li></a>
-                    <a href="../../code/"><li>Code</li></a>
                 </ul>
             </nav>
         </div>
@@ -92,30 +91,37 @@
 <section class="icons">
     <div class="container">
         <div class="content">
-
+            
         
-            <a href="//github.com/mtoto" target="_blank"><img class="icon" src="../../img/github.svg" alt="github" /></a>
+            <a href="mailto:tszilagyi@outlook.com"><img class="icon" src="../../img/email.svg" alt="email" /></a>
         
-
+            
+        
+            <a href="//linkedin.com/in/tszilagyi" target="_blank"><img class="icon" src="../../img/linkedin.svg" alt="linkedin" /></a>
+        
+            
         
             <a href="//twitter.com/tudosgar" target="_blank"><img class="icon" src="../../img/twitter.svg" alt="twitter" /></a>
         
 
         
-            <a href="//linkedin.com/in/tszilagyi" target="_blank"><img class="icon" src="../../img/linkedin.svg" alt="linkedin" /></a>
+            <a href="//github.com/mtoto" target="_blank"><img class="icon" src="../../img/github.svg" alt="github" /></a>
         
+            
+        
+            <a href="//stackoverflow.com/users/4964651/mtoto?tab=profile" target="_blank"><img class="icon" src="../../img/so.svg" alt="stackoverflow" /></a>
+        
+
 
         
 
         
-
-        
-            <a href="mailto:tszilagyi@outlook.com"><img class="icon" src="../../img/email.svg" alt="email" /></a>
+            <a href="//soundcloud.com/tamas-szilagyi" target="_blank"><img class="icon" src="../../img/soundcloud.svg" alt="soundcloud" /></a>
         
 
         
-            <a href="../../index.xml"><img class="icon" src="../../img/rss.svg" alt="rss" /></a>
-        
+
+       
         </div>
     </div>
 </section>
@@ -153,7 +159,10 @@
 <div id="its-never-been-easier" class="section level1">
 <h1>It’s never been easier…</h1>
 <p>To get your own blog up and running, if you’re an everyday <code>RStudio</code> user, like myself.</p>
-<p>I have first heard about <a href="https://github.com/rstudio/blogdown">blogdown</a> on twitter, and seeing that it would only take three lines of code to get going, I was sold. You create a directory for your site, set it as your home directory using <code>setwd(&quot;path_to_blog&quot;)</code> and then simply run:</p>
+<p>I have first heard about <a href="https://github.com/rstudio/blogdown">blogdown</a> on twitter, and seeing that it would only take three lines of code to get going, I was sold.</p>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<p>You create a directory for your site, set it as your home directory using <code>setwd(&quot;path_to_blog&quot;)</code> and then simply run:</p>
 <pre class="r"><code>#1 install blogdown
 devtools::install_github(&#39;rstudio/blogdown&#39;)
 #2 install hugo
@@ -162,12 +171,19 @@ blogdown::install_hugo()
 blogdown::new_site()</code></pre>
 <p>That’s it. You now have a complete folder structure initialized in your working directory:</p>
 <div class="figure">
-<img src="content/blog/2017/img/folderstruct.png" alt="alt" />
-<p class="caption">alt</p>
+<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/img/folderstruct.png" alt="" />
+
 </div>
 <p>You future blog posts will reside in the <code>content/post</code> folder. There are already two dummy posts as <code>.Rmd</code> files that you can start editing out of the box. Everytime you save changes, your site is automatically rebuilt. If you come back to work on your existing site you can simply use <code>serve_site()</code> and your site is regenerated accordingly.</p>
-<p>You can further customize the look of your blog by installing a custom theme from <a href="http://themes.gohugo.io" class="uri">http://themes.gohugo.io</a> using the function <code>install_theme('username/theme')</code>. For my blog I picked <a href="https://github.com/nishanths/cocoa-hugo-theme">nishanths/cocoa-hugo-theme</a> which I like very much for its minimalistic design.</p>
-<p>The only thing left to do now is to edit the <code>config.toml</code> file to set the name of your blog, avatars or even link it to a <code>Google Analytics</code> view and start collecting data. One important not to forget if you are include <code>R</code> codechunks in your posts, to set <code>highlightjslanguages = [&quot;r&quot;]</code>, as <code>R</code> is not part of the common set in <code>highlightjs</code>, the syntax highlighting library used in most themes.</p>
+</div>
+<div id="customization" class="section level2">
+<h2>Customization</h2>
+<p>You can further customize the look of your blog by installing a custom theme from <a href="http://themes.gohugo.io" class="uri">http://themes.gohugo.io</a> using the function <code>install_theme('username/theme')</code>. For mine I picked <a href="https://github.com/nishanths/cocoa-hugo-theme">nishanths/cocoa-hugo-theme</a> which I like very much for its minimalistic design.</p>
+</div>
+<div id="configuration" class="section level2">
+<h2>Configuration</h2>
+<p>The only thing left to do now is to edit the <code>config.toml</code> file to set the name of your blog, avatars or even link it to a <code>Google Analytics</code> view (and start collecting data!). If you are going to include <code>R</code> codechunks in your posts, don’t forget to set <code>highlightjslanguages = [&quot;r&quot;]</code> as well. That’s because <code>R</code> is not part of the common set in <code>highlightjs</code>, the syntax highlighting library used in most themes.</p>
+</div>
 </div>
 
                 <br>
