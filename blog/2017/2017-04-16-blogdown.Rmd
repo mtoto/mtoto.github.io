@@ -34,7 +34,7 @@ That's it. You now have a complete folder structure initialized in your working 
 
 ![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/img/folderstruct.png)
 
-And a new site running on your `localhost`, that you can see in RSutdio's `Viewer`, or inside your browser by clicking *Show in new window* in the top right corner of your `Viewer`. 
+The local build of your new site is now running on `localhost`. You can see it in RSutdio's `Viewer`, or inside a browser by clicking *Show in new window* in the top right corner of the `Viewer`. 
 
 You future blog posts will reside in the `content/post` folder. Here we find two dummy posts as `.Rmd` files that we can start editing straight away and see the results immediately after saving. Because everytime you save changes, your site is instantly rebuilt. If you come back to work on your existing site, you can simply run `serve_site()` and see your site regenerated according to your latest edits.
 

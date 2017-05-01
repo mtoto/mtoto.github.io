@@ -41,7 +41,7 @@ blogdown::new_site()&lt;/code&gt;&lt;/pre&gt;
 &lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/img/folderstruct.png&#34; alt=&#34;&#34; /&gt;
 
 &lt;/div&gt;
-&lt;p&gt;And a new site running on your &lt;code&gt;localhost&lt;/code&gt;, that you can see in RSutdio’s &lt;code&gt;Viewer&lt;/code&gt;, or inside your browser by clicking &lt;em&gt;Show in new window&lt;/em&gt; in the top right corner of your &lt;code&gt;Viewer&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The local build of your new site is now running on &lt;code&gt;localhost&lt;/code&gt;. You can see it in RSutdio’s &lt;code&gt;Viewer&lt;/code&gt;, or inside a browser by clicking &lt;em&gt;Show in new window&lt;/em&gt; in the top right corner of the &lt;code&gt;Viewer&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;You future blog posts will reside in the &lt;code&gt;content/post&lt;/code&gt; folder. Here we find two dummy posts as &lt;code&gt;.Rmd&lt;/code&gt; files that we can start editing straight away and see the results immediately after saving. Because everytime you save changes, your site is instantly rebuilt. If you come back to work on your existing site, you can simply run &lt;code&gt;serve_site()&lt;/code&gt; and see your site regenerated according to your latest edits.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;customization&#34; class=&#34;section level2&#34;&gt;
