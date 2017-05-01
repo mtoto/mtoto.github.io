@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Plot on Tamas Szilagyi</title>
-    <link>/tags/plot/index.xml</link>
+    <link>http://tamaszilagyi.com/tags/plot/index.xml</link>
     <description>Recent content in Plot on Tamas Szilagyi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="/tags/plot/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tamaszilagyi.com/tags/plot/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Starting a blog(down)</title>
-      <link>/blog/starting-a-blogdown/</link>
+      <link>http://tamaszilagyi.com/blog/starting-a-blogdown/</link>
       <pubDate>Sun, 16 Apr 2017 21:13:14 -0500</pubDate>
       
-      <guid>/blog/starting-a-blogdown/</guid>
+      <guid>http://tamaszilagyi.com/blog/starting-a-blogdown/</guid>
       <description>&lt;!-- BLOGDOWN-HEAD --&gt;
 &lt;!-- /BLOGDOWN-HEAD --&gt;
 
