@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1493661509">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1493661509">
-    <link rel="stylesheet" href="../../css/main.css?t=1493661509">
+    <link rel="stylesheet" href="../../css/reset.css?t=1493674594">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1493674594">
+    <link rel="stylesheet" href="../../css/main.css?t=1493674594">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1493661509">
+        <link rel="stylesheet" href="../../css/override.css?t=1493674594">
     
 
 
@@ -143,7 +143,7 @@
                 </div>
                 <div class="meta">
                     <div class="date" title="Sun Apr 16 2017 21:13:14 -0500">Apr 16, 2017</div>
-                    <div class="reading-time"><div class="middot"></div>2 minutes read</div>
+                    <div class="reading-time"><div class="middot"></div>3 minutes read</div>
                 </div>
             </div>
             <div class="markdown">
@@ -154,35 +154,53 @@
 <!-- /BLOGDOWN-BODY-BEFORE -->
 <div id="starting-a-blog" class="section level1">
 <h1>Starting a blog</h1>
-<p>Having learnt tons from the open source community through blog posts, videos and attending conferences, I have decided to start a blog myself. The focus will be on all things related data analytics, in particular the use of open source tools to do some cool stuff.</p>
+<p>Having learnt lots from the open source community over the past years, from blogs and videos to attending meetups and awesome conferences, I have decided to start a blog myself and share some of the things I find interesting. Essentialy it will boil down to using open source tools to build cool things with data.</p>
 </div>
-<div id="its-never-been-easier" class="section level1">
-<h1>It’s never been easier…</h1>
-<p>To get your own blog up and running, if you’re an everyday <code>RStudio</code> user, like myself.</p>
-<p>I have first heard about <a href="https://github.com/rstudio/blogdown">blogdown</a> on twitter, and seeing that it would only take three lines of code to get going, I was sold.</p>
+<div id="its-easy" class="section level1">
+<h1>It’s easy</h1>
+<p>You can get your blog up and running with literally three lines of <code>R</code> code. I have first heard about the <a href="https://github.com/rstudio/blogdown">blogdown</a> package on Twitter, and to see if the rumours were true, I went on to download the current build from Github, using <code>devtools::install_github('rstudio/blogdown')</code>.</p>
+<p>Under the hood, blogdown uses <a href="https://gohugo.io/">Hugo</a> to generate the website, but wraps most functionality nicely, so there’s no need for much manual configuration during the process, if at all.</p>
 <div id="setup" class="section level2">
 <h2>Setup</h2>
-<p>You create a directory for your site, set it as your home directory using <code>setwd(&quot;path_to_blog&quot;)</code> and then simply run:</p>
-<pre class="r"><code>#1 install blogdown
+<p>We first create a folder for our blog on our computer, and set it as our home directory by <code>setwd(&quot;path-to-blog&quot;)</code> inside <code>RStudio</code>. Now we simply run:</p>
+<pre class="r"><code># 1 if you haven&#39;t already, install blogdown
 devtools::install_github(&#39;rstudio/blogdown&#39;)
-#2 install hugo
+# 2 install hugo
 blogdown::install_hugo()
-#3 create new site
+# 3 create new site
 blogdown::new_site()</code></pre>
 <p>That’s it. You now have a complete folder structure initialized in your working directory:</p>
 <div class="figure">
 <img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/img/folderstruct.png" alt="" />
 
 </div>
-<p>You future blog posts will reside in the <code>content/post</code> folder. There are already two dummy posts as <code>.Rmd</code> files that you can start editing out of the box. Everytime you save changes, your site is automatically rebuilt. If you come back to work on your existing site you can simply use <code>serve_site()</code> and your site is regenerated accordingly.</p>
+<p>And a new site running on your <code>localhost</code>, that you can see in RSutdio’s <code>Viewer</code>, or inside your browser by clicking <em>Show in new window</em> in the top right corner of your <code>Viewer</code>.</p>
+<p>You future blog posts will reside in the <code>content/post</code> folder. Here we find two dummy posts as <code>.Rmd</code> files that we can start editing straight away and see the results immediately after saving. Because everytime you save changes, your site is instantly rebuilt. If you come back to work on your existing site, you can simply run <code>serve_site()</code> and see your site regenerated according to your latest edits.</p>
 </div>
 <div id="customization" class="section level2">
 <h2>Customization</h2>
-<p>You can further customize the look of your blog by installing a custom theme from <a href="http://themes.gohugo.io" class="uri">http://themes.gohugo.io</a> using the function <code>install_theme('username/theme')</code>. For mine I picked <a href="https://github.com/nishanths/cocoa-hugo-theme">nishanths/cocoa-hugo-theme</a> which I like very much for its minimalistic design.</p>
+<p>Now we can now begin to customize the look of our blog by installing a theme using the function <code>install_theme('username/theme')</code>. For my site, I picked <a href="https://github.com/nishanths/cocoa-hugo-theme">nishanths/cocoa-hugo-theme</a> which I like very much for its minimalistic design. You can browse other themes on <a href="https://themes.gohugo.io/">themes.gohugo.io/</a>.</p>
 </div>
 <div id="configuration" class="section level2">
 <h2>Configuration</h2>
-<p>The only thing left to do now is to edit the <code>config.toml</code> file to set the name of your blog, avatars or even link it to a <code>Google Analytics</code> view (and start collecting data!). If you are going to include <code>R</code> codechunks in your posts, don’t forget to set <code>highlightjslanguages = [&quot;r&quot;]</code> as well. That’s because <code>R</code> is not part of the common set in <code>highlightjs</code>, the syntax highlighting library used in most themes.</p>
+<p>The only thing left to do now is to edit the <code>config.toml</code> file to set the name of your blog, avatars, or even link a <code>Google Analytics</code> account if the theme allows for. The file contains parameters such as:</p>
+<pre class="text"><code>title        = &quot;Tamas Szilagyi&quot;
+baseurl      = &quot;http://tamaszilagyi.com/&quot;
+relativeurls = true
+languageCode = &quot;en-us&quot;
+theme        = &quot;cocoa-hugo-theme&quot;
+faviconfile  = &quot;img/leaf.ico&quot;
+github       = &quot;//github.com/mtoto&quot;
+highlightjs  = true
+avatar       = &quot;img/profile_pic.png&quot; 
+...</code></pre>
+<p>If you are going to include <code>R</code> codechunks in your posts, also don’t forget to set <code>highlightjslanguages = [&quot;r&quot;]</code>. When the blog is ready, we run <code>build_site()</code> to compiles the files to html and build the website. What we need for deployment will reside under the <code>public/</code> folder.</p>
+</div>
+<div id="deployment" class="section level2">
+<h2>Deployment</h2>
+<p>Again, publishing is a piece of cake. There are <a href="https://bookdown.org/yihui/blogdown/deployment.html">multiple ways</a> for conveniently publishing a blogdown site, and being somewhat familiar with <a href="https://pages.github.com/">Github Pages</a>, that’s what I went for. I created a new repository named <code>mtoto.github.io</code> and simply pushed the contents of <code>public/</code> to the master branch.</p>
+<p>The website should be almost immediately available at the same address as the repo name. If you want an url other than <code>username.github.io</code> however, you will need to sign up with a hosting provider. Then put a file in the <code>public/</code> called <code>CNAME</code> with a one liner containing your blog url such as <code>www.mywebsite.com</code>. After, you push this file to Github and ask your provider to point your domain to the github pages url.</p>
+<p>And voilà, we have ourselves a full functioning static website that looks great, is easy to manage and as portable as it gets may you decide to switch for different hosting solutions.</p>
 </div>
 </div>
 

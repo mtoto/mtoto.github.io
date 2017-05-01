@@ -9,24 +9,24 @@ output: html_document
 
 # Starting a blog
 
-Having learnt tons from the open source community through blog posts, videos and attending conferences, I have decided to start a blog myself. The focus will be on all things related data analytics, in particular the use of open source tools to do some cool stuff.
+Having learnt lots from the open source community over the past years, from blogs and videos to attending meetups and awesome conferences, I have decided to start a blog myself and share some of the things I find interesting. Essentialy it will boil down to using open source tools to build cool things with data.
 
-# It's never been easier...
+# It's easy
 
-To get your own blog up and running, if you're an everyday `RStudio` user, like myself. 
+You can get your blog up and running with literally three lines of `R` code. I have first heard about the [blogdown](https://github.com/rstudio/blogdown) package on Twitter, and to see if the rumours were true, I went on to download the current build from Github, using `devtools::install_github('rstudio/blogdown')`.
 
-I have first heard about [blogdown](https://github.com/rstudio/blogdown) on twitter, and seeing that it would only take three lines of code to get going, I was sold. 
+Under the hood, blogdown uses [Hugo](https://gohugo.io/) to generate the website, but wraps most functionality nicely, so there's no need for much manual configuration during the process, if at all.
 
 ## Setup 
 
-You create a directory for your site, set it as your home directory using `setwd("path_to_blog")` and then simply run:
+We first create a folder for our blog on our computer, and set it as our home directory by `setwd("path-to-blog")` inside `RStudio`. Now we simply run:
 
 ```{r, eval = FALSE}
-#1 install blogdown
+# 1 if you haven't already, install blogdown
 devtools::install_github('rstudio/blogdown')
-#2 install hugo
+# 2 install hugo
 blogdown::install_hugo()
-#3 create new site
+# 3 create new site
 blogdown::new_site()
 ```
 
@@ -34,13 +34,39 @@ That's it. You now have a complete folder structure initialized in your working 
 
 ![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/img/folderstruct.png)
 
-You future blog posts will reside in the `content/post` folder. There are already two dummy posts as `.Rmd` files that you can start editing out of the box. Everytime you save changes, your site is automatically rebuilt. If you come back to work on your existing site you can simply use `serve_site()` and your site is regenerated accordingly.
+And a new site running on your `localhost`, that you can see in RSutdio's `Viewer`, or inside your browser by clicking *Show in new window* in the top right corner of your `Viewer`. 
+
+You future blog posts will reside in the `content/post` folder. Here we find two dummy posts as `.Rmd` files that we can start editing straight away and see the results immediately after saving. Because everytime you save changes, your site is instantly rebuilt. If you come back to work on your existing site, you can simply run `serve_site()` and see your site regenerated according to your latest edits.
 
 ## Customization
 
-You can further customize the look of your blog by installing a custom theme from  http://themes.gohugo.io using the function `install_theme('username/theme')`. For mine I picked [nishanths/cocoa-hugo-theme](https://github.com/nishanths/cocoa-hugo-theme) which I like very much for its minimalistic design. 
+Now we can now begin to customize the look of our blog by installing a theme using the function `install_theme('username/theme')`. For my site, I picked [nishanths/cocoa-hugo-theme](https://github.com/nishanths/cocoa-hugo-theme) which I like very much for its minimalistic design. You can browse other themes on [themes.gohugo.io/](https://themes.gohugo.io/).
 
 ## Configuration
 
-The only thing left to do now is to edit the `config.toml` file  to set the name of your blog, avatars or even link it to a `Google Analytics` view (and start collecting data!). If you are going to include `R` codechunks in your posts, don't forget to set `highlightjslanguages = ["r"]` as well. That's because `R` is not part of the common set in `highlightjs`, the syntax highlighting library used in most themes.
+The only thing left to do now is to edit the `config.toml` file  to set the name of your blog, avatars, or even link a `Google Analytics` account if the theme allows for. The file contains parameters such as:
+
+```{text, eval = FALSE}
+title        = "Tamas Szilagyi"
+baseurl      = "http://tamaszilagyi.com/"
+relativeurls = true
+languageCode = "en-us"
+theme        = "cocoa-hugo-theme"
+faviconfile  = "img/leaf.ico"
+github       = "//github.com/mtoto"
+highlightjs  = true
+avatar       = "img/profile_pic.png" 
+...
+```
+
+If you are going to include `R` codechunks in your posts, also don't forget to set `highlightjslanguages = ["r"]`. When the blog is ready, we run `build_site()` to compiles the files to html and build the website. What we need for deployment will reside under the `public/` folder.
+
+## Deployment
+
+Again, publishing is a piece of cake. There are [multiple ways](https://bookdown.org/yihui/blogdown/deployment.html) for conveniently publishing a blogdown site, and being somewhat familiar with [Github Pages](https://pages.github.com/), that's what I went for. I created a new repository named `mtoto.github.io` and simply pushed the contents of `public/` to the master branch. 
+
+The website should be almost immediately available at the same address as the repo name. If you want an url other than `username.github.io` however, you will need to sign up with a hosting provider. Then put a file in the `public/` called `CNAME` with a one liner containing your blog url such as `www.mywebsite.com`. After, you push this file to Github and ask your provider to point your domain to the github pages url. 
+
+And voilà, we have ourselves a full functioning static website that looks great, is easy to manage and as portable as it gets may you decide to switch for different hosting solutions.
+
 
