@@ -9,7 +9,7 @@ output: html_document
 
 # Starting a blog
 
-Having learnt tons from the open source community through blog posts, videos and attending conferences, I have decided to start a blog myself. The focus will be on all things related data analytics, in particular the use of open source tools such as `R` or `Python` to conduct a variety analysis' in a reproducible and scalable way.
+Having learnt tons from the open source community through blog posts, videos and attending conferences, I have decided to start a blog myself. The focus will be on all things related data analytics, in particular the use of open source tools to do some cool stuff.
 
 # It's never been easier...
 
