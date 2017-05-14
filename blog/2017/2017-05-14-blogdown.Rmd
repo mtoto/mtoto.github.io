@@ -7,9 +7,9 @@ tags: ["R Markdown", "plot", "regression"]
 output: html_document
 ---
 
-# Starting a blog
+# Starting an analytics blog
 
-Having learned lots from the open source community over the past years - from blogs and videos to attending meetups and awesome conferences - I have decided to start a blog myself, and share some of the things I find interesting. I expect most of the posts to be `R` specific, because that's what I am most comfortable with. However I do enjoy fiddling with other technologies such as `Python` or `Spark`, so watch out! In a nuthsell though, this blog will be about using open source tools to build all sorts of cool things with data. 
+Having learned lots from the open source community over the past years - from blogs and videos to attending meetups and awesome conferences - I have decided to start a blog myself, and share some of the things I find interesting. I expect most of the posts to be `R` specific, because that's what I am most comfortable with. However I do enjoy fiddling with other technologies such as `Python` or `Spark`, so watch out! In a nuthsell though, this blog will be about using open source tools to build all sorts of cool things with **data**. 
 
 # It's easy
 
