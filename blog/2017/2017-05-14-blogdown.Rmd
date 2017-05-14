@@ -65,7 +65,7 @@ If you are going to include `R` codechunks in your posts, also don't forget to s
 
 Again, publishing is a piece of cake. There are [multiple ways](https://bookdown.org/yihui/blogdown/deployment.html) for conveniently deploying a blogdown site, and being somewhat familiar with [Github Pages](https://pages.github.com/), that's what I went for. I created a new repository named `mtoto.github.io` and simply pushed the contents of `/public` to the master branch. 
 
-The website should be almost immediately available at the same address as the repo name. If you want an url other than `username.github.io` however, you will need to sign up with a hosting provider. Then put a file in the `/public` called `CNAME` with a one liner containing your blog url such as `tamaszilagyi.com`. After, you push this file to Github and ask your provider to point your domain to the github pages url. 
+The website should be almost immediately available at the same address as the repo name. If you want an url other than `username.github.io` however, you will need to sign up with a hosting provider. Then put a file in the `/public` folder called `CNAME`, with a one liner containing your blog url such as `tamaszilagyi.com`. After, you push this file to Github and ask your provider to point your domain to the github pages url. 
 
 And voilà, we have ourselves a full functioning static website that looks great, is easy to manage and as portable as it gets may you decide to switch for different hosting solutions. 
 
