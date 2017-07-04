@@ -79,7 +79,7 @@ str(df_arts, max.level=1,vec.len=1)
 - `artist_id`: Unique identifier of the artist.
 - `artist_popularity`: Score from 1 to 100 regarding the artist's popularity.
 
-By joining the two dataframes we are mostly looking to enrich the original data with `artist_genre`, a variable we'll use for plotting later on. Similarly to artists, albums and tracks also have [API endpoints](https://developer.spotify.com/web-api/endpoint-reference/) containing a genre field. However, the more granual you get, the higher the prevalance of no associated genres. However, there is quite some artists where genres is left blank. 
+By joining the two dataframes we are mostly looking to enrich the original data with `artist_genre`, a variable we'll use for plotting later on. Similarly to artists, albums and tracks also have [API endpoints](https://developer.spotify.com/web-api/endpoint-reference/) containing a genre field. However, the more granual you get, the higher the prevalance of no associated genres. Nevertheless, there is quite some artists where genres is left blank. 
 
 So, let's unnest the list columns, convert `played_at` to timestamp and merge the the dataset with **df_arts**, using the key `"artist_id"`.
 ```{r, warning=F, message=F}

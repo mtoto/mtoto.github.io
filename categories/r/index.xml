@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R on Coding with Data</title>
-    <link>http://tamaszilagyi.com/categories/r/index.xml</link>
+    <link>/categories/r/index.xml</link>
     <description>Recent content in R on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://tamaszilagyi.com/categories/r/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Analyzing My Spotify Listening History</title>
-      <link>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</link>
+      <link>/blog/analyzing-my-spotify-listening-history/</link>
       <pubDate>Sun, 02 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</guid>
+      <guid>/blog/analyzing-my-spotify-listening-history/</guid>
       <description>&lt;div id=&#34;a-new-endpoint&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;A new endpoint&lt;/h1&gt;
 &lt;p&gt;Following an &lt;a href=&#34;https://github.com/spotify/web-api/issues/20&#34;&gt;avalanche of &lt;em&gt;+1&lt;/em&gt; comments&lt;/a&gt; on the GitHub issue requesting access to a user’s play history, on March 1st Spotify released &lt;a href=&#34;https://developer.spotify.com/web-api/web-api-personalization-endpoints/get-recently-played/&#34;&gt;a new endpoint&lt;/a&gt; to their Web API that allows anyone with a Spotify account to pull data on his or her most recently played tracks. To access it, you need go through the &lt;a href=&#34;https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow&#34;&gt;Authorization Code Flow&lt;/a&gt;, where you get keys and tokens needed for making calls to the API. The return object contains your 50 most recently played songs enriched by some contextual data.&lt;/p&gt;
@@ -68,7 +68,7 @@ df_tracks &amp;lt;- fromJSON(&amp;quot;/data/spotify_tracks_2017-06-04.json&amp;
 &lt;li&gt;&lt;code&gt;artist_id&lt;/code&gt;: Unique identifier of the artist.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;artist_popularity&lt;/code&gt;: Score from 1 to 100 regarding the artist’s popularity.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;By joining the two dataframes we are mostly looking to enrich the original data with &lt;code&gt;artist_genre&lt;/code&gt;, a variable we’ll use for plotting later on. Similarly to artists, albums and tracks also have &lt;a href=&#34;https://developer.spotify.com/web-api/endpoint-reference/&#34;&gt;API endpoints&lt;/a&gt; containing a genre field. However, the more granual you get, the higher the prevalance of no associated genres. However, there is quite some artists where genres is left blank.&lt;/p&gt;
+&lt;p&gt;By joining the two dataframes we are mostly looking to enrich the original data with &lt;code&gt;artist_genre&lt;/code&gt;, a variable we’ll use for plotting later on. Similarly to artists, albums and tracks also have &lt;a href=&#34;https://developer.spotify.com/web-api/endpoint-reference/&#34;&gt;API endpoints&lt;/a&gt; containing a genre field. However, the more granual you get, the higher the prevalance of no associated genres. Nevertheless, there is quite some artists where genres is left blank.&lt;/p&gt;
 &lt;p&gt;So, let’s unnest the list columns, convert &lt;code&gt;played_at&lt;/code&gt; to timestamp and merge the the dataset with &lt;strong&gt;df_arts&lt;/strong&gt;, using the key &lt;code&gt;&amp;quot;artist_id&amp;quot;&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
 library(tidyr)
@@ -251,10 +251,10 @@ gganimate(gg_life)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Starting a blog(down)</title>
-      <link>http://tamaszilagyi.com/blog/starting-a-blogdown/</link>
+      <link>/blog/starting-a-blogdown/</link>
       <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/starting-a-blogdown/</guid>
+      <guid>/blog/starting-a-blogdown/</guid>
       <description>&lt;!-- BLOGDOWN-HEAD --&gt;
 &lt;!-- /BLOGDOWN-HEAD --&gt;
 
