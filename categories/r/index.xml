@@ -134,8 +134,8 @@ plot&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Most of the songs in my top 10 have a similar pattern: The first few days after discovering them, there is a sharp increase in the number of plays. Sometimes it takes a couple of listens for me to get into a track, but usually I start obsessing over it immedeately. One obvious exception is the song &lt;em&gt;Habiba&lt;/em&gt;, the song I listened to the most. The first time I heard the song, it must have gone unnoticed. Two months later, I started playing it virtually on repeat.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;listenting-times&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Listenting times&lt;/h1&gt;
+&lt;div id=&#34;listening-times&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Listening times&lt;/h1&gt;
 &lt;p&gt;Moving on, let’s look at what time of the day I listen to Spotify the most. I expect weekdays to exhibit a somewhat different pattern than weekends. We can plot separate timelines of the total number of listens per hour of the day for both weekdays and weekends. Unfortunately, there are more weekdays then weekends, so we need to normalize their respective counts to arrive at a meaningful comparison.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(lubridate)
 
@@ -146,7 +146,7 @@ merged %&amp;gt;% group_by(time_of_day = hour(played_at),
         mutate(plays = ifelse(weekend == &amp;quot;weekend&amp;quot;,plays/2,plays/5)) %&amp;gt;%
         ggplot(aes(time_of_day, plays, colour = weekend)) +
         geom_line() +
-        ggtitle(&amp;quot;Number of Listers per hour of the day&amp;quot;) +
+        ggtitle(&amp;quot;Number of Listens per hour of the day&amp;quot;) +
         xlab(&amp;quot;Hour&amp;quot;) +
         ylab(&amp;quot;Plays&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;

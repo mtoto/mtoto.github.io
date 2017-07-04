@@ -141,7 +141,7 @@ plot
 
 Most of the songs in my top 10 have a similar pattern: The first few days after discovering them, there is a sharp increase in the number of plays. Sometimes it takes a couple of listens for me to get into a track, but usually I start obsessing over it immedeately. One obvious exception is the song *Habiba*, the song I listened to the most. The first time I heard the song, it must have gone unnoticed. Two months later, I started playing it virtually on repeat.
 
-# Listenting times
+# Listening times
 Moving on, let's look at what time of the day I listen to Spotify the most. I expect weekdays to exhibit a somewhat different pattern than weekends. We can plot separate timelines of the total number of listens per hour of the day for both weekdays and weekends. Unfortunately, there are more weekdays then weekends, so we need to normalize their respective counts to arrive at a meaningful comparison.
 
 ```{r}
@@ -154,7 +154,7 @@ merged %>% group_by(time_of_day = hour(played_at),
         mutate(plays = ifelse(weekend == "weekend",plays/2,plays/5)) %>%
         ggplot(aes(time_of_day, plays, colour = weekend)) +
         geom_line() +
-        ggtitle("Number of Listers per hour of the day") +
+        ggtitle("Number of Listens per hour of the day") +
         xlab("Hour") +
         ylab("Plays")
         
