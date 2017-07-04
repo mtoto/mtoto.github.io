@@ -167,7 +167,7 @@ On the other hand, I listen to slightly more music in the afternoon and evening 
 
 I am also interested whether there is such a thing as *morning artists vs afternoon/evening artists*. In other words, which artists do I listen to more often in the morning than *after noon*, or the other way around. The approach I took is to count the number plays by artists, and calculate a ratio of morning / evening for each one. The result I plotted with what is apparently called a [diverging lollipop chart](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#Diverging%20Lollipop%20Chart). 
 
-The code snippet to produce this plot is tad bit too long to include here, but you can find all the code in the original RMarkdown file on [Github](add link).
+The code snippet to produce this plot is tad bit too long to include here, but you can find all the code in the original RMarkdown file on [Github](https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-06-02-spotifyR.Rmd).
 
 ```{r, warning=FALSE, echo = F}
 plot_2 <- merged %>% 
@@ -314,19 +314,23 @@ genres_by_day <- genres_by_day %>%
 ```
 
 ```{r, eval = F}
-p3 <- genres_by_day %>%  #filter(doy == "2017-05-22") %>%
-        ggplot(aes(x = artist_genres, y = cumulative_frequency, 
-                   fill = artist_genres, frame = doy)) +
-        theme(panel.grid = element_blank()) +
+gg_life <- genres_by_day %>%
+        ggplot(aes(x=genre, y=cumulative_frequency, fill=artist_genres, frame = doy, alpha = 0.8)) +
+        theme_bw() +
+        theme(panel.grid = element_blank())+
         geom_bar(stat="identity",position="identity") +
         facet_grid(segm.freq ~ segm.rec, drop = FALSE) +
-        ggtitle("LifeCycle Grids") +
-        guides(fill = F)
-gganimate(p3)
+        ggtitle("LifeCycle Grid") +
+        xlab("Genres") +
+        ylab("Cumulative Frequency") +
+        guides(fill = guide_legend(ncol = 1),
+               alpha = FALSE)
+        
+gganimate(gg_life)
 ```
-![](/Users/tamas/Documents/my_site/data/lifecycle.gif)
+![](http://tamaszilagyi.com/img/lifecycle.gif)
 
-More than anything, the plot makes it obvious that I cannot go on for too long without listening to my favourite genres, `jazz blues`, `hip hop` and `psychedelic trance`. My least often played genres from the top 20 on the other hand are distributed pretty evenly accross the **recency axis** of my plot in the last row (containing genres with less than or equal to 50 listens).
+More than anything, the plot makes it obvious that I cannot go on for too long without listening to my favourite genres such as `jazz blues`, `hip hop` and `psychedelic trance`. My least often played genres from the top 20 on the other hand are distributed pretty evenly accross the **recency axis** of my plot in the last row (containing genres with less than or equal to 50 listens).
 
 # What's left?
 

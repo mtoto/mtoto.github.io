@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1499176888">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1499176888">
-    <link rel="stylesheet" href="../../css/main.css?t=1499176888">
+    <link rel="stylesheet" href="../../css/reset.css?t=1499179314">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1499179314">
+    <link rel="stylesheet" href="../../css/main.css?t=1499179314">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1499176888">
+        <link rel="stylesheet" href="../../css/override.css?t=1499179314">
     
 
 
@@ -288,7 +288,7 @@ merged %&gt;% group_by(time_of_day = hour(played_at),
 <p>Well, there’s a few interesting things here. On <strong>weekdays</strong> I listen to slightly more music than on weekends, mostly due to regular listening habits early on and during the day. The peak in the morning corresponds to me biking to work, followed by dip around 10 (daily stand-ups anyone?). Then, I put my headphones back on until about 14:00, to finish my Spotify activities in the evening when I get home.</p>
 <p>On the other hand, I listen to slightly more music in the afternoon and evening when it’s <strong>weekend</strong>. Additionally, all early hours listening happens solely on weekends.</p>
 <p>I am also interested whether there is such a thing as <em>morning artists vs afternoon/evening artists</em>. In other words, which artists do I listen to more often in the morning than <em>after noon</em>, or the other way around. The approach I took is to count the number plays by artists, and calculate a ratio of morning / evening for each one. The result I plotted with what is apparently called a <a href="http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#Diverging%20Lollipop%20Chart">diverging lollipop chart</a>.</p>
-<p>The code snippet to produce this plot is tad bit too long to include here, but you can find all the code in the original RMarkdown file on <a href="add%20link">Github</a>.</p>
+<p>The code snippet to produce this plot is tad bit too long to include here, but you can find all the code in the original RMarkdown file on <a href="https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-06-02-spotifyR.Rmd">Github</a>.</p>
 <p><img src="../../blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>On the y-axis we have the artists. The x-axis depicts the aforementioned ratio, and the size of the <em>lollipop</em> stands for the number of plays in the given direction, also displayed by the label.</p>
 <p>The artists with the biggest divergences are <a href="https://open.spotify.com/artist/0HlOk15cW7PeziVcItQLco">Zen Mechanics</a> and <a href="https://open.spotify.com/artist/1k8VBufn1nBs8LN9n4snc8">Stereo MC’s</a>. For both artists, the number of plays is almost equal to the difference ratio. That means I played songs in the opposite timeframe <strong>only once</strong>. As a matter of fact, there are artists such as <a href="https://open.spotify.com/artist/03HEHGJoLPdARs4nrtUidr">Junior Kimbrough</a> or <a href="https://open.spotify.com/artist/3mNygoyrEKLgo6sx0MzwOL">Ali Farka Touré</a> whom I played more often in each direction, but because the plays are distributed more evenly, the ratio is not as extreme.</p>
@@ -357,20 +357,24 @@ one_gen_per_a &lt;- unnested %&gt;%
                last_played = na.locf(last_played),
                recency = doy - last_played)</code></pre>
 <p>After binning both <code>cumulative_frequency</code> and <code>recency</code> from the resulting dataset, we can proceed with creating our animated lifecycle grid using <code>ggplot2</code> and <code>gganimate</code>. All we need to do is specify the <code>frame =</code> variable inside the <code>aes()</code>, and our ggplot comes to life!</p>
-<pre class="r"><code>p3 &lt;- genres_by_day %&gt;%  #filter(doy == &quot;2017-05-22&quot;) %&gt;%
-        ggplot(aes(x = artist_genres, y = cumulative_frequency, 
-                   fill = artist_genres, frame = doy)) +
-        theme(panel.grid = element_blank()) +
+<pre class="r"><code>gg_life &lt;- genres_by_day %&gt;%
+        ggplot(aes(x=genre, y=cumulative_frequency, fill=artist_genres, frame = doy, alpha = 0.8)) +
+        theme_bw() +
+        theme(panel.grid = element_blank())+
         geom_bar(stat=&quot;identity&quot;,position=&quot;identity&quot;) +
         facet_grid(segm.freq ~ segm.rec, drop = FALSE) +
-        ggtitle(&quot;LifeCycle Grids&quot;) +
-        guides(fill = F)
-gganimate(p3)</code></pre>
+        ggtitle(&quot;LifeCycle Grid&quot;) +
+        xlab(&quot;Genres&quot;) +
+        ylab(&quot;Cumulative Frequency&quot;) +
+        guides(fill = guide_legend(ncol = 1),
+               alpha = FALSE)
+        
+gganimate(gg_life)</code></pre>
 <div class="figure">
-<img src="../../Users/tamas/Documents/my_site/data/lifecycle.gif" />
+<img src="http://tamaszilagyi.com/img/lifecycle.gif" />
 
 </div>
-<p>More than anything, the plot makes it obvious that I cannot go on for too long without listening to my favourite genres, <code>jazz blues</code>, <code>hip hop</code> and <code>psychedelic trance</code>. My least often played genres from the top 20 on the other hand are distributed pretty evenly accross the <strong>recency axis</strong> of my plot in the last row (containing genres with less than or equal to 50 listens).</p>
+<p>More than anything, the plot makes it obvious that I cannot go on for too long without listening to my favourite genres such as <code>jazz blues</code>, <code>hip hop</code> and <code>psychedelic trance</code>. My least often played genres from the top 20 on the other hand are distributed pretty evenly accross the <strong>recency axis</strong> of my plot in the last row (containing genres with less than or equal to 50 listens).</p>
 </div>
 <div id="whats-left" class="section level1">
 <h1>What’s left?</h1>
