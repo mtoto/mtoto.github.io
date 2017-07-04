@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</loc>
+    <lastmod>2017-07-02T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://tamaszilagyi.com/blog/starting-a-blogdown/</loc>
     <lastmod>2017-05-14T21:13:14-05:00</lastmod>
   </url>
@@ -13,7 +18,7 @@
   
   <url>
     <loc>http://tamaszilagyi.com/blog/</loc>
-    <lastmod>2017-05-14T21:13:14-05:00</lastmod>
+    <lastmod>2017-07-02T21:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -24,7 +29,19 @@
   
   <url>
     <loc>http://tamaszilagyi.com/</loc>
-    <lastmod>2017-05-14T21:13:14-05:00</lastmod>
+    <lastmod>2017-07-02T21:13:14-05:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tamaszilagyi.com/tags/dplyr/</loc>
+    <lastmod>2017-07-02T21:13:14-05:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tamaszilagyi.com/tags/ggplot/</loc>
+    <lastmod>2017-07-02T21:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -35,8 +52,14 @@
   </url>
   
   <url>
+    <loc>http://tamaszilagyi.com/tags/purrr/</loc>
+    <lastmod>2017-07-02T21:13:14-05:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://tamaszilagyi.com/categories/r/</loc>
-    <lastmod>2017-05-14T21:13:14-05:00</lastmod>
+    <lastmod>2017-07-02T21:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -53,7 +76,19 @@
   </url>
   
   <url>
+    <loc>http://tamaszilagyi.com/tags/spotify/</loc>
+    <lastmod>2017-07-02T21:13:14-05:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://tamaszilagyi.com/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tamaszilagyi.com/tags/tidyr/</loc>
+    <lastmod>2017-07-02T21:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
