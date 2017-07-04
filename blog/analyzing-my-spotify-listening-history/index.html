@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1499179314">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1499179314">
-    <link rel="stylesheet" href="../../css/main.css?t=1499179314">
+    <link rel="stylesheet" href="../../css/reset.css?t=1499179788">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1499179788">
+    <link rel="stylesheet" href="../../css/main.css?t=1499179788">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1499179314">
+        <link rel="stylesheet" href="../../css/override.css?t=1499179788">
     
 
 
@@ -190,7 +190,7 @@ df_tracks &lt;- fromJSON(&quot;/data/spotify_tracks_2017-06-04.json&quot;)</code
 </div>
 <div id="df_arts" class="section level2">
 <h2>df_arts</h2>
-<p>The second data.frame consists of a couple of additional variables concerning the artists:</p>
+<p>The second <code>data.frame</code> consists of a couple of additional variables concerning the artists:</p>
 <pre><code>## &#39;data.frame&#39;:    1810 obs. of  4 variables:
 ##  $ artist_followers : int  256962 30345 ...
 ##  $ artist_genres    :List of 1810
@@ -203,8 +203,8 @@ df_tracks &lt;- fromJSON(&quot;/data/spotify_tracks_2017-06-04.json&quot;)</code
 <li><code>artist_id</code>: Unique identifier of the artist.</li>
 <li><code>artist_popularity</code>: Score from 1 to 100 regarding the artist’s popularity.</li>
 </ul>
-<p>By merging the two datasets we are mostly looking to enrich the original data with <code>artist_genre</code>, a variable we’ll use for plotting later on. Similarly to artists, albums and tracks also have <a href="https://developer.spotify.com/web-api/endpoint-reference/">API endpoints</a> containing a genre field. However, the more granual you get, the higher the prevalance of no associated genres. However, there is quite some artists where genres is left blank.</p>
-<p>So, let’s unnest the list columns, convert <code>played_at</code> to timestamp and merge the the dataset with <strong>df_arts</strong>, using the key <code>artist_id</code>.</p>
+<p>By joining the two dataframes we are mostly looking to enrich the original data with <code>artist_genre</code>, a variable we’ll use for plotting later on. Similarly to artists, albums and tracks also have <a href="https://developer.spotify.com/web-api/endpoint-reference/">API endpoints</a> containing a genre field. However, the more granual you get, the higher the prevalance of no associated genres. However, there is quite some artists where genres is left blank.</p>
+<p>So, let’s unnest the list columns, convert <code>played_at</code> to timestamp and merge the the dataset with <strong>df_arts</strong>, using the key <code>&quot;artist_id&quot;</code>.</p>
 <pre class="r"><code>library(dplyr)
 library(tidyr)
 
@@ -356,7 +356,7 @@ one_gen_per_a &lt;- unnested %&gt;%
                                      first_played),
                last_played = na.locf(last_played),
                recency = doy - last_played)</code></pre>
-<p>After binning both <code>cumulative_frequency</code> and <code>recency</code> from the resulting dataset, we can proceed with creating our animated lifecycle grid using <code>ggplot2</code> and <code>gganimate</code>. All we need to do is specify the <code>frame =</code> variable inside the <code>aes()</code>, and our ggplot comes to life!</p>
+<p>After binning both <code>cumulative_frequency</code> and <code>recency</code> from the resulting dataset, we can proceed with creating our animated lifecycle grid using <code>ggplot2</code> and <code>gganimate</code>. All we need to do is specify the <code>frame =</code> variable inside the <code>aes()</code>, and our plot comes to life!</p>
 <pre class="r"><code>gg_life &lt;- genres_by_day %&gt;%
         ggplot(aes(x=genre, y=cumulative_frequency, fill=artist_genres, frame = doy, alpha = 0.8)) +
         theme_bw() +

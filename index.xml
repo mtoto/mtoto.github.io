@@ -56,7 +56,7 @@ df_tracks &amp;lt;- fromJSON(&amp;quot;/data/spotify_tracks_2017-06-04.json&amp;
 &lt;/div&gt;
 &lt;div id=&#34;df_arts&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;df_arts&lt;/h2&gt;
-&lt;p&gt;The second data.frame consists of a couple of additional variables concerning the artists:&lt;/p&gt;
+&lt;p&gt;The second &lt;code&gt;data.frame&lt;/code&gt; consists of a couple of additional variables concerning the artists:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    1810 obs. of  4 variables:
 ##  $ artist_followers : int  256962 30345 ...
 ##  $ artist_genres    :List of 1810
@@ -69,8 +69,8 @@ df_tracks &amp;lt;- fromJSON(&amp;quot;/data/spotify_tracks_2017-06-04.json&amp;
 &lt;li&gt;&lt;code&gt;artist_id&lt;/code&gt;: Unique identifier of the artist.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;artist_popularity&lt;/code&gt;: Score from 1 to 100 regarding the artist’s popularity.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;By merging the two datasets we are mostly looking to enrich the original data with &lt;code&gt;artist_genre&lt;/code&gt;, a variable we’ll use for plotting later on. Similarly to artists, albums and tracks also have &lt;a href=&#34;https://developer.spotify.com/web-api/endpoint-reference/&#34;&gt;API endpoints&lt;/a&gt; containing a genre field. However, the more granual you get, the higher the prevalance of no associated genres. However, there is quite some artists where genres is left blank.&lt;/p&gt;
-&lt;p&gt;So, let’s unnest the list columns, convert &lt;code&gt;played_at&lt;/code&gt; to timestamp and merge the the dataset with &lt;strong&gt;df_arts&lt;/strong&gt;, using the key &lt;code&gt;artist_id&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;By joining the two dataframes we are mostly looking to enrich the original data with &lt;code&gt;artist_genre&lt;/code&gt;, a variable we’ll use for plotting later on. Similarly to artists, albums and tracks also have &lt;a href=&#34;https://developer.spotify.com/web-api/endpoint-reference/&#34;&gt;API endpoints&lt;/a&gt; containing a genre field. However, the more granual you get, the higher the prevalance of no associated genres. However, there is quite some artists where genres is left blank.&lt;/p&gt;
+&lt;p&gt;So, let’s unnest the list columns, convert &lt;code&gt;played_at&lt;/code&gt; to timestamp and merge the the dataset with &lt;strong&gt;df_arts&lt;/strong&gt;, using the key &lt;code&gt;&amp;quot;artist_id&amp;quot;&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
 library(tidyr)
 
@@ -222,7 +222,7 @@ one_gen_per_a &amp;lt;- unnested %&amp;gt;%
                                      first_played),
                last_played = na.locf(last_played),
                recency = doy - last_played)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;After binning both &lt;code&gt;cumulative_frequency&lt;/code&gt; and &lt;code&gt;recency&lt;/code&gt; from the resulting dataset, we can proceed with creating our animated lifecycle grid using &lt;code&gt;ggplot2&lt;/code&gt; and &lt;code&gt;gganimate&lt;/code&gt;. All we need to do is specify the &lt;code&gt;frame =&lt;/code&gt; variable inside the &lt;code&gt;aes()&lt;/code&gt;, and our ggplot comes to life!&lt;/p&gt;
+&lt;p&gt;After binning both &lt;code&gt;cumulative_frequency&lt;/code&gt; and &lt;code&gt;recency&lt;/code&gt; from the resulting dataset, we can proceed with creating our animated lifecycle grid using &lt;code&gt;ggplot2&lt;/code&gt; and &lt;code&gt;gganimate&lt;/code&gt;. All we need to do is specify the &lt;code&gt;frame =&lt;/code&gt; variable inside the &lt;code&gt;aes()&lt;/code&gt;, and our plot comes to life!&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gg_life &amp;lt;- genres_by_day %&amp;gt;%
         ggplot(aes(x=genre, y=cumulative_frequency, fill=artist_genres, frame = doy, alpha = 0.8)) +
         theme_bw() +
