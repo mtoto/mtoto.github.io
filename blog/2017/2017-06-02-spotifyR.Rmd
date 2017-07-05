@@ -79,7 +79,7 @@ str(df_arts, max.level=1,vec.len=1)
 - `artist_id`: Unique identifier of the artist.
 - `artist_popularity`: Score from 1 to 100 regarding the artist's popularity.
 
-By joining the two dataframes we are mostly looking to enrich the original data with `artist_genre`, a variable we'll use for plotting later on. Similarly to artists, albums and tracks also have [API endpoints](https://developer.spotify.com/web-api/endpoint-reference/) containing a genre field. However, the more granular you get, the higher the prevalence of no associated genres. Nevertheless, there is quite some artists where genres is left blank. 
+By joining the two dataframes we are mostly looking to enrich the original data with `artist_genre`, a variable we'll use for plotting later on. Similarly to artists, albums and tracks also have [API endpoints](https://developer.spotify.com/web-api/endpoint-reference/) containing a genre field. However, the more granular you get, the higher the prevalence of no associated genres. Nevertheless, there is still quite some artists where genres is left blank. 
 
 So, let's unnest the list columns, convert `played_at` to timestamp and merge the the dataset with **df_arts**, using the key `"artist_id"`.
 ```{r, warning=F, message=F}
@@ -142,7 +142,7 @@ plot
 Most of the songs in my top 10 have a similar pattern: The first few days after discovering them, there is a sharp increase in the number of plays. Sometimes it takes a couple of listens for me to get into a track, but usually I start obsessing over it immediately. One obvious exception is the song *Habiba*, the song I listened to the most. The first time I heard the song, it must have gone unnoticed. Two months later, I started playing it virtually on repeat.
 
 # Listening times
-Moving on, let's look at what time of the day I listen to Spotify the most. I expect weekdays to exhibit a somewhat different pattern than weekends. We can plot separate timelines of the total number of listens per hour of the day for both weekdays and weekends. Unfortunately, there are more weekdays thqn weekends, so we need to normalize their respective counts to arrive at a meaningful comparison.
+Moving on, let's look at what time of the day I listen to Spotify the most. I expect weekdays to exhibit a somewhat different pattern than weekends. We can plot separate timelines of the total number of listens per hour of the day for both weekdays and weekends. Unfortunately, there are more weekdays than weekends, so we need to normalize their respective counts to arrive at a meaningful comparison.
 
 ```{r}
 library(lubridate)
@@ -165,7 +165,7 @@ Well, there's a few interesting things here. On **weekdays** I listen to slightl
 
 On the other hand, I listen to slightly more music in the afternoon and evening when it's **weekend**. Additionally, all early hours listening happens solely on weekends.
 
-I am also interested whether there is such a thing as *morning artists vs afternoon/evening artists*. In other words, which artists do I listen to more often in the morning than *after noon*, or the other way around. The approach I took is to count the number plays by artists, and calculate a ratio of morning / evening for each one. The result I plotted with what is apparently called a [diverging lollipop chart](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#Diverging%20Lollipop%20Chart). 
+I am also interested whether there is such a thing as *morning artists vs. afternoon/evening artists*. In other words, which artists do I listen to more often in the morning than *after noon*, or the other way around. The approach I took is to count the number plays by artists, and calculate a ratio of morning / evening for each one. The result I plotted with what is apparently called a [diverging lollipop chart](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#Diverging%20Lollipop%20Chart). 
 
 The code snippet to produce this plot is tad bit too long to include here, but you can find all the code in the original RMarkdown file on [Github](https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-06-02-spotifyR.Rmd).
 
