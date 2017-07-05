@@ -151,7 +151,7 @@ merged %>% group_by(time_of_day = hour(played_at),
                     weekend = ifelse(wday(played_at) %in% c(6:7),
                                    "weekend", "weekday")) %>%
         summarise(plays = n_distinct(played_at)) %>%
-        mutate(plays = ifelse(weekend == "weekend",plays/2,plays/5)) %>%
+        mutate(plays = ifelse(weekend == "weekend", plays/2, plays/5)) %>%
         ggplot(aes(time_of_day, plays, colour = weekend)) +
         geom_line() +
         ggtitle("Number of Listens per hour of the day") +
@@ -196,15 +196,15 @@ plot_2 <- merged %>%
         ungroup() %>%
         mutate(artist_name = reorder(artist_name, ratio2),
                listens = pmax(`afternoon/evening`, morning)) %>%
-        ggplot(aes(artist_name, ratio2, colour = direction,label=listens)) +
+        ggplot(aes(artist_name, ratio2, colour = direction, label = listens)) +
         geom_segment(aes(y = 0, 
                          x = artist_name, 
                          yend = ratio2, 
                          xend = artist_name)) +
         geom_point(stat = "identity",aes(size = listens*3)) +
-        geom_text(color="white", size=2) +
+        geom_text(color="white", size = 2) +
         scale_y_continuous(breaks = c(-20,-10,0,10),
-                         label=c("20x", "10x","0", "10x")
+                         label = c("20x", "10x","0", "10x")
                            ) +
         xlab("Artist Names") +
         ylab("Ratio morning vs. afternoon / evening") +
@@ -228,24 +228,24 @@ Lastly, let's look at genres. Just as a track can have more than one artist to i
 library(purrr)
 # unnest genres
 unnested <- merged %>% 
-        mutate(artist_genres =  replace(artist_genres,
-                                        map(artist_genres,length)==0, 
-                                        list("none"))) %>%
+        mutate(artist_genres = replace(artist_genres,
+                                       map(artist_genres,length) == 0, 
+                                       list("none"))) %>%
         unnest(artist_genres)
 # calculate count and push "none" to the bottom 
 # so it is not included in the top genres.
 gens <- unnested %>% 
         group_by(artist_genres) %>% 
-        summarise(genre_count=n()) %>%
+        summarise(genre_count = n()) %>%
         mutate(genre_count = replace(genre_count, 
-                                     artist_genres=="none",
+                                     artist_genres == "none",
                                      0))
 # get one genre per artist
 one_gen_per_a <- unnested %>% 
         left_join(gens, by = "artist_genres") %>%
         group_by(artist_name) %>%  
         filter(genre_count == max(genre_count)) %>%
-        mutate(first_genre = head(artist_genres,1)) %>%
+        mutate(first_genre = head(artist_genres, 1)) %>%
         filter(artist_genres == first_genre)
 ```
 
@@ -278,15 +278,15 @@ genres_by_day <- one_gen_per_a %>%
         filter(artist_genres %in% top20genres$artist_genres) %>%
         group_by(artist_genres, doy = as.Date(played_at)) %>%
         arrange(doy) %>%
-        summarise(frequency=n_distinct(played_at)) %>%
+        summarise(frequency = n_distinct(played_at)) %>%
         ungroup() %>%
         complete(artist_genres, doy = full_seq(doy, period = 1))  %>%
         group_by(artist_genres) %>%
         mutate(frequency = replace(frequency,
                                    is.na(frequency),
                                    0),
-               first_played = min(doy[min(which(frequency!=0))]),
-               last_played = as.Date(ifelse(frequency==0, NA, doy)),
+               first_played = min(doy[min(which(frequency != 0))]),
+               last_played = as.Date(ifelse(frequency == 0, NA, doy)),
                cumulative_frequency = cumsum(frequency),
                last_played = replace(last_played, 
                                      doy < first_played, 
@@ -315,7 +315,9 @@ genres_by_day <- genres_by_day %>%
 
 ```{r, eval = F}
 gg_life <- genres_by_day %>%
-        ggplot(aes(x=genre, y=cumulative_frequency, fill=artist_genres, frame = doy, alpha = 0.8)) +
+        ggplot(aes(x = genre, y = cumulative_frequency, 
+                   fill = artist_genres, frame = doy, 
+                   alpha = 0.8)) +
         theme_bw() +
         theme(panel.grid = element_blank())+
         geom_bar(stat="identity",position="identity") +

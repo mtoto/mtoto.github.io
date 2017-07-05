@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1499248766">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1499248766">
-    <link rel="stylesheet" href="../../css/main.css?t=1499248766">
+    <link rel="stylesheet" href="../../css/reset.css?t=1499251548">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1499251548">
+    <link rel="stylesheet" href="../../css/main.css?t=1499251548">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1499248766">
+        <link rel="stylesheet" href="../../css/override.css?t=1499251548">
     
 
 
@@ -278,7 +278,7 @@ merged %&gt;% group_by(time_of_day = hour(played_at),
                     weekend = ifelse(wday(played_at) %in% c(6:7),
                                    &quot;weekend&quot;, &quot;weekday&quot;)) %&gt;%
         summarise(plays = n_distinct(played_at)) %&gt;%
-        mutate(plays = ifelse(weekend == &quot;weekend&quot;,plays/2,plays/5)) %&gt;%
+        mutate(plays = ifelse(weekend == &quot;weekend&quot;, plays/2, plays/5)) %&gt;%
         ggplot(aes(time_of_day, plays, colour = weekend)) +
         geom_line() +
         ggtitle(&quot;Number of Listens per hour of the day&quot;) +
@@ -299,24 +299,24 @@ merged %&gt;% group_by(time_of_day = hour(played_at),
 <pre class="r"><code>library(purrr)
 # unnest genres
 unnested &lt;- merged %&gt;% 
-        mutate(artist_genres =  replace(artist_genres,
-                                        map(artist_genres,length)==0, 
-                                        list(&quot;none&quot;))) %&gt;%
+        mutate(artist_genres = replace(artist_genres,
+                                       map(artist_genres,length) == 0, 
+                                       list(&quot;none&quot;))) %&gt;%
         unnest(artist_genres)
 # calculate count and push &quot;none&quot; to the bottom 
 # so it is not included in the top genres.
 gens &lt;- unnested %&gt;% 
         group_by(artist_genres) %&gt;% 
-        summarise(genre_count=n()) %&gt;%
+        summarise(genre_count = n()) %&gt;%
         mutate(genre_count = replace(genre_count, 
-                                     artist_genres==&quot;none&quot;,
+                                     artist_genres == &quot;none&quot;,
                                      0))
 # get one genre per artist
 one_gen_per_a &lt;- unnested %&gt;% 
         left_join(gens, by = &quot;artist_genres&quot;) %&gt;%
         group_by(artist_name) %&gt;%  
         filter(genre_count == max(genre_count)) %&gt;%
-        mutate(first_genre = head(artist_genres,1)) %&gt;%
+        mutate(first_genre = head(artist_genres, 1)) %&gt;%
         filter(artist_genres == first_genre)</code></pre>
 <p>Now that the genre column is dealt with, we can proceed to look at my favourite genres.</p>
 <pre><code>## # A tibble: 10 x 2
@@ -341,15 +341,15 @@ one_gen_per_a &lt;- unnested %&gt;%
         filter(artist_genres %in% top20genres$artist_genres) %&gt;%
         group_by(artist_genres, doy = as.Date(played_at)) %&gt;%
         arrange(doy) %&gt;%
-        summarise(frequency=n_distinct(played_at)) %&gt;%
+        summarise(frequency = n_distinct(played_at)) %&gt;%
         ungroup() %&gt;%
         complete(artist_genres, doy = full_seq(doy, period = 1))  %&gt;%
         group_by(artist_genres) %&gt;%
         mutate(frequency = replace(frequency,
                                    is.na(frequency),
                                    0),
-               first_played = min(doy[min(which(frequency!=0))]),
-               last_played = as.Date(ifelse(frequency==0, NA, doy)),
+               first_played = min(doy[min(which(frequency != 0))]),
+               last_played = as.Date(ifelse(frequency == 0, NA, doy)),
                cumulative_frequency = cumsum(frequency),
                last_played = replace(last_played, 
                                      doy &lt; first_played, 
@@ -358,7 +358,9 @@ one_gen_per_a &lt;- unnested %&gt;%
                recency = doy - last_played)</code></pre>
 <p>After binning both <code>cumulative_frequency</code> and <code>recency</code> from the resulting dataset, we can proceed with creating our animated lifecycle grid using <code>ggplot2</code> and <code>gganimate</code>. All we need to do is specify the <code>frame =</code> variable inside the <code>aes()</code>, and our plot comes to life!</p>
 <pre class="r"><code>gg_life &lt;- genres_by_day %&gt;%
-        ggplot(aes(x=genre, y=cumulative_frequency, fill=artist_genres, frame = doy, alpha = 0.8)) +
+        ggplot(aes(x = genre, y = cumulative_frequency, 
+                   fill = artist_genres, frame = doy, 
+                   alpha = 0.8)) +
         theme_bw() +
         theme(panel.grid = element_blank())+
         geom_bar(stat=&quot;identity&quot;,position=&quot;identity&quot;) +
