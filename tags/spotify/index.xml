@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Spotify on Coding with Data</title>
-    <link>/tags/spotify/index.xml</link>
+    <link>http://tamaszilagyi.com/tags/spotify/index.xml</link>
     <description>Recent content in Spotify on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="/tags/spotify/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tamaszilagyi.com/tags/spotify/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Analyzing My Spotify Listening History</title>
-      <link>/blog/analyzing-my-spotify-listening-history/</link>
+      <link>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</link>
       <pubDate>Sun, 02 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>/blog/analyzing-my-spotify-listening-history/</guid>
+      <guid>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</guid>
       <description>&lt;div id=&#34;a-new-endpoint&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;A new endpoint&lt;/h1&gt;
 &lt;p&gt;Following an &lt;a href=&#34;https://github.com/spotify/web-api/issues/20&#34;&gt;avalanche of &lt;em&gt;+1&lt;/em&gt; comments&lt;/a&gt; on the GitHub issue requesting access to a user’s play history, on March 1st Spotify released &lt;a href=&#34;https://developer.spotify.com/web-api/web-api-personalization-endpoints/get-recently-played/&#34;&gt;a new endpoint&lt;/a&gt; to their Web API that allows anyone with a Spotify account to pull data on his or her most recently played tracks. To access it, you need go through the &lt;a href=&#34;https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow&#34;&gt;Authorization Code Flow&lt;/a&gt;, where you get keys and tokens needed for making calls to the API. The return object contains your 50 most recently played songs enriched by some contextual data.&lt;/p&gt;
@@ -68,7 +68,7 @@ df_tracks &amp;lt;- fromJSON(&amp;quot;/data/spotify_tracks_2017-06-04.json&amp;
 &lt;li&gt;&lt;code&gt;artist_id&lt;/code&gt;: Unique identifier of the artist.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;artist_popularity&lt;/code&gt;: Score from 1 to 100 regarding the artist’s popularity.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;By joining the two dataframes we are mostly looking to enrich the original data with &lt;code&gt;artist_genre&lt;/code&gt;, a variable we’ll use for plotting later on. Similarly to artists, albums and tracks also have &lt;a href=&#34;https://developer.spotify.com/web-api/endpoint-reference/&#34;&gt;API endpoints&lt;/a&gt; containing a genre field. However, the more granual you get, the higher the prevalance of no associated genres. Nevertheless, there is quite some artists where genres is left blank.&lt;/p&gt;
+&lt;p&gt;By joining the two dataframes we are mostly looking to enrich the original data with &lt;code&gt;artist_genre&lt;/code&gt;, a variable we’ll use for plotting later on. Similarly to artists, albums and tracks also have &lt;a href=&#34;https://developer.spotify.com/web-api/endpoint-reference/&#34;&gt;API endpoints&lt;/a&gt; containing a genre field. However, the more granular you get, the higher the prevalence of no associated genres. Nevertheless, there is quite some artists where genres is left blank.&lt;/p&gt;
 &lt;p&gt;So, let’s unnest the list columns, convert &lt;code&gt;played_at&lt;/code&gt; to timestamp and merge the the dataset with &lt;strong&gt;df_arts&lt;/strong&gt;, using the key &lt;code&gt;&amp;quot;artist_id&amp;quot;&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
 library(tidyr)
@@ -132,11 +132,11 @@ plot &amp;lt;- merged %&amp;gt;%
         theme(axis.text.x = element_text(angle = 90, hjust = 1))
 plot&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Most of the songs in my top 10 have a similar pattern: The first few days after discovering them, there is a sharp increase in the number of plays. Sometimes it takes a couple of listens for me to get into a track, but usually I start obsessing over it immedeately. One obvious exception is the song &lt;em&gt;Habiba&lt;/em&gt;, the song I listened to the most. The first time I heard the song, it must have gone unnoticed. Two months later, I started playing it virtually on repeat.&lt;/p&gt;
+&lt;p&gt;Most of the songs in my top 10 have a similar pattern: The first few days after discovering them, there is a sharp increase in the number of plays. Sometimes it takes a couple of listens for me to get into a track, but usually I start obsessing over it immediately. One obvious exception is the song &lt;em&gt;Habiba&lt;/em&gt;, the song I listened to the most. The first time I heard the song, it must have gone unnoticed. Two months later, I started playing it virtually on repeat.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;listening-times&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Listening times&lt;/h1&gt;
-&lt;p&gt;Moving on, let’s look at what time of the day I listen to Spotify the most. I expect weekdays to exhibit a somewhat different pattern than weekends. We can plot separate timelines of the total number of listens per hour of the day for both weekdays and weekends. Unfortunately, there are more weekdays then weekends, so we need to normalize their respective counts to arrive at a meaningful comparison.&lt;/p&gt;
+&lt;p&gt;Moving on, let’s look at what time of the day I listen to Spotify the most. I expect weekdays to exhibit a somewhat different pattern than weekends. We can plot separate timelines of the total number of listens per hour of the day for both weekdays and weekends. Unfortunately, there are more weekdays thqn weekends, so we need to normalize their respective counts to arrive at a meaningful comparison.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(lubridate)
 
 merged %&amp;gt;% group_by(time_of_day = hour(played_at),
@@ -198,8 +198,8 @@ one_gen_per_a &amp;lt;- unnested %&amp;gt;%
 ##  9       classic rock    63
 ## 10          chillstep    62&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Again, I am interested in whether there is a pattern in the genres I listen to. More specifically, it would be cool to see how my preferences evolve over time, if at all. The axes I want to plot my data along are the cumulative frequency and recency of songs played of a given genre.&lt;/p&gt;
-&lt;p&gt;This is exactly what &lt;strong&gt;lifecycle grids&lt;/strong&gt; are made of, albeit usually used for customer segmentation. In a classical example, the more often you purchased a product, and the more recent your last puchase was, the more valuable you are as customer. I first read about these charts on &lt;a href=&#34;http://analyzecore.com/2015/02/16/customer-segmentation-lifecycle-grids-with-r/&#34;&gt;the analyzecore blog&lt;/a&gt;, which discusses these plots in more detail, including full code examples in &lt;code&gt;ggplot2&lt;/code&gt;. I highly recommend reading it if you’re interested.&lt;/p&gt;
-&lt;p&gt;Clearly, we are not concerned with customer segmentation here, but what if we substituted customers with artist genres, and purchases with listens. These charts are like snapshots: how the grid is filled depends on the moment in time it was plotted. So to add an extra layer of intution, I used the &lt;a href=&#34;https://github.com/dgrtwo/gganimate&#34;&gt;gganimate package&lt;/a&gt; to create an animated plot that follows my preferences as days go by.&lt;/p&gt;
+&lt;p&gt;This is exactly what &lt;strong&gt;lifecycle grids&lt;/strong&gt; are made of, albeit usually used for customer segmentation. In a classical example, the more often you purchased a product, and the more recent your last purchase was, the more valuable you are as customer. I first read about these charts on &lt;a href=&#34;http://analyzecore.com/2015/02/16/customer-segmentation-lifecycle-grids-with-r/&#34;&gt;the analyzecore blog&lt;/a&gt;, which discusses these plots in more detail, including full code examples in &lt;code&gt;ggplot2&lt;/code&gt;. I highly recommend reading it if you’re interested.&lt;/p&gt;
+&lt;p&gt;Clearly, we are not concerned with customer segmentation here, but what if we substituted customers with artist genres, and purchases with listens. These charts are like snapshots: how the grid is filled depends on the moment in time it was plotted. So to add an extra layer of intuition, I used the &lt;a href=&#34;https://github.com/dgrtwo/gganimate&#34;&gt;gganimate package&lt;/a&gt; to create an animated plot that follows my preferences as days go by.&lt;/p&gt;
 &lt;p&gt;To be able to generate such a plot, we need to expand our dataset to include all possible combinations of dates and genres and deal with resulting missing values appropriately:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;genres_by_day &amp;lt;- one_gen_per_a %&amp;gt;%
         # only look at top 20 genres
@@ -239,12 +239,12 @@ gganimate(gg_life)&lt;/code&gt;&lt;/pre&gt;
 &lt;img src=&#34;http://tamaszilagyi.com/img/lifecycle.gif&#34; /&gt;
 
 &lt;/div&gt;
-&lt;p&gt;More than anything, the plot makes it obvious that I cannot go on for too long without listening to my favourite genres such as &lt;code&gt;jazz blues&lt;/code&gt;, &lt;code&gt;hip hop&lt;/code&gt; and &lt;code&gt;psychedelic trance&lt;/code&gt;. My least often played genres from the top 20 on the other hand are distributed pretty evenly accross the &lt;strong&gt;recency axis&lt;/strong&gt; of my plot in the last row (containing genres with less than or equal to 50 listens).&lt;/p&gt;
+&lt;p&gt;More than anything, the plot makes it obvious that I cannot go on for too long without listening to my favourite genres such as &lt;code&gt;jazz blues&lt;/code&gt;, &lt;code&gt;hip hop&lt;/code&gt; and &lt;code&gt;psychedelic trance&lt;/code&gt;. My least often played genres from the top 20 on the other hand are distributed pretty evenly across the &lt;strong&gt;recency axis&lt;/strong&gt; of my plot in the last row (containing genres with less than or equal to 50 listens).&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;whats-left&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;What’s left?&lt;/h1&gt;
 &lt;p&gt;Clearly, there are tons of other interesting questions that could be explored using this dataset. We could for example look at how many tracks I usually listen to in one go, which songs I skipped over, how my different playlists are growing over time, which playlist or albums I listen to the most…and the list goes on.&lt;/p&gt;
-&lt;p&gt;I’ll go into more detail on my apprach to automating acquisition and cleaning of this data in a next post, but if you just cannot wait to start collecting your own Spotify listening history, I encourage you to go through &lt;a href=&#34;https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow&#34;&gt;Spotify’s authoriziation flow&lt;/a&gt; and set up a simple cronjob that pings the API &lt;em&gt;X times a day&lt;/em&gt;. The sooner you start collecting your data, the more you’ll have to play with. Eveything else can be dealt with later.&lt;/p&gt;
+&lt;p&gt;I’ll go into more detail on my approach to automating acquisition and cleaning of this data in a next post, but if you just cannot wait to start collecting your own Spotify listening history, I encourage you to go through &lt;a href=&#34;https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow&#34;&gt;Spotify’s authoriziation flow&lt;/a&gt; and set up a simple cronjob that pings the API &lt;em&gt;X times a day&lt;/em&gt;. The sooner you start collecting your data, the more you’ll have to play with. Everything else can be dealt with later.&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
