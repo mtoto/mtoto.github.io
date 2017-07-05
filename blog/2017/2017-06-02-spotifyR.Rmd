@@ -240,7 +240,7 @@ gens <- unnested %>%
         mutate(genre_count = replace(genre_count, 
                                      artist_genres=="none",
                                      0))
-# get one genre per artisst
+# get one genre per artist
 one_gen_per_a <- unnested %>% 
         left_join(gens, by = "artist_genres") %>%
         group_by(artist_name) %>%  

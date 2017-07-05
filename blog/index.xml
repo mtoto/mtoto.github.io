@@ -177,7 +177,7 @@ gens &amp;lt;- unnested %&amp;gt;%
         mutate(genre_count = replace(genre_count, 
                                      artist_genres==&amp;quot;none&amp;quot;,
                                      0))
-# get one genre per artisst
+# get one genre per artist
 one_gen_per_a &amp;lt;- unnested %&amp;gt;% 
         left_join(gens, by = &amp;quot;artist_genres&amp;quot;) %&amp;gt;%
         group_by(artist_name) %&amp;gt;%  

@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1499246270">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1499246270">
-    <link rel="stylesheet" href="../../css/main.css?t=1499246270">
+    <link rel="stylesheet" href="../../css/reset.css?t=1499248342">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1499248342">
+    <link rel="stylesheet" href="../../css/main.css?t=1499248342">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1499246270">
+        <link rel="stylesheet" href="../../css/override.css?t=1499248342">
     
 
 
@@ -311,7 +311,7 @@ gens &lt;- unnested %&gt;%
         mutate(genre_count = replace(genre_count, 
                                      artist_genres==&quot;none&quot;,
                                      0))
-# get one genre per artisst
+# get one genre per artist
 one_gen_per_a &lt;- unnested %&gt;% 
         left_join(gens, by = &quot;artist_genres&quot;) %&gt;%
         group_by(artist_name) %&gt;%  
