@@ -25,8 +25,8 @@
 &lt;p&gt;Besides my play history, I also store additional variables for every artist, album and playlist that I have listened to as separate json files. For the purpose of this post however, I’ll only focus on my listening history and additional data on artists. Let’s read the data into &lt;code&gt;R&lt;/code&gt;, using the &lt;code&gt;fromJSON()&lt;/code&gt; function from the &lt;code&gt;jsonlite&lt;/code&gt; package:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(jsonlite)
 
-df_arts &amp;lt;- fromJSON(&amp;quot;data/spotify_artist_2017-06-04.json&amp;quot;)
-df_tracks &amp;lt;- fromJSON(&amp;quot;/data/spotify_tracks_2017-06-04.json&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+df_arts &amp;lt;- fromJSON(&amp;quot;data/spotify_artist_2017-06-30.json&amp;quot;)
+df_tracks &amp;lt;- fromJSON(&amp;quot;/data/spotify_tracks_2017-06-30.json&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The most important file is &lt;strong&gt;df_tracks&lt;/strong&gt;; this is the parsed response from the &lt;strong&gt;Recently Played Tracks&lt;/strong&gt; endpoint. Let’s take a look.&lt;/p&gt;
 &lt;div id=&#34;df_tracks&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;df_tracks&lt;/h2&gt;

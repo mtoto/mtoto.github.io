@@ -42,8 +42,8 @@ Besides my play history, I also store additional variables for every artist, alb
 ```{r, eval=F}
 library(jsonlite)
 
-df_arts <- fromJSON("data/spotify_artist_2017-06-04.json")
-df_tracks <- fromJSON("/data/spotify_tracks_2017-06-04.json")
+df_arts <- fromJSON("data/spotify_artist_2017-06-30.json")
+df_tracks <- fromJSON("/data/spotify_tracks_2017-06-30.json")
 ```
 
 The most important file is **df_tracks**; this is the parsed response from the **Recently Played Tracks** endpoint. Let's take a look.

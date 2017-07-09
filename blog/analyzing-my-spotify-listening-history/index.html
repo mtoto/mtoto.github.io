@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1499251548">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1499251548">
-    <link rel="stylesheet" href="../../css/main.css?t=1499251548">
+    <link rel="stylesheet" href="../../css/reset.css?t=1499585138">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1499585138">
+    <link rel="stylesheet" href="../../css/main.css?t=1499585138">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1499251548">
+        <link rel="stylesheet" href="../../css/override.css?t=1499585138">
     
 
 
@@ -160,8 +160,8 @@
 <p>Besides my play history, I also store additional variables for every artist, album and playlist that I have listened to as separate json files. For the purpose of this post however, I’ll only focus on my listening history and additional data on artists. Let’s read the data into <code>R</code>, using the <code>fromJSON()</code> function from the <code>jsonlite</code> package:</p>
 <pre class="r"><code>library(jsonlite)
 
-df_arts &lt;- fromJSON(&quot;data/spotify_artist_2017-06-04.json&quot;)
-df_tracks &lt;- fromJSON(&quot;/data/spotify_tracks_2017-06-04.json&quot;)</code></pre>
+df_arts &lt;- fromJSON(&quot;data/spotify_artist_2017-06-30.json&quot;)
+df_tracks &lt;- fromJSON(&quot;/data/spotify_tracks_2017-06-30.json&quot;)</code></pre>
 <p>The most important file is <strong>df_tracks</strong>; this is the parsed response from the <strong>Recently Played Tracks</strong> endpoint. Let’s take a look.</p>
 <div id="df_tracks" class="section level2">
 <h2>df_tracks</h2>
