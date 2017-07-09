@@ -22,7 +22,8 @@
 &lt;/div&gt;
 &lt;div id=&#34;what-do-we-have-here&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;What do we have here&lt;/h1&gt;
-&lt;p&gt;Besides my play history, I also store additional variables for every artist, album and playlist that I have listened to as separate json files. For the purpose of this post however, I’ll only focus on my listening history and additional data on artists. Let’s read the data into &lt;code&gt;R&lt;/code&gt;, using the &lt;code&gt;fromJSON()&lt;/code&gt; function from the &lt;code&gt;jsonlite&lt;/code&gt; package:&lt;/p&gt;
+&lt;p&gt;Besides my play history, I also store additional variables for every artist, album and playlist that I have listened to as separate json files. For the purpose of this post however, I’ll only focus on my listening history and additional data on artists. You can find both files on my &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/tree/master/data&#34;&gt;Github&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Let’s read the data into &lt;code&gt;R&lt;/code&gt;, using the &lt;code&gt;fromJSON()&lt;/code&gt; function from the &lt;code&gt;jsonlite&lt;/code&gt; package:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(jsonlite)
 
 df_arts &amp;lt;- fromJSON(&amp;quot;data/spotify_artist_2017-06-30.json&amp;quot;)
