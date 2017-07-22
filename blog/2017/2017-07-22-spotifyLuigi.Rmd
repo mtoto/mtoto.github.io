@@ -173,13 +173,13 @@ class spotify_clean_aws(luigi.Task):
 
 ```
 
-The second tasks is `spotify_clean_aws`. This is where we run the `deduplicate()` function defined earlier and write the output to an AWS S3 bucket. In contrary to the first task, all three methods are present: 
+The second tasks is `spotify_clean_aws`. This is where we run the `deduplicate()` function defined earlier and write the output to an [AWS S3](https://aws.amazon.com/s3/)  bucket. In contrary to the first task, all three methods are present: 
 
 **Require** that the raw json file exists, and also `clone()` the parameters from the first task. This way the same date parameter will be passed to both tasks.
 
 **Run** the function `deduplicate()` on the input file and save the result as a .json.
 
-**Output**  the result of the task to S3. Luigi has built-in support for [AWS S3](https://aws.amazon.com/s3/) that uses [boto3](https://boto3.readthedocs.io/en/latest/) under the hood. To connect, we need to have AWS credentials. They usually reside under `~/.aws/credentials`, if you have run `aws configure` in the Terminal before:
+**Output**  the result of the task to S3. Luigi has built-in support for AWS S3 that uses [boto3](https://boto3.readthedocs.io/en/latest/) under the hood. To connect, we need to have AWS credentials. They usually reside under `~/.aws/credentials`, if you have run `aws configure` in the Terminal before:
 
 ```{bash, eval = F}
 [default]
