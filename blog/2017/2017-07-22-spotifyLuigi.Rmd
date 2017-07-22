@@ -173,7 +173,7 @@ class spotify_clean_aws(luigi.Task):
 
 ```
 
-The second tasks is `spotify_clean_aws`.This is where we run the `deduplicate()` function defined earlier and write the output to an AWS S3 bucket. In contrary to the first task, all three methods are present: 
+The second tasks is `spotify_clean_aws`. This is where we run the `deduplicate()` function defined earlier and write the output to an AWS S3 bucket. In contrary to the first task, all three methods are present: 
 
 **Require** that the raw json file exists, and also `clone()` the parameters from the first task. This way the same date parameter will be passed to both tasks.
 
