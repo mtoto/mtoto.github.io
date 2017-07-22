@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1500734783">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1500734783">
-    <link rel="stylesheet" href="../../css/main.css?t=1500734783">
+    <link rel="stylesheet" href="../../css/reset.css?t=1500734888">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1500734888">
+    <link rel="stylesheet" href="../../css/main.css?t=1500734888">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1500734783">
+        <link rel="stylesheet" href="../../css/override.css?t=1500734888">
     
 
 
@@ -293,7 +293,7 @@ class spotify_clean_aws(luigi.Task):
                         self.date.strftime(&#39;%Y-%m-%d&#39;), 
                         client=client)
 </code></pre>
-<p>The second tasks is <code>spotify_clean_aws</code>.This is where we run the <code>deduplicate()</code> function defined earlier and write the output to an AWS S3 bucket. In contrary to the first task, all three methods are present:</p>
+<p>The second tasks is <code>spotify_clean_aws</code>. This is where we run the <code>deduplicate()</code> function defined earlier and write the output to an AWS S3 bucket. In contrary to the first task, all three methods are present:</p>
 <p><strong>Require</strong> that the raw json file exists, and also <code>clone()</code> the parameters from the first task. This way the same date parameter will be passed to both tasks.</p>
 <p><strong>Run</strong> the function <code>deduplicate()</code> on the input file and save the result as a .json.</p>
 <p><strong>Output</strong> the result of the task to S3. Luigi has built-in support for <a href="https://aws.amazon.com/s3/">AWS S3</a> that uses <a href="https://boto3.readthedocs.io/en/latest/">boto3</a> under the hood. To connect, we need to have AWS credentials. They usually reside under <code>~/.aws/credentials</code>, if you have run <code>aws configure</code> in the Terminal before:</p>
