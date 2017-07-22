@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Luigi on Coding with Data</title>
-    <link>/tags/luigi/index.xml</link>
+    <link>http://tamaszilagyi.com/tags/luigi/index.xml</link>
     <description>Recent content in Luigi on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="/tags/luigi/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tamaszilagyi.com/tags/luigi/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Creating a Spotify Playlist using Luigi</title>
-      <link>/blog/creating-a-spotify-playlist-using-luigi/</link>
+      <link>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>/blog/creating-a-spotify-playlist-using-luigi/</guid>
+      <guid>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</guid>
       <description>&lt;!-- BLOGDOWN-HEAD --&gt;
 &lt;!-- /BLOGDOWN-HEAD --&gt;
 
@@ -158,7 +158,7 @@ class spotify_clean_aws(luigi.Task):
                         self.date.strftime(&amp;#39;%Y-%m-%d&amp;#39;), 
                         client=client)
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The second tasks &lt;code&gt;spotify_clean_aws&lt;/code&gt;, is where we run the &lt;code&gt;deduplicate()&lt;/code&gt; function we defined earlier and write the output to an AWS S3 bucket. In contrary to the first task, all three methods are present:&lt;/p&gt;
+&lt;p&gt;The second tasks is &lt;code&gt;spotify_clean_aws&lt;/code&gt;.This is where we run the &lt;code&gt;deduplicate()&lt;/code&gt; function defined earlier and write the output to an AWS S3 bucket. In contrary to the first task, all three methods are present:&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Require&lt;/strong&gt; that the raw json file exists, and also &lt;code&gt;clone()&lt;/code&gt; the parameters from the first task. This way the same date parameter will be passed to both tasks.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Run&lt;/strong&gt; the function &lt;code&gt;deduplicate()&lt;/code&gt; on the input file and save the result as a .json.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Output&lt;/strong&gt; the result of the task to S3. Luigi has built-in support for &lt;a href=&#34;https://aws.amazon.com/s3/&#34;&gt;AWS S3&lt;/a&gt; that uses &lt;a href=&#34;https://boto3.readthedocs.io/en/latest/&#34;&gt;boto3&lt;/a&gt; under the hood. To connect, we need to have AWS credentials. They usually reside under &lt;code&gt;~/.aws/credentials&lt;/code&gt;, if you have run &lt;code&gt;aws configure&lt;/code&gt; in the Terminal before:&lt;/p&gt;
