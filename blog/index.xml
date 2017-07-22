@@ -41,7 +41,7 @@ pre code, pre, code {
 &lt;h1&gt;The pipeline&lt;/h1&gt;
 &lt;p&gt;We can break down the pipeline into four tasks.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;../Users/tamas/Documents/my_site/data/luigi2.png&#34; /&gt;
+&lt;img src=&#34;http://tamaszilagyi.com/img/luigi2.png&#34; /&gt;
 
 &lt;/div&gt;
 &lt;div id=&#34;cronjob-to-ping-the-api&#34; class=&#34;section level2&#34;&gt;
@@ -180,7 +180,7 @@ aws_secret_access_key = YOUR_SECRET_KEY &lt;/code&gt;&lt;/pre&gt;
  &amp;quot;uri&amp;quot;: &amp;quot;spotify:track:0ZN01wuIdn4iT8VBggkOMm&amp;quot;, 
  &amp;quot;artist_name&amp;quot;: [&amp;quot;Ludwig van Beethoven&amp;quot;], 
  &amp;quot;track_id&amp;quot;: &amp;quot;0ZN01wuIdn4iT8VBggkOMm&amp;quot;}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You can still find all the code for &lt;code&gt;parse_json()&lt;/code&gt; function (and all the others) on my Github. (ADD LINK)&lt;/p&gt;
+&lt;p&gt;You can still find all the code for &lt;code&gt;parse_json()&lt;/code&gt; function (and all the others) on my &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/tree/master/data/2017-07-22-spotifyLuigi&#34;&gt;Github&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Secondly, we’ll merge a week worth of data and store the intermediate result on S3. With these ingredients, we define our third Luigi Task: &lt;code&gt;spotify_merge_weekly_aws&lt;/code&gt; :&lt;/p&gt;
 &lt;pre class=&#34;python&#34;&gt;&lt;code&gt;# Task that merges the 7 daily datasets, 
 # parses relevant fields, deduplicates records
@@ -281,11 +281,7 @@ class spotify_morning_playlist(luigi.Task):
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;I have put all of the tasks in a file named &lt;code&gt;tasks.py&lt;/code&gt;. Luigi does not provide a scheduling mechanism out of the box, so we’ll trigger the tasks from crontab instead. For example every Monday at 7AM:&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;0 7 * * 1 /usr/bin/python /spotify/tasks.py spotify_morning_playlist&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Note that we should have the &lt;a href=&#34;http://luigi.readthedocs.io/en/stable/central_scheduler.html&#34;&gt;Central Scheduler&lt;/a&gt; running in the background for the above to execute. The neat thing is that we only need to trigger the last task, and then Luigi considers all the dependencies and runs them if needed (ie. if the target file does not exists). Additionally, Luigi has a real nice GUI running on &lt;code&gt;localhost:8082&lt;/code&gt;, where we can visualise the complete dependency graph and monitor the progress of our tasks:&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;../Users/tamas/Documents/my_site/data/dag.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;Note that we should have the &lt;a href=&#34;http://luigi.readthedocs.io/en/stable/central_scheduler.html&#34;&gt;Central Scheduler&lt;/a&gt; running in the background for the above to execute. The neat thing is that we only need to trigger the last task, and then Luigi considers all the dependencies and runs them if needed (ie. if the target file does not exists). Additionally, Luigi has a real nice GUI running on &lt;code&gt;localhost:8082&lt;/code&gt;, where we can visualise the complete dependency graph and monitor the progress of our tasks: &lt;img src=&#34;http://tamaszilagyi.com/img/dag.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;If nothing fails, the tracks in the below playlist get updated every Monday morning:&lt;/p&gt;
 &lt;iframe src=&#34;https://open.spotify.com/embed/user/1170891844/playlist/6a2QBfOgCqFQLN08FUxpj3&#34; width=&#34;300&#34; height=&#34;380&#34; frameborder=&#34;0&#34; allowtransparency=&#34;true&#34;&gt;&lt;/iframe&gt;
 &lt;/div&gt;
@@ -321,7 +317,7 @@ pre code, pre, code {
 &lt;/div&gt;
 &lt;div id=&#34;what-do-we-have-here&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;What do we have here&lt;/h1&gt;
-&lt;p&gt;Besides my play history, I also store additional variables for every artist, album and playlist that I have listened to as separate json files. For the purpose of this post however, I’ll only focus on my listening history and additional data on artists. You can find both files on my &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/tree/master/data&#34;&gt;Github&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Besides my play history, I also store additional variables for every artist, album and playlist that I have listened to as separate json files. For the purpose of this post however, I’ll only focus on my listening history and additional data on artists. You can find both files on my &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/tree/master/data/2017-06-02-spotifyR&#34;&gt;Github&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Let’s read the data into &lt;code&gt;R&lt;/code&gt;, using the &lt;code&gt;fromJSON()&lt;/code&gt; function from the &lt;code&gt;jsonlite&lt;/code&gt; package:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(jsonlite)
 

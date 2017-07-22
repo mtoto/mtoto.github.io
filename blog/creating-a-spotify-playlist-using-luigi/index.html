@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1500722913">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1500722913">
-    <link rel="stylesheet" href="../../css/main.css?t=1500722913">
+    <link rel="stylesheet" href="../../css/reset.css?t=1500723288">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1500723288">
+    <link rel="stylesheet" href="../../css/main.css?t=1500723288">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1500722913">
+        <link rel="stylesheet" href="../../css/override.css?t=1500723288">
     
 
 
@@ -175,7 +175,7 @@ pre code, pre, code {
 <h1>The pipeline</h1>
 <p>We can break down the pipeline into four tasks.</p>
 <div class="figure">
-<img src="../../Users/tamas/Documents/my_site/data/luigi2.png" />
+<img src="http://tamaszilagyi.com/img/luigi2.png" />
 
 </div>
 <div id="cronjob-to-ping-the-api" class="section level2">
@@ -314,7 +314,7 @@ aws_secret_access_key = YOUR_SECRET_KEY </code></pre>
  &quot;uri&quot;: &quot;spotify:track:0ZN01wuIdn4iT8VBggkOMm&quot;, 
  &quot;artist_name&quot;: [&quot;Ludwig van Beethoven&quot;], 
  &quot;track_id&quot;: &quot;0ZN01wuIdn4iT8VBggkOMm&quot;}</code></pre>
-<p>You can still find all the code for <code>parse_json()</code> function (and all the others) on my Github. (ADD LINK)</p>
+<p>You can still find all the code for <code>parse_json()</code> function (and all the others) on my <a href="https://github.com/mtoto/mtoto.github.io/tree/master/data/2017-07-22-spotifyLuigi">Github</a>.</p>
 <p>Secondly, we’ll merge a week worth of data and store the intermediate result on S3. With these ingredients, we define our third Luigi Task: <code>spotify_merge_weekly_aws</code> :</p>
 <pre class="python"><code># Task that merges the 7 daily datasets, 
 # parses relevant fields, deduplicates records
@@ -415,11 +415,7 @@ class spotify_morning_playlist(luigi.Task):
 </code></pre>
 <p>I have put all of the tasks in a file named <code>tasks.py</code>. Luigi does not provide a scheduling mechanism out of the box, so we’ll trigger the tasks from crontab instead. For example every Monday at 7AM:</p>
 <pre class="bash"><code>0 7 * * 1 /usr/bin/python /spotify/tasks.py spotify_morning_playlist</code></pre>
-<p>Note that we should have the <a href="http://luigi.readthedocs.io/en/stable/central_scheduler.html">Central Scheduler</a> running in the background for the above to execute. The neat thing is that we only need to trigger the last task, and then Luigi considers all the dependencies and runs them if needed (ie. if the target file does not exists). Additionally, Luigi has a real nice GUI running on <code>localhost:8082</code>, where we can visualise the complete dependency graph and monitor the progress of our tasks:</p>
-<div class="figure">
-<img src="../../Users/tamas/Documents/my_site/data/dag.png" />
-
-</div>
+<p>Note that we should have the <a href="http://luigi.readthedocs.io/en/stable/central_scheduler.html">Central Scheduler</a> running in the background for the above to execute. The neat thing is that we only need to trigger the last task, and then Luigi considers all the dependencies and runs them if needed (ie. if the target file does not exists). Additionally, Luigi has a real nice GUI running on <code>localhost:8082</code>, where we can visualise the complete dependency graph and monitor the progress of our tasks: <img src="http://tamaszilagyi.com/img/dag.png" /></p>
 <p>If nothing fails, the tracks in the below playlist get updated every Monday morning:</p>
 <iframe src="https://open.spotify.com/embed/user/1170891844/playlist/6a2QBfOgCqFQLN08FUxpj3" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
 </div>

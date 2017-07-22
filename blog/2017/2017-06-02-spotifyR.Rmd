@@ -46,7 +46,7 @@ Being an avid Spotify user, I figured I could use my recently purchased [Raspber
 How I set up a data pipeline that pings the API, parses the response and stores it as .json file, will be the subject of a follow-up post. Here, I will instead focus on exploring certain aspects of the data I thus far collected, using `R`. 
 
 # What do we have here
-Besides my play history, I also store additional variables for every artist, album and playlist that I have listened to as separate json files. For the purpose of this post however, I'll only focus on my listening history and additional data on artists. You can find both files on my [Github](https://github.com/mtoto/mtoto.github.io/tree/master/data). 
+Besides my play history, I also store additional variables for every artist, album and playlist that I have listened to as separate json files. For the purpose of this post however, I'll only focus on my listening history and additional data on artists. You can find both files on my [Github](https://github.com/mtoto/mtoto.github.io/tree/master/data/2017-06-02-spotifyR). 
 
 Let's read the data into `R`, using the `fromJSON()` function from the `jsonlite` package:
 

@@ -27,7 +27,8 @@ Designed for massive jobs, implementing Luigi on top of tiny little `.json` file
 # The pipeline
 We can break down the pipeline into four tasks. 
 
-![](/Users/tamas/Documents/my_site/data/luigi2.png)
+![](http://tamaszilagyi.com/img/luigi2.png)
+
 
 ## 1. Cronjob to ping the API
 The initial step is to ping the API, and store the raw response as a `.json` file locally. We need to have the `client_id`, `client_secret` and a `refresh_token` to generate a temporary access token. Follow the [Web API tutorial by Spotify](https://developer.spotify.com/web-api/tutorial/) to attain them. In turn, the access token is required to make calls to the API. 
@@ -204,7 +205,7 @@ With the data deduplicated and safely stored in the cloud, we can now parse the 
  "track_id": "0ZN01wuIdn4iT8VBggkOMm"}
 ```
 
-You can still find all the code for `parse_json()` function (and all the others) on my Github. (ADD LINK)
+You can still find all the code for `parse_json()` function (and all the others) on my [Github](https://github.com/mtoto/mtoto.github.io/tree/master/data/2017-07-22-spotifyLuigi). 
 
 Secondly, we'll merge a week worth of data and store the intermediate result on S3. With these ingredients, we define our third Luigi Task: `spotify_merge_weekly_aws` :
 
@@ -322,8 +323,7 @@ I have put all of the tasks in a file named `tasks.py`. Luigi does not provide a
 ```
 
 Note that we should have the [Central Scheduler](http://luigi.readthedocs.io/en/stable/central_scheduler.html) running in the background for the above to execute. The neat thing is that we only need to trigger the last task, and then Luigi considers all the dependencies and runs them if needed (ie. if the target file does not exists). Additionally, Luigi has a real nice GUI running on `localhost:8082`, where we can visualise the complete dependency graph and monitor the progress of our tasks:
-
-![](/Users/tamas/Documents/my_site/data/dag.png)
+![](http://tamaszilagyi.com/img/dag.png)
 
 If nothing fails, the tracks in the below playlist get updated every Monday morning:
 
