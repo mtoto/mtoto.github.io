@@ -2,19 +2,317 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Spotify on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/spotify/index.xml</link>
+    <link>/tags/spotify/index.xml</link>
     <description>Recent content in Spotify on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://tamaszilagyi.com/tags/spotify/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/spotify/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Creating a Spotify Playlist using Luigi</title>
+      <link>/blog/creating-a-spotify-playlist-using-luigi/</link>
+      <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
+      
+      <guid>/blog/creating-a-spotify-playlist-using-luigi/</guid>
+      <description>&lt;!-- BLOGDOWN-HEAD --&gt;
+&lt;!-- /BLOGDOWN-HEAD --&gt;
+
+&lt;!-- BLOGDOWN-BODY-BEFORE --&gt;
+&lt;!-- /BLOGDOWN-BODY-BEFORE --&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+&lt;/style&gt;
+&lt;div id=&#34;intro&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Intro&lt;/h1&gt;
+&lt;p&gt;In the &lt;a href=&#34;http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/&#34;&gt;previous post&lt;/a&gt;, I shared an analysis of my Spotify listening history using R. In this post, I will discuss what came before having the data: collecting, cleaning and saving it. As the title suggest, we will even go a step further and automate the creation of a weekly top 10 playlist in Spotify using the very same dataset.&lt;/p&gt;
+&lt;p&gt;The main building block will be Luigi, a Python framework for workflow management Spotify open-sourced a couple of years ago. According to &lt;a href=&#34;http://luigi.readthedocs.io/en/stable/index.html&#34;&gt;docs&lt;/a&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The purpose of Luigi is to address all the plumbing typically associated with long-running batch processes. You want to chain many tasks, automate them, and failures will happen. These tasks can be anything, but are typically long running things like Hadoop jobs, dumping data to/from databases, running machine learning algorithms, or anything else.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Designed for massive jobs, implementing Luigi on top of tiny little &lt;code&gt;.json&lt;/code&gt; files might seem like a huge overkill, but the logic we will define won’t considerably differ from larger scale applications.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-pipeline&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;The pipeline&lt;/h1&gt;
+&lt;p&gt;We can break down the pipeline into four tasks.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;../../Users/tamas/Documents/my_site/data/luigi2.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;div id=&#34;cronjob-to-ping-the-api&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;1. Cronjob to ping the API&lt;/h2&gt;
+&lt;p&gt;The initial step is to ping the API, and store the raw response as a &lt;code&gt;.json&lt;/code&gt; file locally. We need to have the &lt;code&gt;client_id&lt;/code&gt;, &lt;code&gt;client_secret&lt;/code&gt; and a &lt;code&gt;refresh_token&lt;/code&gt; to generate a temporary access token. Follow the &lt;a href=&#34;https://developer.spotify.com/web-api/tutorial/&#34;&gt;Web API tutorial by Spotify&lt;/a&gt; to attain them. In turn, the access token is required to make calls to the API.&lt;/p&gt;
+&lt;p&gt;We start with two functions: One to generate the &lt;code&gt;access_token&lt;/code&gt; using our credentials (I have them inside &lt;code&gt;spotify_creds&lt;/code&gt;), and a second one to download our listening history, dumping the data in a new &lt;code&gt;.json&lt;/code&gt; file every day. To make sure that the access token doesn’t expire, we’ll generate a new one with every call to the API.&lt;/p&gt;
+&lt;p&gt;I will store functions inside &lt;code&gt;functions.py&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;python&#34;&gt;&lt;code&gt;import requests
+import json
+import datetime
+from spotify_creds import *
+
+# Get access token
+def access_token():
+    
+    body_params = {&amp;#39;grant_type&amp;#39; : &amp;#39;refresh_token&amp;#39;,
+                &amp;#39;refresh_token&amp;#39; : refresh_token}
+
+    url = &amp;#39;https://accounts.spotify.com/api/token&amp;#39;
+    response = requests.post(url, 
+                             data = body_params, 
+                             auth = (client_id, client_secret))
+    
+    response_dict = json.loads(response.content)
+    accessToken = response_dict.get(&amp;#39;access_token&amp;#39;)
+
+    return accessToken
+    
+# Get most recent songs and append the response
+# to a new json file every day
+def download_data():
+
+    current_time = datetime.datetime.now().strftime(&amp;#39;%Y-%m-%d&amp;#39;)
+    filename = &amp;#39;/spotify/json/spotify_tracks_%s.json&amp;#39; % current_time
+    
+    accesToken = access_token()
+    headers = {&amp;#39;Authorization&amp;#39;: &amp;#39;Bearer &amp;#39; + accesToken }
+    payload = {&amp;#39;limit&amp;#39;: 50}
+
+    url = &amp;#39;https://api.spotify.com/v1/me/player/recently-played&amp;#39;
+    response = requests.get(url, headers = headers,
+                            params = payload)
+    data = response.json()
+
+    with open(filename, &amp;#39;a&amp;#39;) as f:
+        json.dump(data[&amp;#39;items&amp;#39;], f)
+        f.write(&amp;#39;\n&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, to make sure that I don’t miss any songs I have listened to, I will set up a cronjob to execute &lt;code&gt;download_data()&lt;/code&gt; (that’s what &lt;code&gt;logger.py&lt;/code&gt; contains) every three hours. We first make this file executable&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;chmod +x /spotify/logger.py&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;open crontab,&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;crontab -e&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and add the following line to our list of cronjobs:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;0 */3 * * * /usr/bin/python /spotify/logger.py&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The part with the numbers and &lt;code&gt;*&lt;/code&gt;’s gives the scheduling logic. The second bit is the Python environment from which to call the script. If you prefer self-contained environments instead, then this will look something like &lt;code&gt;/home/pi/miniconda/envs/name_of_env/bin/python&lt;/code&gt; on a Raspberry Pi using &lt;a href=&#34;https://conda.io/miniconda.html&#34;&gt;miniconda&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;deduplicate-and-save-to-s3&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;2. Deduplicate and save to S3&lt;/h2&gt;
+&lt;p&gt;With raw data coming in, the next step is to store the result somewhere more robust than the SD card inside my Pi. Because we are pinging the API every three hours, we have files that contain 8 dictionaries of the last 50 tracks. Unless I listen to Spotify non-stop all day every day, there is going to be lots of redundancy because of duplicate records.&lt;/p&gt;
+&lt;p&gt;The function &lt;code&gt;deduplicate()&lt;/code&gt; takes &lt;code&gt;.json&lt;/code&gt; file we created above, and returns the deduplicated list of dictionaries containing only unique items according to the key &lt;code&gt;played_at&lt;/code&gt;, which is the timestamp of each song played.&lt;/p&gt;
+&lt;pre class=&#34;python&#34;&gt;&lt;code&gt;# Cleaner function to get rid of redundancy
+def deduplicate(file):
+    result =[]
+    
+    for line in file:
+        data = json.loads(line)
+        result.extend(data)
+    
+    result = {i[&amp;#39;played_at&amp;#39;]:i for i in result}.values()
+    return result&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;From this point onwards, we are going to switch to using &lt;strong&gt;Luigi&lt;/strong&gt;. The main building block is a Task, which &lt;em&gt;usually&lt;/em&gt; consists of three methods:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;code&gt;requires()&lt;/code&gt;: What other task the current one depends on.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;run()&lt;/code&gt;: What is our tasks going to do, usually some function.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;output()&lt;/code&gt;: Where will the result be stored.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;In turn, &lt;code&gt;output()&lt;/code&gt; will end up in the &lt;code&gt;require()&lt;/code&gt; method of a consecutive task. This builds a dependency graph between tasks. Let’s jump right in, and look at how we apply this logic:&lt;/p&gt;
+&lt;pre class=&#34;python&#34;&gt;&lt;code&gt;import luigi
+from datetime import date, timedelta
+from functions import *
+
+# External task at the bottom of our dependancy graph,
+# only looks to see if output of cronjob exists,
+# by default from yesterday.
+class local_raw_json(luigi.ExternalTask):
+    date = luigi.DateParameter(default = date.today()-timedelta(1)) 
+
+    def output(self):
+        return luigi.LocalTarget(&amp;#39;spotify/json/spotify_tracks_%s.json&amp;#39; % 
+                                 self.date.strftime(&amp;#39;%Y-%m-%d&amp;#39;))
+        &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The first task &lt;code&gt;local_raw_json()&lt;/code&gt; is an &lt;strong&gt;External Task&lt;/strong&gt; with only an &lt;code&gt;output()&lt;/code&gt; method. This task does not run anything and does not depend on anything. It simply confirms the existence of a file, namely the output from our cronjob. Luigi allows for parameterization of tasks, so we define a &lt;code&gt;date&lt;/code&gt; parameter with the default value yesterday. We pass this to the &lt;code&gt;output()&lt;/code&gt; method to look for the file with the correct date.&lt;/p&gt;
+&lt;p&gt;External tasks with no dependencies are common first steps, especially if we are relying on an external datadump somewhere else.&lt;/p&gt;
+&lt;pre class=&#34;python&#34;&gt;&lt;code&gt;import json
+from luigi.s3 import S3Target, S3Client
+
+# Task that runs our deduplicate() on local file 
+# and writes the output to S3 bucket.
+class spotify_clean_aws(luigi.Task):
+    date = luigi.DateParameter(default = date.today()-timedelta(1)) 
+    
+    def requires(self):
+        return self.clone(local_raw_json)
+        
+    def run(self):   
+        with self.input().open(&amp;#39;r&amp;#39;) as in_file:
+            data = deduplicate(in_file)
+            
+        with self.output().open(&amp;#39;w&amp;#39;) as out_file:
+            json.dump(data, out_file)
+
+    def output(self):
+        client = S3Client(host = &amp;#39;s3.us-east-2.amazonaws.com&amp;#39;)
+        return S3Target(&amp;#39;s3://myspotifydata/spotify_tracks_%s.json&amp;#39; % 
+                        self.date.strftime(&amp;#39;%Y-%m-%d&amp;#39;), 
+                        client=client)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The second tasks &lt;code&gt;spotify_clean_aws&lt;/code&gt;, is where we run the &lt;code&gt;deduplicate()&lt;/code&gt; function we defined earlier and write the output to an AWS S3 bucket. In contrary to the first task, all three methods are present:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Require&lt;/strong&gt; that the raw json file exists, and also &lt;code&gt;clone()&lt;/code&gt; the parameters from the first task. This way the same date parameter will be passed to both tasks.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Run&lt;/strong&gt; the function &lt;code&gt;deduplicate()&lt;/code&gt; on the input file and save the result as a .json.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Output&lt;/strong&gt; the result of the task to S3. Luigi has built-in support for &lt;a href=&#34;https://aws.amazon.com/s3/&#34;&gt;AWS S3&lt;/a&gt; that uses &lt;a href=&#34;https://boto3.readthedocs.io/en/latest/&#34;&gt;boto3&lt;/a&gt; under the hood. To connect, we need to have AWS credentials. They usually reside under &lt;code&gt;~/.aws/credentials&lt;/code&gt;, if you have run &lt;code&gt;aws configure&lt;/code&gt; in the Terminal before:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;[default]
+aws_access_key_id = YOUR_ACCESS_KEY
+aws_secret_access_key = YOUR_SECRET_KEY &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It is also possible to pass them explicitly to &lt;code&gt;S3Client()&lt;/code&gt; however.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;get-relevant-fields-and-create-weekly-dataset&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;3. Get relevant fields and create weekly dataset&lt;/h2&gt;
+&lt;p&gt;With the data deduplicated and safely stored in the cloud, we can now parse the files, selecting a handful of fields from the &lt;a href=&#34;https://developer.spotify.com/web-api/web-api-personalization-endpoints/get-recently-played/&#34;&gt;response&lt;/a&gt;. Because nobody ever gets excited about ETL code, I will omit the contents of &lt;code&gt;parse_json()&lt;/code&gt; here. It is suffice to say that we get a more compact result than what I used in the previous post. An example record from the resulting dictionary will look like this:&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;{&amp;quot;played_at&amp;quot;: &amp;quot;2017-04-22T18:49:54.108Z&amp;quot;, 
+ &amp;quot;track_name&amp;quot;: &amp;quot;Symphony No. 5 In C Minor Part 1&amp;quot;, 
+ &amp;quot;duration_ms&amp;quot;: 485293, 
+ &amp;quot;type&amp;quot;: &amp;quot;track&amp;quot;, 
+ &amp;quot;artist_id&amp;quot;: [&amp;quot;2wOqMjp9TyABvtHdOSOTUS&amp;quot;], 
+ &amp;quot;explicit&amp;quot;: false, 
+ &amp;quot;uri&amp;quot;: &amp;quot;spotify:track:0ZN01wuIdn4iT8VBggkOMm&amp;quot;, 
+ &amp;quot;artist_name&amp;quot;: [&amp;quot;Ludwig van Beethoven&amp;quot;], 
+ &amp;quot;track_id&amp;quot;: &amp;quot;0ZN01wuIdn4iT8VBggkOMm&amp;quot;}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can still find all the code for &lt;code&gt;parse_json()&lt;/code&gt; function (and all the others) on my Github. (ADD LINK)&lt;/p&gt;
+&lt;p&gt;Secondly, we’ll merge a week worth of data and store the intermediate result on S3. With these ingredients, we define our third Luigi Task: &lt;code&gt;spotify_merge_weekly_aws&lt;/code&gt; :&lt;/p&gt;
+&lt;pre class=&#34;python&#34;&gt;&lt;code&gt;# Task that merges the 7 daily datasets, 
+# parses relevant fields, deduplicates records
+# and stores the result in S3.
+class spotify_merge_weekly_aws(luigi.Task):
+    date = luigi.DateParameter(default = (date.today()-timedelta(8)))
+    daterange = luigi.IntParameter(7)
+
+    def requires(self):
+        # take data from the 7 days following date param (8 days prior to current date by default)
+        return [spotify_clean_aws(i) for i in [self.date + timedelta(x) for x in range(self.daterange)]]
+     
+    def run(self):
+        results = []
+        for file in self.input():
+            
+            with file.open(&amp;#39;r&amp;#39;) as in_file:
+                data = json.load(in_file)
+                parsed = parse_json(data)
+                
+            results.extend(parsed)
+        # merging of daily data creates dupe records still
+        result = {v[&amp;#39;played_at&amp;#39;]:v for v in results}.values()
+        
+        with self.output().open(&amp;#39;w&amp;#39;) as out_file:
+            json.dump(result, out_file)
+            
+    def output(self):
+        client = S3Client(host = &amp;#39;s3.us-east-2.amazonaws.com&amp;#39;)
+        return S3Target(&amp;#39;s3://myspotifydata/spotify_week_%s.json&amp;#39; % 
+                        (self.date.strftime(&amp;#39;%Y-%m-%d&amp;#39;) + &amp;#39;_&amp;#39; + str(self.daterange)), 
+                         client=client)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;create-playlist&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;4. Create playlist&lt;/h2&gt;
+&lt;p&gt;As a last step, we aggregate the weekly data and fill up our playlist on Spotify. These are the last two functions we need to define. Not to complicate things too much, I am simply going to create a top 10 of &lt;em&gt;my most listened to tracks between 7am and 12pm&lt;/em&gt;. Sort of a morning playlist.&lt;/p&gt;
+&lt;pre class=&#34;python&#34;&gt;&lt;code&gt;# This function takes a list of track uri&amp;#39;s 
+# to replace songs in my morning playlist
+# and returns the status code of the put request.
+def replace_tracks(tracks):
+    
+    url = &amp;#39;https://api.spotify.com/v1/users/1170891844/playlists/6a2QBfOgCqFQLN08FUxpj3/tracks&amp;#39;
+    accesToken = access_token()
+    headers = {&amp;#39;Authorization&amp;#39;: &amp;#39;Bearer &amp;#39; + accesToken,
+               &amp;#39;Content-Type&amp;#39;:&amp;#39;application/json&amp;#39;}
+    data = {&amp;quot;uris&amp;quot;: &amp;#39;,&amp;#39;.join(tracks)}
+
+    response = requests.put(url, headers = headers,
+                            params = data)
+                            
+    return response.status_code
+                            
+# This function reads in the weekly dataset 
+# as a pandas dataframe, outputs the list of 
+# top ten tracks and feeds them to replace_tracks()
+def create_playlist(dataset, date):
+    
+    data = pd.read_json(dataset)          
+    data[&amp;#39;played_at&amp;#39;] = pd.to_datetime(data[&amp;#39;played_at&amp;#39;])
+    
+    data = data.set_index(&amp;#39;played_at&amp;#39;) \
+               .between_time(&amp;#39;7:00&amp;#39;,&amp;#39;12:00&amp;#39;)
+        
+    data = data[data.index &amp;gt; str(date)]
+    # aggregate data
+    songs = data[&amp;#39;uri&amp;#39;].value_counts()\
+                       .nlargest(10) \
+                       .index \
+                       .get_values() \
+                       .tolist()
+    # make api call
+    res_code = replace_tracks(songs)
+    
+    return res_code&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we wrap the above inside our last Luigi Task, &lt;code&gt;spotify_morning_playlist&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;python&#34;&gt;&lt;code&gt;# Task to aggregate weekly data and create playlist
+class spotify_morning_playlist(luigi.Task):
+    date = luigi.DateParameter(default = (date.today()-timedelta(8)))
+    daterange = luigi.IntParameter(7)
+
+    def requires(self):
+        return self.clone(spotify_merge_weekly_aws)
+    
+    def run(self):
+        
+        with self.input().open(&amp;#39;r&amp;#39;) as in_file:
+            res_code = create_playlist(in_file, self.date)      
+        # write to file if succesful
+        if (res_code == 201):
+            with self.output().open(&amp;#39;w&amp;#39;) as out_file:
+                json.dump(res_code, out_file)
+    
+    def output(self):
+        client = S3Client(host = &amp;#39;s3.us-east-2.amazonaws.com&amp;#39;)
+        return S3Target(&amp;#39;s3://myspotifydata/spotify_top10_%s.json&amp;#39; % 
+                        (self.date.strftime(&amp;#39;%Y-%m-%d&amp;#39;) + &amp;#39;_&amp;#39; + str(self.daterange)), 
+                        client=client)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I have put all of the tasks in a file named &lt;code&gt;tasks.py&lt;/code&gt;. Luigi does not provide a scheduling mechanism out of the box, so we’ll trigger the tasks from crontab instead. For example every Monday at 7AM:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;0 7 * * 1 /usr/bin/python /spotify/tasks.py spotify_morning_playlist&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that we should have the &lt;a href=&#34;http://luigi.readthedocs.io/en/stable/central_scheduler.html&#34;&gt;Central Scheduler&lt;/a&gt; running in the background for the above to execute. The neat thing is that we only need to trigger the last task, and then Luigi considers all the dependencies and runs them if needed (ie. if the target file does not exists). Additionally, Luigi has a real nice GUI running on &lt;code&gt;localhost:8082&lt;/code&gt;, where we can visualise the complete dependency graph and monitor the progress of our tasks:&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;../../Users/tamas/Documents/my_site/data/dag.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;p&gt;If nothing fails, the tracks in the below playlist get updated every Monday morning:&lt;/p&gt;
+&lt;iframe src=&#34;https://open.spotify.com/embed/user/1170891844/playlist/6a2QBfOgCqFQLN08FUxpj3&#34; width=&#34;300&#34; height=&#34;380&#34; frameborder=&#34;0&#34; allowtransparency=&#34;true&#34;&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;div id=&#34;final-thoughts&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Final thoughts&lt;/h2&gt;
+&lt;p&gt;I have tried to give a simple, yet fully reproducible example of how to set up a workflow using Luigi. It is important to note that building data pipelines for production systems does require a little more effort. To name a few shortcomings of the above: We haven’t defined logging, we didn’t clean up our original files containing the raw response data, and it is very likely that the same tracks will end up in this playlist on consecutive weeks. Not something you would want to happen to your Discover Weekly for example.&lt;/p&gt;
+&lt;p&gt;If you are want to learn more about Luigi, I encourage you to read the &lt;a href=&#34;ttp://luigi.readthedocs.io/en/stable/index.html&#34;&gt;documentation&lt;/a&gt; and most of all start experimenting on personal projects. I find that is always the best way to learn new skills.&lt;/p&gt;
+&lt;p&gt;On the other hand, we could also create playlists that are more useful to us than a simple top 10 playlist. What if we took artists we listen to the most, and automatically put their songs not in our listening history yet in a new playlist. It is perfectly possible, and probably more valuable to us as users. We just need to write a couple new functions, plug them into a similar Luigi pipeline as above and let it do the work for us.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Analyzing My Spotify Listening History</title>
-      <link>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</link>
+      <link>/blog/analyzing-my-spotify-listening-history/</link>
       <pubDate>Sun, 02 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</guid>
-      <description>&lt;div id=&#34;a-new-endpoint&#34; class=&#34;section level1&#34;&gt;
+      <guid>/blog/analyzing-my-spotify-listening-history/</guid>
+      <description>&lt;style type=&#34;text/css&#34;&gt;
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+&lt;/style&gt;
+&lt;div id=&#34;a-new-endpoint&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;A new endpoint&lt;/h1&gt;
 &lt;p&gt;Following an &lt;a href=&#34;https://github.com/spotify/web-api/issues/20&#34;&gt;avalanche of &lt;em&gt;+1&lt;/em&gt; comments&lt;/a&gt; on the GitHub issue requesting access to a user’s play history, on March 1st Spotify released &lt;a href=&#34;https://developer.spotify.com/web-api/web-api-personalization-endpoints/get-recently-played/&#34;&gt;a new endpoint&lt;/a&gt; to their Web API that allows anyone with a Spotify account to pull data on his or her most recently played tracks. To access it, you need go through the &lt;a href=&#34;https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow&#34;&gt;Authorization Code Flow&lt;/a&gt;, where you get keys and tokens needed for making calls to the API. The return object contains your 50 most recently played songs enriched by some contextual data.&lt;/p&gt;
 &lt;p&gt;Being an avid Spotify user, I figured I could use my recently purchased &lt;a href=&#34;https://www.raspberrypi.org/&#34;&gt;Raspberry Pi&lt;/a&gt; to ping the API every 3 hours, and start collecting my Spotify data. I started begin April, so now I have almost three months worth of listening history.&lt;/p&gt;
@@ -132,7 +430,7 @@ plot &amp;lt;- merged %&amp;gt;%
         guides(fill = FALSE) +
         theme(axis.text.x = element_text(angle = 90, hjust = 1))
 plot&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Most of the songs in my top 10 have a similar pattern: The first few days after discovering them, there is a sharp increase in the number of plays. Sometimes it takes a couple of listens for me to get into a track, but usually I start obsessing over it immediately. One obvious exception is the song &lt;em&gt;Habiba&lt;/em&gt;, the song I listened to the most. The first time I heard the song, it must have gone unnoticed. Two months later, I started playing it virtually on repeat.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;listening-times&#34; class=&#34;section level1&#34;&gt;
@@ -150,12 +448,12 @@ merged %&amp;gt;% group_by(time_of_day = hour(played_at),
         ggtitle(&amp;quot;Number of Listens per hour of the day&amp;quot;) +
         xlab(&amp;quot;Hour&amp;quot;) +
         ylab(&amp;quot;Plays&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Well, there’s a few interesting things here. On &lt;strong&gt;weekdays&lt;/strong&gt; I listen to slightly more music than on weekends, mostly due to regular listening habits early on and during the day. The peak in the morning corresponds to me biking to work, followed by dip around 10 (daily stand-ups anyone?). Then, I put my headphones back on until about 14:00, to finish my Spotify activities in the evening when I get home.&lt;/p&gt;
 &lt;p&gt;On the other hand, I listen to slightly more music in the afternoon and evening when it’s &lt;strong&gt;weekend&lt;/strong&gt;. Additionally, all early hours listening happens solely on weekends.&lt;/p&gt;
 &lt;p&gt;I am also interested whether there is such a thing as &lt;em&gt;morning artists vs. afternoon/evening artists&lt;/em&gt;. In other words, which artists do I listen to more often in the morning than &lt;em&gt;after noon&lt;/em&gt;, or the other way around. The approach I took is to count the number plays by artists, and calculate a ratio of morning / evening for each one. The result I plotted with what is apparently called a &lt;a href=&#34;http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#Diverging%20Lollipop%20Chart&#34;&gt;diverging lollipop chart&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;The code snippet to produce this plot is tad bit too long to include here, but you can find all the code in the original RMarkdown file on &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-06-02-spotifyR.Rmd&#34;&gt;Github&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;On the y-axis we have the artists. The x-axis depicts the aforementioned ratio, and the size of the &lt;em&gt;lollipop&lt;/em&gt; stands for the number of plays in the given direction, also displayed by the label.&lt;/p&gt;
 &lt;p&gt;The artists with the biggest divergences are &lt;a href=&#34;https://open.spotify.com/artist/0HlOk15cW7PeziVcItQLco&#34;&gt;Zen Mechanics&lt;/a&gt; and &lt;a href=&#34;https://open.spotify.com/artist/1k8VBufn1nBs8LN9n4snc8&#34;&gt;Stereo MC’s&lt;/a&gt;. For both artists, the number of plays is almost equal to the difference ratio. That means I played songs in the opposite timeframe &lt;strong&gt;only once&lt;/strong&gt;. As a matter of fact, there are artists such as &lt;a href=&#34;https://open.spotify.com/artist/03HEHGJoLPdARs4nrtUidr&#34;&gt;Junior Kimbrough&lt;/a&gt; or &lt;a href=&#34;https://open.spotify.com/artist/3mNygoyrEKLgo6sx0MzwOL&#34;&gt;Ali Farka Touré&lt;/a&gt; whom I played more often in each direction, but because the plays are distributed more evenly, the ratio is not as extreme.&lt;/p&gt;
 &lt;/div&gt;

@@ -1,0 +1,25 @@
+---
+title: "Data Pipelinses Spotify"
+author: "Tamas Szilagyi"
+date: 2017-07-02T21:13:14-05:00
+categories: ["R"]
+tags: ["Spotify", "ggplot", "dplyr", "tidyr","purrr"]
+output: html_document
+---
+
+# Intro
+
+In the previous post, I shared an analysis of my Spotify listening history using `R`. In this post, I will discuss what came before having the data: collecting, cleaning and saving it. I wanted to write these posts in sort of a backwards order; first show what's possible and second *how to* make it possbile. 
+
+In this post, I will even go a step further than prepping data for analysis, and automate:
+1, Creating a  weekly Top 10 playlist on my Spotify account 
+2, Emailing the week's insights straight to my inbox.
+
+I am by no means a data engineer, but I do have a weakness for automating things. Because we are already dealing with Spotify here, it seems like a good opportunity to take [Luigi](https://github.com/spotify/luigi) for a test run, a Python framework Spotify open sourced a couple years back. According to them, it is best suited for massive batch jobs, so implementing it for on top of my tiny little json files is bit of an overkill, to put it mildly. 
+
+# Overview
+What follows is perhaps a naive implementation, but at least enjoyed drawing my very first data pipeline:
+![](/Users/tamas/Documents/my_site/content/blog/2017/img/pipe.png)
+
+
+

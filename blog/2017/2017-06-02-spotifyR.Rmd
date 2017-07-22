@@ -6,9 +6,18 @@ categories: ["R"]
 tags: ["Spotify", "ggplot", "dplyr", "tidyr","purrr"]
 output: html_document
 ---
+```{css}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 library(dplyr)
 library(tidyr)
 library(lubridate)
