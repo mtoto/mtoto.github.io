@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Spotify on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/spotify/index.xml</link>
+    <link>/tags/spotify/index.xml</link>
     <description>Recent content in Spotify on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://tamaszilagyi.com/tags/spotify/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/spotify/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Creating a Spotify Playlist using Luigi</title>
-      <link>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</link>
+      <link>/blog/creating-a-spotify-playlist-using-luigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</guid>
+      <guid>/blog/creating-a-spotify-playlist-using-luigi/</guid>
       <description>&lt;!-- BLOGDOWN-HEAD --&gt;
 &lt;!-- /BLOGDOWN-HEAD --&gt;
 
@@ -296,10 +296,10 @@ class spotify_morning_playlist(luigi.Task):
     
     <item>
       <title>Analyzing My Spotify Listening History</title>
-      <link>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</link>
+      <link>/blog/analyzing-my-spotify-listening-history/</link>
       <pubDate>Sun, 02 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</guid>
+      <guid>/blog/analyzing-my-spotify-listening-history/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -541,7 +541,7 @@ gganimate(gg_life)&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;whats-left&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;What’s left?&lt;/h1&gt;
 &lt;p&gt;Clearly, there are tons of other interesting questions that could be explored using this dataset. We could for example look at how many tracks I usually listen to in one go, which songs I skipped over, how my different playlists are growing over time, which playlist or albums I listen to the most…and the list goes on.&lt;/p&gt;
-&lt;p&gt;I’ll go into more detail on my approach to automating acquisition and cleaning of this data in a next post, but if you just cannot wait to start collecting your own Spotify listening history, I encourage you to go through &lt;a href=&#34;https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow&#34;&gt;Spotify’s authoriziation flow&lt;/a&gt; and set up a simple cronjob that pings the API &lt;em&gt;X times a day&lt;/em&gt;. The sooner you start collecting your data, the more you’ll have to play with. Everything else can be dealt with later.&lt;/p&gt;
+&lt;p&gt;I’ll go into more detail on my approach to automating acquisition and cleaning of this data in a &lt;a href=&#34;http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/&#34;&gt;next post&lt;/a&gt;, but if you just cannot wait to start collecting your own Spotify listening history, I encourage you to go through &lt;a href=&#34;https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow&#34;&gt;Spotify’s authoriziation flow&lt;/a&gt; and set up a simple cronjob that pings the API &lt;em&gt;X times a day&lt;/em&gt;. The sooner you start collecting your data, the more you’ll have to play with. Everything else can be dealt with later.&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>

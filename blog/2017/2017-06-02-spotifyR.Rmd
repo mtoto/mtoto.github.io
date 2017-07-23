@@ -349,7 +349,7 @@ More than anything, the plot makes it obvious that I cannot go on for too long w
 
 Clearly, there are tons of other interesting questions that could be explored using this dataset. We could for example look at how many tracks I usually listen to in one go, which songs I skipped over, how my different playlists are growing over time, which playlist or albums I listen to the most...and the list goes on.
 
-I'll go into more detail on my approach to automating acquisition and cleaning of this data in a next post, but if you just cannot wait to start collecting your own Spotify listening history, I encourage you to go through [Spotify's authoriziation flow](https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow) and set up a simple cronjob that pings the API *X times a day*. The sooner you start collecting your data, the more you'll have to play with. Everything else can be dealt with later. 
+I'll go into more detail on my approach to automating acquisition and cleaning of this data in a [next post](http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/), but if you just cannot wait to start collecting your own Spotify listening history, I encourage you to go through [Spotify's authoriziation flow](https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow) and set up a simple cronjob that pings the API *X times a day*. The sooner you start collecting your data, the more you'll have to play with. Everything else can be dealt with later. 
 
 
 
