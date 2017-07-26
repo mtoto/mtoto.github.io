@@ -18,7 +18,7 @@ pre code, pre, code {
 
 In the [previous post](http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/), I shared an analysis of my Spotify listening history using R. In this post, I will discuss what came before having the data: collecting, cleaning and saving it. As the title suggest, we will even go a step further and automate the creation of a weekly top 10 playlist in Spotify using the very same dataset.
 
-The main building block will be Luigi, a Python framework for workflow management Spotify open-sourced a couple of years ago. According to [docs](http://luigi.readthedocs.io/en/stable/index.html):  
+The main ingredient will be Luigi, a Python framework for workflow management Spotify open-sourced a couple of years ago. According to [docs](http://luigi.readthedocs.io/en/stable/index.html):  
 
 >The purpose of Luigi is to address all the plumbing typically associated with long-running batch processes. You want to chain many tasks, automate them, and failures will happen. These tasks can be anything, but are typically long running things like Hadoop jobs, dumping data to/from databases, running machine learning algorithms, or anything else.
 
@@ -142,7 +142,7 @@ class local_raw_json(luigi.ExternalTask):
         
 ```
 
-The first task `local_raw_json()` is an **External Task** with only an `output()` method. This task does not run anything and does not depend on anything. It simply confirms the existence of a file, namely the output from our cronjob. Luigi allows for parameterization of tasks, so we define a `date` parameter with the default value yesterday. We pass this to the `output()` method to look for the file with the correct date. 
+The first task `local_raw_json` is an **External Task** with only an `output()` method. This task does not run anything and does not depend on anything. It simply confirms the existence of a file, namely the output from our cronjob. Luigi allows for parameterization of tasks, so we define a `date` parameter with the default value yesterday. We pass this to the `output()` method to look for the file with the correct date. 
 
 External tasks with no dependencies are common first steps, especially if we are relying on an external datadump somewhere else.
 
