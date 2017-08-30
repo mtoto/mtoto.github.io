@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1504132165">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1504132165">
-    <link rel="stylesheet" href="../../css/main.css?t=1504132165">
+    <link rel="stylesheet" href="../../css/reset.css?t=1504133262">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1504133262">
+    <link rel="stylesheet" href="../../css/main.css?t=1504133262">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1504132165">
+        <link rel="stylesheet" href="../../css/override.css?t=1504133262">
     
 
 
@@ -278,10 +278,10 @@ gbmFit &lt;- train(y ~ ., data = training,
 table(preds, testing$y)</code></pre>
 <pre><code>##         
 ## preds     dim  mid bright zero
-##   dim     104  205     23  385
-##   mid      78  147     14  126
-##   bright    0    0      0    0
-##   zero     38   91     28 4233</code></pre>
+##   dim      68  191     34  305
+##   mid      76  119      6   91
+##   bright   37   57      0   32
+##   zero     39   76     25 4316</code></pre>
 <p>Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlayed on top.</p>
 <p><img src="../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Bright values were always gonna be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.</p>
@@ -322,7 +322,7 @@ jug() %&gt;% post(&quot;/predict-hue&quot;, decorate(predict_hue)) %&gt;%
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
-<p>There is something very satisfying about building your own data products and seeing them at work. Even something as trivial as controlling the light switch for you. I only have data since this year May, so there’s a good chance our model will get smarter as days go by. We can easily schedule to retrain the model every week or even day, without having to lift a finger. Most of the code in this post is now pacakeged up as a handful of <code>R</code> functions deployed on my Raspberry Pi. Now, when I <em>choose</em> to pass out on my couch next time, at least lights won’t stay on for too long.</p>
+<p>There is something very satisfying about building your own data products and seeing them at work. Even something as trivial as controlling the light switch for you. I only have data since this year May, so there’s a good chance our model will get smarter as days go by. We can easily schedule to retrain the model every week or even day, without having to lift a finger. Most of the code in this post is now packaged up as a handful of <code>R</code> functions deployed on my Raspberry Pi. Now, when I <em>choose</em> to pass out on my couch next time, at least lights won’t stay on for too long.</p>
 </div>
 
                 <br>
