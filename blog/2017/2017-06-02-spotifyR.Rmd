@@ -34,6 +34,7 @@ df_tracks <- df_tracks[,c("played_at", "artist_name",
                      "artist_id", "track_name", 
                      "explicit", "uri", "duration_ms","type")]
 df_arts <- df_arts %>% select(-artist_name)
+setwd("/Users/tamas/Documents/my_site")
 ```
 
 
@@ -53,7 +54,7 @@ Let's read the data into `R`, using the `fromJSON()` function from the `jsonlite
 ```{r, eval=F}
 library(jsonlite)
 
-df_arts <- fromJSON("data/spotify_artist_2017-06-30.json")
+df_arts <- fromJSON("/data/spotify_artist_2017-06-30.json")
 df_tracks <- fromJSON("/data/spotify_tracks_2017-06-30.json")
 ```
 
@@ -188,7 +189,7 @@ plot_2 <- merged %>%
         group_by(artist_name, day_or_night) %>% 
         summarise(plays = n_distinct(played_at)) %>%  
         spread(day_or_night,plays) %>%
-        mutate_each(funs(replace(.,is.na(.), 0)), -artist_name) %>%
+        mutate_at(funs(replace(.,is.na(.), 0)), .vars = colnames(.)[colnames(.)!="artist_name"]) %>%
         ungroup() %>%
         mutate(total = `afternoon/evening` + morning,
                ratio =  morning / `afternoon/evening`,
@@ -282,7 +283,7 @@ Clearly, we are not concerned with customer segmentation here, but what if we su
 
 To be able to generate such a plot, we need to expand our dataset to include all possible combinations of dates and genres and deal with resulting missing values appropriately:
 
-```{r, warning=F}
+```{r, warning=F, message=F}
 
 genres_by_day <- one_gen_per_a %>%
         # only look at top 20 genres
@@ -307,7 +308,7 @@ genres_by_day <- one_gen_per_a %>%
 ```
 After binning both `cumulative_frequency` and `recency` from the resulting dataset, we can proceed with creating our animated lifecycle grid using `ggplot2` and `gganimate`. All we need to do is specify the `frame =` variable inside the `aes()`, and our plot comes to life!
 
-```{r, echo = F}
+```{r, echo = F, warning = F, message = F}
 genres_by_day <- genres_by_day %>%
         ungroup() %>%
         mutate(segm.freq=ifelse(cumulative_frequency < 50, '50',

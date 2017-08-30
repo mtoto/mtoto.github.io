@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Dplyr on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/dplyr/index.xml</link>
+    <link>/tags/dplyr/index.xml</link>
     <description>Recent content in Dplyr on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://tamaszilagyi.com/tags/dplyr/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/dplyr/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Analyzing My Spotify Listening History</title>
-      <link>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</link>
+      <link>/blog/analyzing-my-spotify-listening-history/</link>
       <pubDate>Sun, 02 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</guid>
+      <guid>/blog/analyzing-my-spotify-listening-history/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -34,7 +34,7 @@ pre code, pre, code {
 &lt;p&gt;Let’s read the data into &lt;code&gt;R&lt;/code&gt;, using the &lt;code&gt;fromJSON()&lt;/code&gt; function from the &lt;code&gt;jsonlite&lt;/code&gt; package:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(jsonlite)
 
-df_arts &amp;lt;- fromJSON(&amp;quot;data/spotify_artist_2017-06-30.json&amp;quot;)
+df_arts &amp;lt;- fromJSON(&amp;quot;/data/spotify_artist_2017-06-30.json&amp;quot;)
 df_tracks &amp;lt;- fromJSON(&amp;quot;/data/spotify_tracks_2017-06-30.json&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The most important file is &lt;strong&gt;df_tracks&lt;/strong&gt;; this is the parsed response from the &lt;strong&gt;Recently Played Tracks&lt;/strong&gt; endpoint. Let’s take a look.&lt;/p&gt;
 &lt;div id=&#34;df_tracks&#34; class=&#34;section level2&#34;&gt;

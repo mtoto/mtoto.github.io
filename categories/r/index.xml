@@ -2,18 +2,202 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R on Coding with Data</title>
-    <link>http://tamaszilagyi.com/categories/r/index.xml</link>
+    <link>/categories/r/index.xml</link>
     <description>Recent content in R on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://tamaszilagyi.com/categories/r/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Training Smarter Lights</title>
+      <link>/blog/training-smarter-lights/</link>
+      <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
+      
+      <guid>/blog/training-smarter-lights/</guid>
+      <description>&lt;style type=&#34;text/css&#34;&gt;
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+&lt;/style&gt;
+&lt;div id=&#34;the-rise-of-the-api&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The rise of the API&lt;/h2&gt;
+&lt;p&gt;Rich API interfaces are one of the main ingredients of today’s smart devices. They are by defintion built for interconnectivity and there is an active community of developers creating apps as microservices on top of them. Philips Hue is no exception with it’s wide variety of &lt;a href=&#34;http://www.developers.meethue.com/otherapps/otherAppsIOS.html#appsList&#34;&gt;apps&lt;/a&gt; available to users.&lt;/p&gt;
+&lt;p&gt;But you don’t need to code an entire mobile application to take advantage of the low level access. Using modern tools it only takes a few lines of code to build a self-learning algorithm, running in production in your home. Not only can we access external API’s, we can just as easily expose static files, functions or models as an API of our own.&lt;/p&gt;
+&lt;p&gt;My original inspiration for this post was &lt;a href=&#34;https://sc5.io/posts/autonomous-indoor-lighting-using-neural-networks/&#34;&gt;Max Pagel’s article&lt;/a&gt; on training a neural network to automatically control his Philips Hue lights. In fact, I purchased my first set of Hue bulbs because of it.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;stop-dinnertime&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Stop, dinnertime!&lt;/h2&gt;
+&lt;p&gt;Much like in my &lt;a href=&#34;http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/&#34;&gt;post on Spotify&lt;/a&gt; I have set up a cronjob to execute the Python script that pings the API and saves the lights’ state data locally, to be picked up by Luigi tasks for parsing and copying to S3 further downstream. You can find the relevant code on my &lt;a href=&#34;https://github.com/mtoto/hue/blob/master/tasks.py&#34;&gt;Github&lt;/a&gt;. The &lt;a href=&#34;https://www.developers.meethue.com/philips-hue-api&#34;&gt;Hue API documentation&lt;/a&gt; contains information on authentication and the types of calls available.&lt;/p&gt;
+&lt;p&gt;The starting point for this post will be the parsed &lt;code&gt;.json&lt;/code&gt; file containing all of the log data for my “Dinner Lamps”. They are the two main lights in my living and dining area room at the moment.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(aws.s3)
+library(jsonlite)
+# read file from amazon
+aws.signature::use_credentials()
+df &amp;lt;- s3read_using(object = paste0(&amp;quot;hue_full_2017-08-26.json&amp;quot;), fromJSON, bucket = &amp;quot;ams-hue-data&amp;quot;)
+str(df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    30322 obs. of  15 variables:
+##  $ on.1       : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+##  $ on.2       : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+##  $ bri.2      : int  131 131 131 131 131 131 131 131 131 131 ...
+##  $ type.1     : chr  &amp;quot;Dimmable light&amp;quot; &amp;quot;Dimmable light&amp;quot; &amp;quot;Dimmable light&amp;quot; &amp;quot;Dimmable light&amp;quot; ...
+##  $ type.2     : chr  &amp;quot;Dimmable light&amp;quot; &amp;quot;Dimmable light&amp;quot; &amp;quot;Dimmable light&amp;quot; &amp;quot;Dimmable light&amp;quot; ...
+##  $ bri.1      : int  131 131 131 131 131 131 131 131 131 131 ...
+##  $ modelid.2  : chr  &amp;quot;LWB010&amp;quot; &amp;quot;LWB010&amp;quot; &amp;quot;LWB010&amp;quot; &amp;quot;LWB010&amp;quot; ...
+##  $ modelid.1  : chr  &amp;quot;LWB010&amp;quot; &amp;quot;LWB010&amp;quot; &amp;quot;LWB010&amp;quot; &amp;quot;LWB010&amp;quot; ...
+##  $ name.1     : chr  &amp;quot;Dinner Lamp 2&amp;quot; &amp;quot;Dinner Lamp 2&amp;quot; &amp;quot;Dinner Lamp 2&amp;quot; &amp;quot;Dinner Lamp 2&amp;quot; ...
+##  $ reachable.1: logi  TRUE TRUE TRUE TRUE TRUE TRUE ...
+##  $ reachable.2: logi  TRUE TRUE TRUE TRUE TRUE TRUE ...
+##  $ name.2     : chr  &amp;quot;Dinner Lamp 1&amp;quot; &amp;quot;Dinner Lamp 1&amp;quot; &amp;quot;Dinner Lamp 1&amp;quot; &amp;quot;Dinner Lamp 1&amp;quot; ...
+##  $ alert.1    : chr  &amp;quot;none&amp;quot; &amp;quot;none&amp;quot; &amp;quot;none&amp;quot; &amp;quot;none&amp;quot; ...
+##  $ log_time   : chr  &amp;quot;2017-05-12 17:00:02&amp;quot; &amp;quot;2017-05-12 17:05:01&amp;quot; &amp;quot;2017-05-12 17:10:02&amp;quot; &amp;quot;2017-05-12 17:15:01&amp;quot; ...
+##  $ alert.2    : chr  &amp;quot;none&amp;quot; &amp;quot;none&amp;quot; &amp;quot;none&amp;quot; &amp;quot;none&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The structure of the original &lt;code&gt;.json&lt;/code&gt; file is such that each lamp has a separate (numbered) column for every variable. The dataset is essentially a timeseries where each row represent a snapshot of the lamps’ state at &lt;code&gt;$log_time&lt;/code&gt;, or &lt;strong&gt;every 5 minutes&lt;/strong&gt;. Before moving on, let’s tidy things up.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyr)
+tidy_df &amp;lt;- df %&amp;gt;% gather(key, value, -log_time) %&amp;gt;%
+        separate(key, into = c(&amp;quot;variable&amp;quot;, &amp;quot;lamp&amp;quot;), sep = &amp;quot;\\.&amp;quot;) %&amp;gt;%
+        spread(variable, value)
+str(tidy_df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    60644 obs. of  9 variables:
+##  $ log_time : chr  &amp;quot;2017-05-12 17:00:02&amp;quot; &amp;quot;2017-05-12 17:00:02&amp;quot; &amp;quot;2017-05-12 17:05:01&amp;quot; &amp;quot;2017-05-12 17:05:01&amp;quot; ...
+##  $ lamp     : chr  &amp;quot;1&amp;quot; &amp;quot;2&amp;quot; &amp;quot;1&amp;quot; &amp;quot;2&amp;quot; ...
+##  $ alert    : chr  &amp;quot;none&amp;quot; &amp;quot;none&amp;quot; &amp;quot;none&amp;quot; &amp;quot;none&amp;quot; ...
+##  $ bri      : chr  &amp;quot;131&amp;quot; &amp;quot;131&amp;quot; &amp;quot;131&amp;quot; &amp;quot;131&amp;quot; ...
+##  $ modelid  : chr  &amp;quot;LWB010&amp;quot; &amp;quot;LWB010&amp;quot; &amp;quot;LWB010&amp;quot; &amp;quot;LWB010&amp;quot; ...
+##  $ name     : chr  &amp;quot;Dinner Lamp 2&amp;quot; &amp;quot;Dinner Lamp 1&amp;quot; &amp;quot;Dinner Lamp 2&amp;quot; &amp;quot;Dinner Lamp 1&amp;quot; ...
+##  $ on       : chr  &amp;quot;FALSE&amp;quot; &amp;quot;FALSE&amp;quot; &amp;quot;FALSE&amp;quot; &amp;quot;FALSE&amp;quot; ...
+##  $ reachable: chr  &amp;quot;TRUE&amp;quot; &amp;quot;TRUE&amp;quot; &amp;quot;TRUE&amp;quot; &amp;quot;TRUE&amp;quot; ...
+##  $ type     : chr  &amp;quot;Dimmable light&amp;quot; &amp;quot;Dimmable light&amp;quot; &amp;quot;Dimmable light&amp;quot; &amp;quot;Dimmable light&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The 15 columns are now reduced to 9 because each variable appears only once thanks to adding the key column &lt;code&gt;$lamp&lt;/code&gt; to the dataset. But we are not quite done cleaning yet: I use the two lamps in sync, so we need only data from one of them. When the lamps are not &lt;code&gt;on&lt;/code&gt; nor &lt;code&gt;reachable&lt;/code&gt;, &lt;code&gt;$bri&lt;/code&gt; should be set to &lt;code&gt;0&lt;/code&gt;. Using the now correct brightness values, we create the four categories for the classifier to work with. Lastly, there were days I wasn’t home, so we can rid of of those observations.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+binned_df &amp;lt;- tidy_df %&amp;gt;% filter(lamp == &amp;quot;1&amp;quot;) %&amp;gt;%
+        mutate(bri = as.numeric(replace(bri, on==&amp;quot;FALSE&amp;quot; | reachable==&amp;quot;FALSE&amp;quot;,0)),
+               y = as.factor(ifelse(bri == 0, &amp;quot;zero&amp;quot;,
+                                    ifelse(between(bri,0,80), &amp;quot;dim&amp;quot;,
+                                           ifelse(between(bri,80,160),&amp;quot;mid&amp;quot;,&amp;quot;bright&amp;quot;)))))
+
+off_days &amp;lt;- binned_df %&amp;gt;% group_by(date = as.Date(log_time,tz=&amp;quot;Europe/Amsterdam&amp;quot;)) %&amp;gt;%
+                dplyr::summarise(total_bri = sum(bri)) %&amp;gt;%
+                filter(total_bri == 0 ) %&amp;gt;%
+                select(date)
+
+binned_df &amp;lt;- binned_df %&amp;gt;% filter(!as.Date(log_time) %in% off_days$date)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;How does the distribution of our target variable look?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;table(binned_df$y)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## bright    dim    mid   zero 
+##    598   1533   1710  23889&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Roughly 86% of the time the lamps are off, resulting in an unbalanced dataset. What about brightess values lamps were &lt;em&gt;on&lt;/em&gt;, according to the three remaining categories?&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The distribution seems to be close to normal with a positive skew, and a massive outlier all the way at the end of the spectrum. That’s maximum brightness, the default when I switch the lights on/off with a physical switch.&lt;/p&gt;
+&lt;p&gt;To get an intuition for my usage patterns, I’ll also plot a histogram of hour of the day for all four categories.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The only times the lamps are &lt;strong&gt;not&lt;/strong&gt; structurally off, is in the evening and the early hours. Dim and mid values are the dominant category after 8PM instead. Another slight dip in zero appears around and shortly after midnight, compensated by the second largest peak in dim, and a few instances of mid and bright. Bright observations in general are sparse and will be tough the predict.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;can-we-learn-this&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Can we learn this?&lt;/h2&gt;
+&lt;p&gt;The only variables I will use for training, are time based: &lt;em&gt;day of the week&lt;/em&gt;; &lt;em&gt;month&lt;/em&gt;; &lt;em&gt;week number&lt;/em&gt;; &lt;em&gt;weekend or not&lt;/em&gt;; &lt;em&gt;time of the day&lt;/em&gt;; and &lt;em&gt;minutes since 12PM, 6AM, 12AM and 6PM&lt;/em&gt;. A datetime string will then suffice to generate a prediction on the fly, a boon for putting things into production later on. I packaged a chain of dplyr commands inside the function &lt;a href=&#34;https://github.com/mtoto/hue/blob/master/functions.R&#34;&gt;add_vars()&lt;/a&gt; to add the above variables to the dataset:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df_vars &amp;lt;- binned_df %&amp;gt;% add_vars(extra_var = &amp;quot;yes&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Remember we are dealing with an unbalanced dataset, that also happens to be a timeseries. To remedy the former, I will use class weights to penalize the missclassification of the minority classes. Secondly, I will look at the &lt;em&gt;Area Under the Curve&lt;/em&gt; to evaluate the model, which will be less affected than &lt;em&gt;Accuracy&lt;/em&gt; by class imbalance if I set dim as the positive class. If not for these measures, the algorithm would gladly classify 100% of instances as &lt;code&gt;&amp;quot;zero&amp;quot;&lt;/code&gt;, achieving stunning accuracy on paper and complete darkness in my living room.&lt;/p&gt;
+&lt;p&gt;Now, why does it matter that we have a timeseries? In any dataset with a time component, the split between train and test sets should not be random. Otherwise, the model can and will &lt;strong&gt;learn from the future&lt;/strong&gt;, and severely overfit the data. The correct cross-validation strategy instead is to fold the data according to time. Train should always the before and test the after. For our convenience &lt;code&gt;caret&lt;/code&gt; provides the &lt;code&gt;createTimeSlices()&lt;/code&gt; function to create the indices of the CV-folds. An extra &lt;code&gt;testing&lt;/code&gt; set will be held out to validate our model on unseen data after we are done modeling.&lt;/p&gt;
+&lt;p&gt;We’ll now train a &lt;a href=&#34;https://cran.r-project.org/web/packages/gbm/index.html&#34;&gt;gbm&lt;/a&gt; model, using the &lt;a href=&#34;https://topepo.github.io/caret/&#34;&gt;caret&lt;/a&gt; package, which comes with a myraid of convenience tools to make the process easier and the code a lot more concise.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(caret)
+# Split train and test sets
+training &amp;lt;- df_vars[df_vars$date &amp;lt; &amp;quot;2017-08-05&amp;quot;,] %&amp;gt;% select(-date,-log_time)
+testing &amp;lt;- df_vars[df_vars$date &amp;gt;= &amp;quot;2017-08-05&amp;quot;,] %&amp;gt;% select(-date)
+
+# create cross validation folds
+idx &amp;lt;- createTimeSlices(1:nrow(training), 
+                      initialWindow = 15000, 
+                      horizon = 5000, skip = 1000, fixedWindow = F)
+
+# create model weights vector
+model_weights &amp;lt;- ifelse(training$y == &amp;quot;zero&amp;quot;,0.2,
+                        ifelse(training$y == &amp;quot;mid&amp;quot;,1.2,1))
+
+# define cross validation logic
+fitControl &amp;lt;- trainControl(## 10-fold CV
+        index = idx[[1]],
+        indexOut = idx[[2]],
+        summaryFunction = multiClassSummary,
+        classProbs = T)
+
+# create tunegrid for hyperparameter search
+gbmGrid &amp;lt;-  expand.grid(interaction.depth = c(1,3,5), 
+                        n.trees = c(5,10,30), 
+                        shrinkage = c(0.1),
+                        n.minobsinnode = 5)
+
+# train model
+gbmFit &amp;lt;- train(y ~ ., data = training, 
+                method = &amp;quot;gbm&amp;quot;, 
+                trControl = fitControl,
+                metric = &amp;quot;AUC&amp;quot;,
+                weights = model_weights,
+                verbose = FALSE,
+                tuneGrid = gbmGrid)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Printing &lt;code&gt;gbmFit&lt;/code&gt; to the console will give us the performance metrics accross hyperparameters, and the unltimately selected values maximizing our metric of choice. While this is certainly useful imformation, I find it more intuitive to immediately look at the confusion matrix and see where our model is going off the rails:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;preds&amp;lt;-predict(gbmFit, testing)
+table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##         
+## preds     dim  mid bright zero
+##   dim      65  137      9  177
+##   mid      59  115     28   75
+##   bright   35   59      0    5
+##   zero     61  132     28 4487&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlayed on top.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Bright values were always gonna be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;lets-ship-it&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Let’s ship it!&lt;/h1&gt;
+&lt;p&gt;To control the lights, we can make PUT requests to the Hue bridge. To set &lt;em&gt;bri&lt;/em&gt;, we need actual brightness values. An intuitive option is to pick the median values per category per hour:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;median_values &amp;lt;- binned_df %&amp;gt;% filter(bri &amp;gt; 0) %&amp;gt;% 
+                mutate(hour = lubridate::hour(as.POSIXct(log_time, tz = &amp;quot;Europe/Amsterdam&amp;quot;))) %&amp;gt;%
+                select(hour,bri, y) %&amp;gt;% 
+                group_by(y, hour) %&amp;gt;%
+                dplyr::summarise(med = median(bri)) %&amp;gt;%
+                ungroup()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Because we only used date and time based features for modeling, all we need for a prediction is a timestamp string. Using &lt;code&gt;for_sample&lt;/code&gt; and &lt;code&gt;def_vars()&lt;/code&gt;, we define a custom function &lt;code&gt;predict_hue()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;predict_hue &amp;lt;- function(timestamp){
+        
+        df &amp;lt;- data.frame(log_time =as.POSIXct(timestamp)) %&amp;gt;% 
+                add_vars(extra_var = &amp;quot;no&amp;quot;)
+        
+        pred &amp;lt;- predict(gbmFit, newdata = df)
+        
+        if (pred==&amp;quot;zero&amp;quot;) {
+                x &amp;lt;- 0
+        } else {
+                x &amp;lt;- median_values %&amp;gt;% filter(y == pred &amp;amp; hour == lubridate::hour(timestamp)) %&amp;gt;%
+                select(med) %&amp;gt;% unlist()
+        }
+        
+        return(x)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now to expose the above function as an API, we literally need three lines of code with &lt;a href=&#34;https://cran.r-project.org/web/packages/jug/vignettes/jug.html&#34;&gt;jug&lt;/a&gt;. Eversince I saw the package &lt;a href=&#34;https://channel9.msdn.com/Events/useR-international-R-User-conferences/useR-International-R-User-2017-Conference/jug-Building-Web-APIs-for-R&#34;&gt;presented at useR2017&lt;/a&gt;, I have been looking for a use case to play with.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(jug)
+jug() %&amp;gt;% post(&amp;quot;/predict-hue&amp;quot;, decorate(predict_hue)) %&amp;gt;%
+        simple_error_handler_json() %&amp;gt;%
+        serve_it()
+#Serving the jug at http://127.0.0.1:8080&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Great. We can now make calls to this API and get a prediction supplying the current time. The nifty thing is that because API’s are language agnostic, we can access it from the programming paradigm of our choosing. I currently have a basic Python function that communicates with both API’s, transferring a prediction to the Hue Bridge every 5 minutes. But we could just as well build a whole interface on top, or create a chatbot for improved user experience. Perhaps I’ll do a follow-up post on this topic.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conclusion&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;There is something very satisfying about building your own data products and seeing them at work. Even something as trivial as controlling the light switch for you. I only have data since this year May, so there’s a good chance our model will get smarter as days go by. We can easily schedule to retrain the model every week or even day, without having to lift a finger. Most of the code in this post is now pacakeged up as a handful of &lt;code&gt;R&lt;/code&gt; functions deployed on my Raspberry Pi. Now, when I &lt;em&gt;choose&lt;/em&gt; to pass out on my couch next time, at least lights won’t stay on for too long.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Creating a Spotify Playlist using Luigi</title>
-      <link>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</link>
+      <link>/blog/creating-a-spotify-playlist-using-luigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</guid>
+      <guid>/blog/creating-a-spotify-playlist-using-luigi/</guid>
       <description>&lt;!-- BLOGDOWN-HEAD --&gt;
 &lt;!-- /BLOGDOWN-HEAD --&gt;
 
@@ -296,10 +480,10 @@ class spotify_morning_playlist(luigi.Task):
     
     <item>
       <title>Analyzing My Spotify Listening History</title>
-      <link>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</link>
+      <link>/blog/analyzing-my-spotify-listening-history/</link>
       <pubDate>Sun, 02 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</guid>
+      <guid>/blog/analyzing-my-spotify-listening-history/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -320,7 +504,7 @@ pre code, pre, code {
 &lt;p&gt;Let’s read the data into &lt;code&gt;R&lt;/code&gt;, using the &lt;code&gt;fromJSON()&lt;/code&gt; function from the &lt;code&gt;jsonlite&lt;/code&gt; package:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(jsonlite)
 
-df_arts &amp;lt;- fromJSON(&amp;quot;data/spotify_artist_2017-06-30.json&amp;quot;)
+df_arts &amp;lt;- fromJSON(&amp;quot;/data/spotify_artist_2017-06-30.json&amp;quot;)
 df_tracks &amp;lt;- fromJSON(&amp;quot;/data/spotify_tracks_2017-06-30.json&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The most important file is &lt;strong&gt;df_tracks&lt;/strong&gt;; this is the parsed response from the &lt;strong&gt;Recently Played Tracks&lt;/strong&gt; endpoint. Let’s take a look.&lt;/p&gt;
 &lt;div id=&#34;df_tracks&#34; class=&#34;section level2&#34;&gt;
@@ -548,10 +732,10 @@ gganimate(gg_life)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Starting a blog(down)</title>
-      <link>http://tamaszilagyi.com/blog/starting-a-blogdown/</link>
+      <link>/blog/starting-a-blogdown/</link>
       <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/starting-a-blogdown/</guid>
+      <guid>/blog/starting-a-blogdown/</guid>
       <description>&lt;!-- BLOGDOWN-HEAD --&gt;
 &lt;!-- /BLOGDOWN-HEAD --&gt;
 
