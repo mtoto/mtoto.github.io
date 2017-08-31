@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1504133262">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1504133262">
-    <link rel="stylesheet" href="../../css/main.css?t=1504133262">
+    <link rel="stylesheet" href="../../css/reset.css?t=1504196006">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1504196006">
+    <link rel="stylesheet" href="../../css/main.css?t=1504196006">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1504133262">
+        <link rel="stylesheet" href="../../css/override.css?t=1504196006">
     
 
 
@@ -159,7 +159,7 @@ pre code, pre, code {
 </style>
 <div id="the-rise-of-the-api" class="section level2">
 <h2>The rise of the API</h2>
-<p>Rich API interfaces are one of the main ingredients of today’s smart devices. They are by defintion built for interconnectivity and there is an active community of developers creating apps as microservices on top of them. Philips Hue is no exception with it’s wide variety of <a href="http://www.developers.meethue.com/otherapps/otherAppsIOS.html#appsList">apps</a> available to users.</p>
+<p>Rich API interfaces are one of the main ingredients of today’s smart devices. They are by definition built for interconnectivity and there is an active community of developers creating apps as microservices on top of them. Philips Hue is no exception with it’s wide variety of <a href="http://www.developers.meethue.com/otherapps/otherAppsIOS.html#appsList">apps</a> available to users.</p>
 <p>But you don’t need to code an entire mobile application to take advantage of the low level access. Using modern tools it only takes a few lines of code to build a self-learning algorithm, running in production in your home. Not only can we access external API’s, we can just as easily expose static files, functions or models as an API of our own.</p>
 <p>My original inspiration for this post was <a href="https://sc5.io/posts/autonomous-indoor-lighting-using-neural-networks/">Max Pagel’s article</a> on training a neural network to automatically control his Philips Hue lights. In fact, I purchased my first set of Hue bulbs because of it.</p>
 </div>
@@ -224,20 +224,20 @@ binned_df &lt;- binned_df %&gt;% filter(!as.Date(log_time) %in% off_days$date)</
 <pre><code>## 
 ## bright    dim    mid   zero 
 ##    598   1533   1710  23889</code></pre>
-<p>Roughly 86% of the time the lamps are off, resulting in an unbalanced dataset. What about brightess values lamps were <em>on</em>, according to the three remaining categories?</p>
+<p>Roughly 86% of the time the lamps are off, resulting in an unbalanced dataset. What about brightness values lamps were <em>on</em>, according to the three remaining categories?</p>
 <p><img src="../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>The distribution seems to be close to normal with a positive skew, and a massive outlier all the way at the end of the spectrum. That’s maximum brightness, the default when I switch the lights on/off with a physical switch.</p>
 <p>To get an intuition for my usage patterns, I’ll also plot a histogram of hour of the day for all four categories.</p>
 <p><img src="../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>The only times the lamps are <strong>not</strong> structurally off, is in the evening and the early hours. Dim and mid values are the dominant category after 8PM instead. Another slight dip in zero appears around and shortly after midnight, compensated by the second largest peak in dim, and a few instances of mid and bright. Bright observations in general are sparse and will be tough the predict.</p>
+<p>The only times the lamps are <strong>not</strong> structurally off, is in the evening and the early hours. Dim and mid values are the dominant category after 8PM instead. Another slight dip in zero appears around and shortly after midnight, compensated by the second largest peak in dim, and a few instances of mid and bright. Bright observations in general are sparse and will be tough to predict.</p>
 </div>
 <div id="can-we-learn-this" class="section level2">
 <h2>Can we learn this?</h2>
 <p>The only variables I will use for training, are time based: <em>day of the week</em>; <em>month</em>; <em>week number</em>; <em>weekend or not</em>; <em>time of the day</em>; and <em>minutes since 12PM, 6AM, 12AM and 6PM</em>. A datetime string will then suffice to generate a prediction on the fly, a boon for putting things into production later on. I packaged a chain of dplyr commands inside the function <a href="https://github.com/mtoto/hue/blob/master/functions.R">add_vars()</a> to add the above variables to the dataset:</p>
 <pre class="r"><code>df_vars &lt;- binned_df %&gt;% add_vars(extra_var = &quot;yes&quot;)</code></pre>
-<p>Remember we are dealing with an unbalanced dataset, that also happens to be a timeseries. To remedy the former, I will use class weights to penalize the missclassification of the minority classes. Secondly, I will look at the <em>Area Under the Curve</em> to evaluate the model, which will be less affected than <em>Accuracy</em> by class imbalance if I set dim as the positive class. If not for these measures, the algorithm would gladly classify 100% of instances as <code>&quot;zero&quot;</code>, achieving stunning accuracy on paper and complete darkness in my living room.</p>
+<p>Remember we are dealing with an unbalanced dataset, that also happens to be a timeseries. To remedy the former, I will use class weights to penalize the misclassification of the minority classes. Secondly, I will look at the <em>Area Under the Curve</em> to evaluate the model, which will be less affected than <em>Accuracy</em> by class imbalance if I set dim as the positive class. If not for these measures, the algorithm would gladly classify 100% of instances as <code>&quot;zero&quot;</code>, achieving stunning accuracy on paper and complete darkness in my living room.</p>
 <p>Now, why does it matter that we have a timeseries? In any dataset with a time component, the split between train and test sets should not be random. Otherwise, the model can and will <strong>learn from the future</strong>, and severely overfit the data. The correct cross-validation strategy instead is to fold the data according to time. Train should always the before and test the after. For our convenience <code>caret</code> provides the <code>createTimeSlices()</code> function to create the indices of the CV-folds. An extra <code>testing</code> set will be held out to validate our model on unseen data after we are done modeling.</p>
-<p>We’ll now train a <a href="https://cran.r-project.org/web/packages/gbm/index.html">gbm</a> model, using the <a href="https://topepo.github.io/caret/">caret</a> package, which comes with a myraid of convenience tools to make the process easier and the code a lot more concise.</p>
+<p>We’ll now train a <a href="https://cran.r-project.org/web/packages/gbm/index.html">gbm</a> model, using the <a href="https://topepo.github.io/caret/">caret</a> package, which comes with a myriad of convenience tools to make the process easier and the code a lot more concise.</p>
 <pre class="r"><code>library(caret)
 # Split train and test sets
 training &lt;- df_vars[df_vars$date &lt; &quot;2017-08-05&quot;,] %&gt;% select(-date,-log_time)
@@ -273,18 +273,18 @@ gbmFit &lt;- train(y ~ ., data = training,
                 weights = model_weights,
                 verbose = FALSE,
                 tuneGrid = gbmGrid)</code></pre>
-<p>Printing <code>gbmFit</code> to the console will give us the performance metrics accross hyperparameters, and the unltimately selected values maximizing our metric of choice. While this is certainly useful imformation, I find it more intuitive to immediately look at the confusion matrix and see where our model is going off the rails:</p>
+<p>Printing <code>gbmFit</code> to the console will give us the performance metrics across hyperparameters, and the ultimately selected values maximizing our metric of choice. While this is certainly useful information, I find it more intuitive to immediately look at the confusion matrix and see where our model is going off the rails:</p>
 <pre class="r"><code>preds&lt;-predict(gbmFit, testing)
 table(preds, testing$y)</code></pre>
 <pre><code>##         
 ## preds     dim  mid bright zero
-##   dim      68  191     34  305
-##   mid      76  119      6   91
-##   bright   37   57      0   32
-##   zero     39   76     25 4316</code></pre>
-<p>Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlayed on top.</p>
+##   dim      95  243     33  369
+##   mid      50   43      5   93
+##   bright   37   51      0   26
+##   zero     38  106     27 4256</code></pre>
+<p>Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.</p>
 <p><img src="../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<p>Bright values were always gonna be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.</p>
+<p>Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.</p>
 </div>
 <div id="lets-ship-it" class="section level1">
 <h1>Let’s ship it!</h1>
@@ -312,7 +312,7 @@ table(preds, testing$y)</code></pre>
         
         return(x)
 }</code></pre>
-<p>Now to expose the above function as an API, we literally need three lines of code with <a href="https://cran.r-project.org/web/packages/jug/vignettes/jug.html">jug</a>. Eversince I saw the package <a href="https://channel9.msdn.com/Events/useR-international-R-User-conferences/useR-International-R-User-2017-Conference/jug-Building-Web-APIs-for-R">presented at useR2017</a>, I have been looking for a use case to play with.</p>
+<p>Now to expose the above function as an API, we literally need three lines of code with <a href="https://cran.r-project.org/web/packages/jug/vignettes/jug.html">jug</a>. Ever since I saw the package <a href="https://channel9.msdn.com/Events/useR-international-R-User-conferences/useR-International-R-User-2017-Conference/jug-Building-Web-APIs-for-R">presented at useR2017</a>, I have been looking for a use case to play with.</p>
 <pre class="r"><code>library(jug)
 jug() %&gt;% post(&quot;/predict-hue&quot;, decorate(predict_hue)) %&gt;%
         simple_error_handler_json() %&gt;%

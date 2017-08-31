@@ -22,7 +22,7 @@ source("/Users/tamas/Documents/my_site/data/functions.R")
 ```
 
 ## The rise of the API
-Rich API interfaces are one of the main ingredients of today's smart devices. They are by defintion built for interconnectivity and there is an active community of developers creating apps as microservices on top of them. Philips Hue is no exception with it's wide variety of  [apps](http://www.developers.meethue.com/otherapps/otherAppsIOS.html#appsList) available to users.
+Rich API interfaces are one of the main ingredients of today's smart devices. They are by definition built for interconnectivity and there is an active community of developers creating apps as microservices on top of them. Philips Hue is no exception with it's wide variety of  [apps](http://www.developers.meethue.com/otherapps/otherAppsIOS.html#appsList) available to users.
 
 But you don't need to code an entire mobile application to take advantage of the low level access. Using modern tools it only takes a few lines of code to build a self-learning algorithm, running in production in your home. Not only can we access external API's, we can just as easily expose static files, functions or models as an API of our own.
 
@@ -76,7 +76,7 @@ How does the distribution of our target variable look?
 table(binned_df$y)
 ```
 
-Roughly 86% of the time the lamps are off, resulting in an unbalanced dataset. What about brightess values lamps were *on*, according to the three remaining categories?
+Roughly 86% of the time the lamps are off, resulting in an unbalanced dataset. What about brightness values lamps were *on*, according to the three remaining categories?
 
 ```{r, echo = F}
 library(ggplot2)
@@ -101,7 +101,7 @@ binned_df %>% mutate(hour = lubridate::hour(as.POSIXct(log_time, tz = "Europe/Am
         ggtitle("Distribution of categories by hour of the day")
 ```
 
-The only times the lamps are **not** structurally off, is in the evening and the early hours. Dim and mid values are the dominant category after 8PM instead. Another slight dip in zero appears around and shortly after midnight, compensated by the second largest peak in dim, and a few instances of mid and bright. Bright observations in general are sparse and will be tough the predict.
+The only times the lamps are **not** structurally off, is in the evening and the early hours. Dim and mid values are the dominant category after 8PM instead. Another slight dip in zero appears around and shortly after midnight, compensated by the second largest peak in dim, and a few instances of mid and bright. Bright observations in general are sparse and will be tough to predict.
 
 ## Can we learn this?
 
@@ -111,11 +111,11 @@ The only variables I will use for training, are time based: *day of the week*; *
 df_vars <- binned_df %>% add_vars(extra_var = "yes")
 ```
 
-Remember we are dealing with an unbalanced dataset, that also happens to be a timeseries. To remedy the former, I will use class weights to penalize the missclassification of the minority classes.  Secondly, I will look at the *Area Under the Curve* to evaluate the model, which will be less affected than *Accuracy* by class imbalance if I set dim as the positive class. If not for these measures, the algorithm would gladly classify 100% of instances as `"zero"`, achieving stunning accuracy on paper and complete darkness in my living room.
+Remember we are dealing with an unbalanced dataset, that also happens to be a timeseries. To remedy the former, I will use class weights to penalize the misclassification of the minority classes.  Secondly, I will look at the *Area Under the Curve* to evaluate the model, which will be less affected than *Accuracy* by class imbalance if I set dim as the positive class. If not for these measures, the algorithm would gladly classify 100% of instances as `"zero"`, achieving stunning accuracy on paper and complete darkness in my living room.
 
 Now, why does it matter that we have a timeseries? In any dataset with a time component, the split between train and test sets should not be random. Otherwise, the model can and will **learn from the future**, and severely overfit the data. The correct cross-validation strategy instead is to fold the data according to time. Train should always the before and test the after. For our convenience `caret` provides the `createTimeSlices()` function to create the indices of the CV-folds. An extra `testing` set will be held out to validate our model on unseen data after we are done modeling.
 
-We'll now train a [gbm](https://cran.r-project.org/web/packages/gbm/index.html) model, using the [caret](https://topepo.github.io/caret/) package, which comes with a myraid of convenience tools to make the process easier and the code a lot more concise. 
+We'll now train a [gbm](https://cran.r-project.org/web/packages/gbm/index.html) model, using the [caret](https://topepo.github.io/caret/) package, which comes with a myriad of convenience tools to make the process easier and the code a lot more concise. 
 
 ```{r, warning=FALSE}
 library(caret)
@@ -154,14 +154,14 @@ gbmFit <- train(y ~ ., data = training,
                 verbose = FALSE,
                 tuneGrid = gbmGrid)
 ```
-Printing `gbmFit` to the console will give us the performance metrics accross hyperparameters, and the unltimately selected values maximizing our metric of choice. While this is certainly useful imformation, I find it more intuitive to immediately look at the confusion matrix and see where our model is going off the rails:
+Printing `gbmFit` to the console will give us the performance metrics across hyperparameters, and the ultimately selected values maximizing our metric of choice. While this is certainly useful information, I find it more intuitive to immediately look at the confusion matrix and see where our model is going off the rails:
 
 ```{r}
 preds<-predict(gbmFit, testing)
 table(preds, testing$y)
 ```
 
-Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let's look at the previous histogram of categories by hour again for the test set, but now with the predictions overlayed on top.
+Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let's look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.
 
 ```{r, echo = F}
 testing %>% cbind(preds) %>%
@@ -176,7 +176,7 @@ testing %>% cbind(preds) %>%
         ggtitle("Distribution of categories by hour of the day")
 ```
 
-Bright values were always gonna be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me. 
+Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me. 
 
 # Let's ship it!
 To control the lights, we can make PUT requests to the Hue bridge. To set *bri*, we need actual brightness values. An intuitive option is to pick the median values per category per hour:
@@ -211,7 +211,7 @@ predict_hue <- function(timestamp){
 }
 ```
 
-Now to expose the above function as an API, we literally need three lines of code with [jug](https://cran.r-project.org/web/packages/jug/vignettes/jug.html). Eversince I saw the package [presented at useR2017](https://channel9.msdn.com/Events/useR-international-R-User-conferences/useR-International-R-User-2017-Conference/jug-Building-Web-APIs-for-R), I have been looking for a use case to play with.
+Now to expose the above function as an API, we literally need three lines of code with [jug](https://cran.r-project.org/web/packages/jug/vignettes/jug.html). Ever since I saw the package [presented at useR2017](https://channel9.msdn.com/Events/useR-international-R-User-conferences/useR-International-R-User-2017-Conference/jug-Building-Web-APIs-for-R), I have been looking for a use case to play with.
 
 ```{r, eval = F}
 library(jug)
