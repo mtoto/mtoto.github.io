@@ -26,7 +26,7 @@ Rich API interfaces are one of the main ingredients of today's smart devices. Th
 
 But you don't need to code an entire mobile application to take advantage of the low level access. Using modern tools it only takes a few lines of code to build a self-learning algorithm, running in production in your home. Not only can we access external API's, we can just as easily expose static files, functions or models as an API of our own.
 
-My original inspiration for this post was [Max Pagel's article](https://sc5.io/posts/autonomous-indoor-lighting-using-neural-networks/) on training a neural network to automatically control his Philips Hue lights. In fact, I purchased my first set of Hue bulbs because of it. 
+My original inspiration for this post was [Max Pagel's article](https://sc5.io/posts/autonomous-indoor-lighting-using-neural-networks/) on training a neural network to automatically control his Philips Hue lights. In fact, I purchased my first set of Hue bulbs because of it. In summary, this post will describe how to build and productionize a classifier in `R` that  controls the brightness of Philips Hue lights.
 
 ## Stop, dinnertime!
 Much like in my [post on Spotify](http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/) I have set up a cronjob to execute the Python script that pings the API and saves the lights' state data locally, to be picked up by Luigi tasks for parsing and copying to S3 further downstream. You can find the relevant code on my [Github](https://github.com/mtoto/hue/blob/master/tasks.py). The [Hue API documentation](https://www.developers.meethue.com/philips-hue-api) contains information on authentication and the types of calls available.
@@ -225,4 +225,4 @@ Great. We can now make calls to this API and get a prediction supplying the curr
 
 # Conclusion
 
-There is something very satisfying about building your own data products and seeing them at work. Even something as trivial as controlling the light switch for you. I only have data since this year May, so there's a good chance our model will get smarter as days go by. We can easily schedule to retrain the model every week or even day, without having to lift a finger. Most of the code in this post is now packaged up as a handful of `R` functions deployed on my Raspberry Pi. Now, when I *choose* to pass out on my couch next time, at least lights won't stay on for too long.
+There is something very satisfying about building your own data products and seeing them at work. Even something as trivial as controlling the light switch for you. I only have data since this year May, so there's a good chance our model will get smarter as days go by. We can easily schedule to retrain the model every week or even day, without having to lift a finger. Most of the code in this post is packaged up as a handful of `R` functions deployed on my Raspberry Pi. Now, when I *choose* to pass out on my couch next time, at least lights won't stay on for too long.

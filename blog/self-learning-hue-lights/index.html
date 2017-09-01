@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1504196006">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1504196006">
-    <link rel="stylesheet" href="../../css/main.css?t=1504196006">
+    <link rel="stylesheet" href="../../css/reset.css?t=1504252521">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1504252521">
+    <link rel="stylesheet" href="../../css/main.css?t=1504252521">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1504196006">
+        <link rel="stylesheet" href="../../css/override.css?t=1504252521">
     
 
 
@@ -161,7 +161,7 @@ pre code, pre, code {
 <h2>The rise of the API</h2>
 <p>Rich API interfaces are one of the main ingredients of today’s smart devices. They are by definition built for interconnectivity and there is an active community of developers creating apps as microservices on top of them. Philips Hue is no exception with it’s wide variety of <a href="http://www.developers.meethue.com/otherapps/otherAppsIOS.html#appsList">apps</a> available to users.</p>
 <p>But you don’t need to code an entire mobile application to take advantage of the low level access. Using modern tools it only takes a few lines of code to build a self-learning algorithm, running in production in your home. Not only can we access external API’s, we can just as easily expose static files, functions or models as an API of our own.</p>
-<p>My original inspiration for this post was <a href="https://sc5.io/posts/autonomous-indoor-lighting-using-neural-networks/">Max Pagel’s article</a> on training a neural network to automatically control his Philips Hue lights. In fact, I purchased my first set of Hue bulbs because of it.</p>
+<p>My original inspiration for this post was <a href="https://sc5.io/posts/autonomous-indoor-lighting-using-neural-networks/">Max Pagel’s article</a> on training a neural network to automatically control his Philips Hue lights. In fact, I purchased my first set of Hue bulbs because of it. In summary, this post will describe how to build and productionize a classifier in <code>R</code> that controls the brightness of Philips Hue lights.</p>
 </div>
 <div id="stop-dinnertime" class="section level2">
 <h2>Stop, dinnertime!</h2>
@@ -278,10 +278,10 @@ gbmFit &lt;- train(y ~ ., data = training,
 table(preds, testing$y)</code></pre>
 <pre><code>##         
 ## preds     dim  mid bright zero
-##   dim      95  243     33  369
-##   mid      50   43      5   93
-##   bright   37   51      0   26
-##   zero     38  106     27 4256</code></pre>
+##   dim     101  196     18  397
+##   mid      47   90     19  202
+##   bright   33   57      0    9
+##   zero     39  100     28 4136</code></pre>
 <p>Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.</p>
 <p><img src="../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.</p>
@@ -322,7 +322,7 @@ jug() %&gt;% post(&quot;/predict-hue&quot;, decorate(predict_hue)) %&gt;%
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
-<p>There is something very satisfying about building your own data products and seeing them at work. Even something as trivial as controlling the light switch for you. I only have data since this year May, so there’s a good chance our model will get smarter as days go by. We can easily schedule to retrain the model every week or even day, without having to lift a finger. Most of the code in this post is now packaged up as a handful of <code>R</code> functions deployed on my Raspberry Pi. Now, when I <em>choose</em> to pass out on my couch next time, at least lights won’t stay on for too long.</p>
+<p>There is something very satisfying about building your own data products and seeing them at work. Even something as trivial as controlling the light switch for you. I only have data since this year May, so there’s a good chance our model will get smarter as days go by. We can easily schedule to retrain the model every week or even day, without having to lift a finger. Most of the code in this post is packaged up as a handful of <code>R</code> functions deployed on my Raspberry Pi. Now, when I <em>choose</em> to pass out on my couch next time, at least lights won’t stay on for too long.</p>
 </div>
 
                 <br>
