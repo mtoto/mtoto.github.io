@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1504443548">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1504443548">
-    <link rel="stylesheet" href="../../css/main.css?t=1504443548">
+    <link rel="stylesheet" href="../../css/reset.css?t=1504541951">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1504541951">
+    <link rel="stylesheet" href="../../css/main.css?t=1504541951">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1504443548">
+        <link rel="stylesheet" href="../../css/override.css?t=1504541951">
     
 
 
@@ -278,10 +278,10 @@ gbmFit &lt;- train(y ~ ., data = training,
 table(preds, testing$y)</code></pre>
 <pre><code>##         
 ## preds     dim  mid bright zero
-##   dim     107  255     31  378
-##   mid      31   21      5   65
-##   bright   37   56      0   30
-##   zero     45  111     29 4271</code></pre>
+##   dim      98  195     30  411
+##   mid      62   93      6  127
+##   bright   37   51      0   26
+##   zero     23  104     29 4180</code></pre>
 <p>Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.</p>
 <p><img src="../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.</p>
@@ -332,7 +332,7 @@ jug() %&gt;% post(&quot;/predict-hue&quot;, decorate(predict_hue)) %&gt;%
             <div class="disqus">
                 <div id="disqus_thread"></div>
 <script type="text/javascript">
-    var disqus_shortname = 'Tamas';
+    var disqus_shortname = 'tamas-blog';
     var disqus_identifier = 'http:\/\/tamaszilagyi.com\/blog\/self-learning-hue-lights\/';
     var disqus_title = 'Self-learning Hue Lights';
     var disqus_url = 'http:\/\/tamaszilagyi.com\/blog\/self-learning-hue-lights\/';
