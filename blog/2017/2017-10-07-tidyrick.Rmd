@@ -31,9 +31,9 @@ Most episodes draw inspiration from or make fun of cult movies such as Back to t
 
 ## One man's weekend project, another man's treasure
 
-After reading the book [Tidy Text Mining](http://tidytextmining.com/) online, I have been wanting to try out some of the concepts outlined in the book, and the functions of the [accompanying package](https://github.com/juliasilge/tidytext), on an interesting dataset. So I was pretty stoked to find [Francois Keck's **subtools package** on GitHub](https://github.com/fkeck/subtools), that allows for reading *.srt* files (the usual format for subtitles) straight into R. With season 3 of Rick and Morty coming to an end last week, the stars have finally aligned to roll up my sleeves and have some fun text mining.
+After reading the book [Tidy Text Mining](http://tidytextmining.com/) online, I have been wanting to try out some of the concepts outlined in the book, and the functions of the [accompanying package](https://github.com/juliasilge/tidytext), on an interesting dataset. So I was pretty stoked to find [Francois Keck's **subtools package** on GitHub](https://github.com/fkeck/subtools), that allows for reading *.srt* files (the usual format for subtitles) straight into R. With season 3 of Rick and Morty coming to an end last week, the stars have finally aligned to roll up my sleeves and have some fun with text mining.
 
-It is very easy to find English subtitles for pretty much anything on the internet. With subtools, the entire series can be read with one command from the containing folder, `read.subtitles.serie()`. We convert the resulting MultiSubtitles object to a data.frame with a second command `subDataFrame()`. 
+It is very easy to find English subtitles for pretty much anything on the internet. With subtools, an entire series can be read with one command from the containing folder, `read.subtitles.serie()`. We convert the resulting MultiSubtitles object to a data.frame with a second command `subDataFrame()`. 
 
 ```{r, eval = F}
 library(subtools)
@@ -218,7 +218,7 @@ What we get back are the most important elements, characters, motives or places 
 
 ## Topic models
 
-Having seen the most unique words of the script by seasons, we will take our analysis one last step further and try to capture the gist of a the show using topic modeling. Broadly speaking, it's and  unsupervised classification method that tries to represent a document as a collection of topics. Here, I will take the classic  [Latent Dirichlet Allocation or shortly LDA ](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) algorithm for a spin. The basic idea behind the is that...
+Having seen the most unique words of the script by seasons, we will take our analysis one last step further and try to capture the gist of a the show using topic modeling. Broadly speaking, it's an  unsupervised classification method that tries to represent a document as a collection of topics. Here, I will take the classic  [Latent Dirichlet Allocation or shortly LDA ](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) algorithm for a spin. The basic idea behind the is that
 
 > "...a topic is defined as a mixture over words where each word has a probability
 of belonging to a topic. And a document is a mixture over topics, meaning that a single
@@ -255,7 +255,7 @@ tidy(episodes_lda, matrix = "beta") %>%
         ggtitle("Word / Topic Probabilities")
 
 ```
-There's definitely a few topics that contain multiple motives of a particular episode. Take for example **topic 1**. It includes "*Roy*", the name of the videogame Morty plays in the same episode "*Fart*" appears, a gaseous creature kept under locks by aliens. Or **topic 5**, which probably relates to the episode where Rick visits his old lover "*Unity*". It further contains words as "*remember*" and  "*memories*".  The episode ends with Unity repeating "I want it *real*".
+There's definitely a few topics that contain multiple elements of a particular episode. Take for example **topic 1**. It includes "*Roy*", the name of the videogame Morty plays in the same episode "*Fart*" appears, a gaseous creature kept under locks by aliens. Or **topic 5**, which probably relates to the episode where Rick visits his old lover "*Unity*". It further contains words as "*remember*" and  "*memories*".  The episode ends with Unity repeating "I want it *real*".
 
 Not only can we examine the **word per topic probabilities**, we can also plot **the topic per document probabilities**, or *gamma* values. This lets us see what topic belongs to what episode.
 
@@ -279,6 +279,6 @@ Our previous assumptions are confirmed, the first topic does belong to the episo
 
 ## Final thoughts
 
-I ran through some very interesting concepts fairly quickly in this post. I owe much of it to the tidytext package. With very little coding, we can mine a tremendous amount of insights. And I have just scrachted the surface of what's possible. The seamless integration with the tidyverse, as with igraph and topicmodels does make a huge difference. 
+I ran through some very interesting concepts fairly quickly in this post. I owe much of it to the tidytext package. With very little coding, we can mine a tremendous amount of insights from textual data. And I have just scrachted the surface of what's possible. The seamless integration with the tidyverse, as with igraph and topicmodels does make a huge difference. 
 
 Nonetheless, text mining is a complex topic and when arriving at more advanced material, [further reading](https://github.com/trinker/topicmodels_learning) on the inner workings of these algorithms might come in handy for effective use. The full [data](https://github.com/mtoto/mtoto.github.io/tree/master/data/2017-10-07-tidyrick/rick%20and%20morty) and [code](https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-10-07-tidyrick.Rmd) for this post is available as usual on my Github.
