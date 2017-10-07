@@ -127,7 +127,7 @@ bigram_graph <- df %>%
 str(bigram_graph)
 ```
 
-This igraph object contains a directed network, where the vertices are the words and an edge exists between each that appear after one another. Representing the text as a graph, we can calculate things such as [degree centrality](https://en.wikipedia.org/wiki/Centrality#Degree_centrality), and plot the results.
+This igraph object contains a directed network, where the vertices are the words and an edge exists between each that appear after one another more than twice. Representing the text as a graph, we can calculate things such as [degree centrality](https://en.wikipedia.org/wiki/Centrality#Degree_centrality), and plot the results.
 
 ```{r, echo = F}
 library(ggraph)

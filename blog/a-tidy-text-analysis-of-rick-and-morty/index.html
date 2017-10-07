@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1507408949">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1507408949">
-    <link rel="stylesheet" href="../../css/main.css?t=1507408949">
+    <link rel="stylesheet" href="../../css/reset.css?t=1507409655">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1507409655">
+    <link rel="stylesheet" href="../../css/main.css?t=1507409655">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1507408949">
+        <link rel="stylesheet" href="../../css/override.css?t=1507409655">
     
 
 
@@ -235,7 +235,7 @@ str(bigram_graph)</code></pre>
 ## [3] ice             -&gt;cream      god             -&gt;damn      
 ## [5] whoa            -&gt;whoa      
 ##  [ reached getOption(&quot;max.print&quot;) -- omitted 275 entries ]</code></pre>
-<p>This igraph object contains a directed network, where the vertices are the words and an edge exists between each that appear after one another. Representing the text as a graph, we can calculate things such as <a href="https://en.wikipedia.org/wiki/Centrality#Degree_centrality">degree centrality</a>, and plot the results.</p>
+<p>This igraph object contains a directed network, where the vertices are the words and an edge exists between each that appear after one another more than twice. Representing the text as a graph, we can calculate things such as <a href="https://en.wikipedia.org/wiki/Centrality#Degree_centrality">degree centrality</a>, and plot the results.</p>
 <p><img src="../../blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>Looking at the largest connected network, we arrive at the same conclusion as with term frequencies. Rick and Morty are the most important words. They are at the center of the network and so have the highest degree centrality scores.</p>
 <p>Besides visualising the importance of words in our network, we can similarly differentiate between words that precede either Rick or Morty. These are all the 1st degree connections (words) that have an edge pointing towards the main characters, but aren’t shared among the them.</p>

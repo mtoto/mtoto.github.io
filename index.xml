@@ -101,7 +101,7 @@ str(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
 ## [3] ice             -&amp;gt;cream      god             -&amp;gt;damn      
 ## [5] whoa            -&amp;gt;whoa      
 ##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 275 entries ]&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This igraph object contains a directed network, where the vertices are the words and an edge exists between each that appear after one another. Representing the text as a graph, we can calculate things such as &lt;a href=&#34;https://en.wikipedia.org/wiki/Centrality#Degree_centrality&#34;&gt;degree centrality&lt;/a&gt;, and plot the results.&lt;/p&gt;
+&lt;p&gt;This igraph object contains a directed network, where the vertices are the words and an edge exists between each that appear after one another more than twice. Representing the text as a graph, we can calculate things such as &lt;a href=&#34;https://en.wikipedia.org/wiki/Centrality#Degree_centrality&#34;&gt;degree centrality&lt;/a&gt;, and plot the results.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;./blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Looking at the largest connected network, we arrive at the same conclusion as with term frequencies. Rick and Morty are the most important words. They are at the center of the network and so have the highest degree centrality scores.&lt;/p&gt;
 &lt;p&gt;Besides visualising the importance of words in our network, we can similarly differentiate between words that precede either Rick or Morty. These are all the 1st degree connections (words) that have an edge pointing towards the main characters, but aren’t shared among the them.&lt;/p&gt;
@@ -289,10 +289,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      75  178     32  316
-##   mid      75  122      6   85
-##   bright   31   55      0   16
-##   zero     39   88     27 4327&lt;/code&gt;&lt;/pre&gt;
+##   dim      82  189     31  322
+##   mid      76  118      7  144
+##   bright   21   50      0    7
+##   zero     41   86     27 4271&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;./blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
