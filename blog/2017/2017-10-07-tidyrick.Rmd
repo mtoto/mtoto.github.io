@@ -1,7 +1,7 @@
 ---
 title: "A tidy text analysis of Rick and Morty"
 author: "Tamas Szilagyi"
-date: 2017-09-30T23:15:14-05:00
+date: 2017-10-07T23:15:14-05:00
 categories: ["R"]
 tags: ["Hue", "R", "Python"]
 output: html_document
@@ -281,4 +281,4 @@ Our previous assumptions are confirmed, the first topic does belong to the episo
 
 I ran through some very interesting concepts fairly quickly in this post. I owe much of it to the tidytext package. With very little coding, we can mine a tremendous amount of insights. And I have just scrachted the surface of what's possible. The seamless integration with the tidyverse, as with igraph and topicmodels does make a huge difference. 
 
-Nonetheless, text mining is a complex topic and when arriving at more advanced material, [further reading](https://github.com/trinker/topicmodels_learning) on the inner workings of these algorithms might come in handy for effective use. The full data and code for this post is available as usual on my Github.
+Nonetheless, text mining is a complex topic and when arriving at more advanced material, [further reading](https://github.com/trinker/topicmodels_learning) on the inner workings of these algorithms might come in handy for effective use. The full [data](https://github.com/mtoto/mtoto.github.io/tree/master/data/2017-10-07-tidyrick/rick%20and%20morty) and [code](https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-10-07-tidyrick.Rmd) for this post is available as usual on my Github.

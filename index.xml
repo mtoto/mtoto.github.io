@@ -6,13 +6,13 @@
     <description>Recent content on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 30 Sep 2017 23:15:14 -0500</lastBuildDate>
+    <lastBuildDate>Sat, 07 Oct 2017 23:15:14 -0500</lastBuildDate>
     <atom:link href="http://tamaszilagyi.com/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>A tidy text analysis of Rick and Morty</title>
       <link>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
-      <pubDate>Sat, 30 Sep 2017 23:15:14 -0500</pubDate>
+      <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
       <guid>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
       <description>&lt;div class=&#34;figure&#34;&gt;
@@ -149,7 +149,7 @@ episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;
 &lt;div id=&#34;final-thoughts&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Final thoughts&lt;/h2&gt;
 &lt;p&gt;I ran through some very interesting concepts fairly quickly in this post. I owe much of it to the tidytext package. With very little coding, we can mine a tremendous amount of insights. And I have just scrachted the surface of what’s possible. The seamless integration with the tidyverse, as with igraph and topicmodels does make a huge difference.&lt;/p&gt;
-&lt;p&gt;Nonetheless, text mining is a complex topic and when arriving at more advanced material, &lt;a href=&#34;https://github.com/trinker/topicmodels_learning&#34;&gt;further reading&lt;/a&gt; on the inner workings of these algorithms might come in handy for effective use. The full data and code for this post is available as usual on my Github.&lt;/p&gt;
+&lt;p&gt;Nonetheless, text mining is a complex topic and when arriving at more advanced material, &lt;a href=&#34;https://github.com/trinker/topicmodels_learning&#34;&gt;further reading&lt;/a&gt; on the inner workings of these algorithms might come in handy for effective use. The full &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/tree/master/data/2017-10-07-tidyrick/rick%20and%20morty&#34;&gt;data&lt;/a&gt; and &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-10-07-tidyrick.Rmd&#34;&gt;code&lt;/a&gt; for this post is available as usual on my Github.&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -289,10 +289,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      72  173     19  296
-##   mid      74  121     17  120
-##   bright   37   56      0   30
-##   zero     37   93     29 4298&lt;/code&gt;&lt;/pre&gt;
+##   dim      75  168     31  307
+##   mid     110  168      6  187
+##   bright    0    0      0    0
+##   zero     35  107     28 4250&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;./blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
