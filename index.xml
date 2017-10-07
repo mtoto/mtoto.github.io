@@ -289,10 +289,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      90  190     29  283
-##   mid      89  153      6  161
-##   bright    0    0      0    0
-##   zero     41  100     30 4300&lt;/code&gt;&lt;/pre&gt;
+##   dim      75  178     32  316
+##   mid      75  122      6   85
+##   bright   31   55      0   16
+##   zero     39   88     27 4327&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;./blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
@@ -952,7 +952,7 @@ avatar       = &amp;quot;img/profile_pic.png&amp;quot;
 
 &lt;p&gt;While I do have a slight preference for &lt;code&gt;R&lt;/code&gt;, I try to constantly learn and experiment with new technologies and frameworks. My other interests include &lt;a href=&#34;https://www.youtube.com/watch?v=lEVNcU14g2Q&#34;&gt;hiking in the Highlands&lt;/a&gt;, buying &lt;a href=&#34;http://backbeat.nl/&#34;&gt;Blues CD&amp;rsquo;s&lt;/a&gt; and visiting &lt;a href=&#34;https://www.youtube.com/watch?v=jEw1y91FzYw&amp;amp;t=1s&#34;&gt;Psytrance festivals&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;This blog is built using the &lt;a href=&#34;https://github.com/rstudio/blogdown&#34;&gt;&lt;strong&gt;blogdown&lt;/strong&gt;&lt;/a&gt; package. The theme was forked from &lt;a href=&#34;https://github.com/nishanths/cocoa-hugo-theme&#34;&gt;nishanths/cocoa-hugo-theme&lt;/a&gt;. You can find the raw &lt;code&gt;.Rmd&lt;/code&gt; files for each post &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/tree/master/blog&#34;&gt;here&lt;/a&gt;. This blog is released under a &lt;a href=&#34;https://creativecommons.org/licenses/by-sa/4.0/&#34;&gt;Creative Commons Attribution-ShareAlike 4.0 International License&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This blog is built using the &lt;a href=&#34;https://github.com/rstudio/blogdown&#34;&gt;&lt;strong&gt;blogdown&lt;/strong&gt;&lt;/a&gt; package. The theme was forked from &lt;a href=&#34;https://github.com/nishanths/cocoa-hugo-theme&#34;&gt;nishanths/cocoa-hugo-theme&lt;/a&gt;. You can find the raw &lt;code&gt;.Rmd&lt;/code&gt; files for each post &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/tree/master/blog/2017&#34;&gt;here&lt;/a&gt;. This blog is released under a &lt;a href=&#34;https://creativecommons.org/licenses/by-sa/4.0/&#34;&gt;Creative Commons Attribution-ShareAlike 4.0 International License&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;All views are my own and do not represent my employer in any way.&lt;/p&gt;
 </description>
