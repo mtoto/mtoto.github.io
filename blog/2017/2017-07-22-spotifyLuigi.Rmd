@@ -335,7 +335,7 @@ htmltools::includeHTML("/Users/tamas/Documents/my_site/data/pls.html")
 
 I have tried to give a simple, yet fully reproducible example of how to set up a workflow using Luigi. It is important to note that building data pipelines for production systems does require a little more effort. To name a few shortcomings of the above: We haven't defined logging, we didn't clean up our original files containing the raw response data, and it is very likely that the same tracks will end up in this playlist on consecutive weeks. Not something you would want to happen to your Discover Weekly for example.
 
-If you are want to learn more about Luigi, I encourage you to read the [documentation](http://luigi.readthedocs.io/en/stable/index.html) and most of all start experimenting on personal projects. I find that is always the best way to learn new skills. 
+If you want to learn more about Luigi, I encourage you to read the [documentation](http://luigi.readthedocs.io/en/stable/index.html) and most of all start experimenting on personal projects. I find that is always the best way to learn new skills. 
 
 On the other hand, we could also create playlists that are more useful to us than a simple top 10 playlist. What if we took artists we listen to the most, and automatically put their songs not in our listening history yet in a new playlist. It is perfectly possible, and probably more valuable to us as users. We just need to write a couple new functions, plug them into a similar Luigi pipeline as above and let it do the work for us.
 

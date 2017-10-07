@@ -9,6 +9,151 @@
     <atom:link href="http://tamaszilagyi.com/tags/r/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>A tidy text analysis of Rick and Morty</title>
+      <link>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
+      <pubDate>Sat, 30 Sep 2017 23:15:14 -0500</pubDate>
+      
+      <guid>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
+      <description>&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;http://i.imgur.com/a841k9g.gif&#34; /&gt;
+
+&lt;/div&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+&lt;/style&gt;
+&lt;div id=&#34;adventures-in-the-multiverse&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Adventures in the multiverse&lt;/h2&gt;
+&lt;p&gt;For those unfamiliar with the show, Rick and Morty is an animated series about the interuniversal exploits of a half-drunk mad scientist Rick, and his daft grandson Morty. Living under one roof with his daughter, Rick constantly drags his grandson Morty along for adventures into unusual worlds inhabited by surreal creatures. At first hesitant to accompany his eccentric granddad, Morty slowly grows into an indispensable sidekick. Using Rick’s portal gun, they leave the rest of their dysfunctional family at home, and travel through space and time.&lt;/p&gt;
+&lt;p&gt;Most episodes draw inspiration from or make fun of cult movies such as Back to the Future, A Nightmare on Elm Street, Inception and many other classics by the likes of John Carpenter or David Cronenberg. Besides the ruthless humor and over-the-top visual scenery, the show brilliantly builds independent sci-fi realms, going about their day-to-day according to their wacky rules.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;one-mans-weekend-project-another-mans-treasure&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;One man’s weekend project, another man’s treasure&lt;/h2&gt;
+&lt;p&gt;After reading the book &lt;a href=&#34;http://tidytextmining.com/&#34;&gt;Tidy Text Mining&lt;/a&gt; online, I have been wanting to try out some of the concepts outlined in the book, and the functions of the &lt;a href=&#34;https://github.com/juliasilge/tidytext&#34;&gt;accompanying package&lt;/a&gt;, on an interesting dataset. So I was pretty stoked to find &lt;a href=&#34;https://github.com/fkeck/subtools&#34;&gt;Francois Keck’s &lt;strong&gt;subtools package&lt;/strong&gt; on GitHub&lt;/a&gt;, that allows for reading &lt;em&gt;.srt&lt;/em&gt; files (the usual format for subtitles) straight into R. With season 3 of Rick and Morty coming to an end last week, the stars have finally aligned to roll up my sleeves and have some fun text mining.&lt;/p&gt;
+&lt;p&gt;It is very easy to find English subtitles for pretty much anything on the internet. With subtools, the entire series can be read with one command from the containing folder, &lt;code&gt;read.subtitles.serie()&lt;/code&gt;. We convert the resulting MultiSubtitles object to a data.frame with a second command &lt;code&gt;subDataFrame()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(subtools)
+a &amp;lt;- read.subtitles.serie(dir = &amp;quot;/series/rick and morty/&amp;quot;)
+df &amp;lt;- subDataFrame(a)
+str(df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Read: 3 seasons, 31 episodes&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    16821 obs. of  8 variables:
+##  $ ID          : chr  &amp;quot;1&amp;quot; &amp;quot;2&amp;quot; &amp;quot;3&amp;quot; &amp;quot;4&amp;quot; ...
+##  $ Timecode.in : chr  &amp;quot;00:00:02.445&amp;quot; &amp;quot;00:00:03.950&amp;quot; &amp;quot;00:00:05.890&amp;quot; &amp;quot;00:00:07.420&amp;quot; ...
+##  $ Timecode.out: chr  &amp;quot;00:00:03.850&amp;quot; &amp;quot;00:00:05.765&amp;quot; &amp;quot;00:00:07.295&amp;quot; &amp;quot;00:00:08.925&amp;quot; ...
+##  $ Text        : chr  &amp;quot;Morty, you got to... come on.&amp;quot; &amp;quot;- You got to come with me. - Rick, what&amp;#39;s going on?&amp;quot; &amp;quot;I got a surprise for you, Morty.&amp;quot; &amp;quot;It&amp;#39;s the middle of the night. What are you talking about?&amp;quot; ...
+##  $ season      : chr  &amp;quot;Season_1&amp;quot; &amp;quot;Season_1&amp;quot; &amp;quot;Season_1&amp;quot; &amp;quot;Season_1&amp;quot; ...
+##  $ season_num  : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ episode_num : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ serie       : chr  &amp;quot;rick and morty&amp;quot; &amp;quot;rick and morty&amp;quot; &amp;quot;rick and morty&amp;quot; &amp;quot;rick and morty&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;$Text&lt;/code&gt; column contains the subtitle text, surrounded by additional variables for line id, timestamp, season and episode number. This is the structure preferred by the tidytext package, as it is by the rest of tidyverse.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;morty-you-got-tocome-on.&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;em&gt;“Morty, you got to…come on.”&lt;/em&gt;&lt;/h2&gt;
+&lt;p&gt;Let’s start with the bread and butter of text mining, &lt;em&gt;term frequencies&lt;/em&gt;. We split the text by word, exclude stop words,&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data(stop_words)
+tidy_df &amp;lt;- df %&amp;gt;%
+  unnest_tokens(word, Text) %&amp;gt;%
+  anti_join(stop_words)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and aggregate and plot the top 10 words per season.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(ggplot2)
+
+tidy_df %&amp;gt;% group_by(season) %&amp;gt;%
+        count(word, sort = TRUE) %&amp;gt;%
+        top_n(10) %&amp;gt;%
+        ggplot(aes(reorder(word,n), n, fill = season)) +
+        geom_col() +
+        coord_flip() +
+        facet_wrap(~season, scales = &amp;quot;free_y&amp;quot;) +
+        labs(x = NULL) +
+        guides(fill = FALSE) +
+        scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Both seasons are dominated by, well, Rick and Morty. The main characters are tirelessly addressing each other, talking one another either into or out of the mess they find themselves in. What stands out most is the absence of Rick’s daughter, Beth from the top 10 in all seasons. She’s perhaps the only sane person of the family, but then again, sanity doesn’t get too much airtime on this show.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;network-analysis-on-bi-grams&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Network analysis on bi-grams&lt;/h2&gt;
+&lt;p&gt;We can similarly get the number of times each &lt;em&gt;two words&lt;/em&gt; appear, called &lt;em&gt;bi-grams&lt;/em&gt;. Besides calculating summary statistics on bi-grams, we can now construct a network of words according to co-occurrence using &lt;a href=&#34;https://cran.r-project.org/web/packages/igraph/index.html&#34;&gt;igraph&lt;/a&gt;, the go-to package for network analysis in R.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyr)
+library(igraph)
+
+bigram_graph &amp;lt;- df %&amp;gt;%
+  unnest_tokens(bigram, Text, token = &amp;quot;ngrams&amp;quot;, n = 2) %&amp;gt;%
+  separate(bigram, c(&amp;quot;word1&amp;quot;, &amp;quot;word2&amp;quot;), sep = &amp;quot; &amp;quot;) %&amp;gt;%
+  filter(!word1 %in% stop_words$word) %&amp;gt;%
+  filter(!word2 %in% stop_words$word) %&amp;gt;% 
+  group_by(season) %&amp;gt;%
+  count(word1, word2, sort = TRUE) %&amp;gt;%
+  select(word1, word2, season, n) %&amp;gt;%
+  filter(n &amp;gt; 2) %&amp;gt;%
+  graph_from_data_frame()
+
+str(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## IGRAPH DN-- 310 280 -- 
+## + attr: name (v/c), season (e/c), n (e/n)
+## + edges (vertex names):
+## [1] tiny            -&amp;gt;rick       yeah            -&amp;gt;yeah      
+## [3] ice             -&amp;gt;cream      god             -&amp;gt;damn      
+## [5] whoa            -&amp;gt;whoa      
+##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 275 entries ]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This igraph object contains a directed network, where the vertices are the words and an edge exists between each that appear after one another. Representing the text as a graph, we can calculate things such as &lt;a href=&#34;https://en.wikipedia.org/wiki/Centrality#Degree_centrality&#34;&gt;degree centrality&lt;/a&gt;, and plot the results.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Looking at the largest connected network, we arrive at the same conclusion as with term frequencies. Rick and Morty are the most important words. They are at the center of the network and so have the highest degree centrality scores.&lt;/p&gt;
+&lt;p&gt;Besides visualising the importance of words in our network, we can similarly differentiate between words that precede either Rick or Morty. These are all the 1st degree connections (words) that have an edge pointing towards the main characters, but aren’t shared among the them.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Looking at the red nodes, we recognize many of the things Rick throws at Morty: &lt;em&gt;“Relax Morty!…It’s science Morty!…Run Morty!”&lt;/em&gt;. There is also a handful of words that precede both characters like &lt;em&gt;“Geez”, “Boy”&lt;/em&gt; or &lt;em&gt;“God”&lt;/em&gt;. All other words that are more than one degree away, are colored blue as out of range.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;tf-idf&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;tf-idf&lt;/h2&gt;
+&lt;p&gt;Thus far we have looked at all words across seasons. But where do the seasons differ from each other? And can we summarise each season with a handful of topics? To answer the first question, text mining’s most notorious statistic &lt;a href=&#34;https://en.wikipedia.org/wiki/Tf%E2%80%93idf&#34;&gt;&lt;strong&gt;tf-idf&lt;/strong&gt;&lt;/a&gt; comes to our rescue. It stands for &lt;strong&gt;term frequency - inverse document frequency&lt;/strong&gt;. We take the word counts per season and multiply it by the &lt;em&gt;scaled inverse fraction of seasons that contain the word&lt;/em&gt;. Simply put, we penalize words that are common across all seasons, and reward ones that are not. This way, we bring forth the words most typical of each season. Again the tidytext implementation is super easy.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tf_idf_df &amp;lt;- tidy_df %&amp;gt;% 
+        count(season, word, sort = TRUE) %&amp;gt;%
+        bind_tf_idf(word, season, n)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;What we get back are the most important elements, characters, motives or places across episodes. I’m somewhat surprised that Mr. Meeseeks didn’t come in first though. I was sure as hell annoyed out of my mind after hearing it uttered for the 100th time on the &lt;a href=&#34;https://en.wikipedia.org/wiki/Meeseeks_and_Destroy&#34;&gt;Meeseeks and Destroy&lt;/a&gt;. But then again, Mr Meeseeks does make a cameo in two other seasons, so that kind of torpedoes his chances for the first spot.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;topic-models&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Topic models&lt;/h2&gt;
+&lt;p&gt;Having seen the most unique words of the script by seasons, we will take our analysis one last step further and try to capture the gist of a the show using topic modeling. Broadly speaking, it’s and unsupervised classification method that tries to represent a document as a collection of topics. Here, I will take the classic &lt;a href=&#34;https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation&#34;&gt;Latent Dirichlet Allocation or shortly LDA&lt;/a&gt; algorithm for a spin. The basic idea behind the is that…&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“…a topic is defined as a mixture over words where each word has a probability of belonging to a topic. And a document is a mixture over topics, meaning that a single document can be composed of multiple topics.”&amp;quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;We could for example take season two, and tell &lt;code&gt;LDA()&lt;/code&gt; that we want to compress 10 episodes into just 6 topics. To compensate for the omnipresence of the top words across episodes, I will exclude them for the purpose of clearer separation of topics.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(topicmodels)
+popular_words &amp;lt;- c(&amp;quot;rick&amp;quot;,&amp;quot;morty&amp;quot;, &amp;quot;yeah&amp;quot;,&amp;quot;hey&amp;quot;,
+                   &amp;quot;summer&amp;quot;, &amp;quot;jerry&amp;quot;, &amp;quot;uh&amp;quot;, &amp;quot;gonna&amp;quot;)
+
+episodes_dtm &amp;lt;- tidy_df %&amp;gt;% filter(season_num == 2 &amp;amp; !word %in% popular_words) %&amp;gt;%
+        group_by(episode_num) %&amp;gt;%
+        count(word, sort = TRUE) %&amp;gt;%
+        cast_dtm(episode_num, word, n) 
+
+episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After &lt;code&gt;tidy()&lt;/code&gt;ing the results, we can plot the top 10 words that contribute (&lt;em&gt;beta&lt;/em&gt;) to most to each topic.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt; There’s definitely a few topics that contain multiple motives of a particular episode. Take for example &lt;strong&gt;topic 1&lt;/strong&gt;. It includes “&lt;em&gt;Roy&lt;/em&gt;”, the name of the videogame Morty plays in the same episode “&lt;em&gt;Fart&lt;/em&gt;” appears, a gaseous creature kept under locks by aliens. Or &lt;strong&gt;topic 5&lt;/strong&gt;, which probably relates to the episode where Rick visits his old lover “&lt;em&gt;Unity&lt;/em&gt;”. It further contains words as “&lt;em&gt;remember&lt;/em&gt;” and “&lt;em&gt;memories&lt;/em&gt;”. The episode ends with Unity repeating “I want it &lt;em&gt;real&lt;/em&gt;”.&lt;/p&gt;
+&lt;p&gt;Not only can we examine the &lt;strong&gt;word per topic probabilities&lt;/strong&gt;, we can also plot &lt;strong&gt;the topic per document probabilities&lt;/strong&gt;, or &lt;em&gt;gamma&lt;/em&gt; values. This lets us see what topic belongs to what episode.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tidy(episodes_lda, matrix = &amp;quot;gamma&amp;quot;) %&amp;gt;%
+        inner_join(titles) %&amp;gt;%
+        ggplot(aes(factor(topic), gamma)) +
+        geom_boxplot() +
+        facet_wrap(~ title) +
+        ggtitle(&amp;quot;Dominant Topics per Episode&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Our previous assumptions are confirmed, the first topic does belong to the episode &lt;em&gt;Mortynight Run&lt;/em&gt; as does fifth topic to &lt;em&gt;Auto-Erotic Assimilation&lt;/em&gt;. It is important to note that the results strongly depend on the number of topics supplied to &lt;code&gt;LDA()&lt;/code&gt;, so inevitably, some experimentation is required to arrive at meaningful results.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;final-thoughts&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Final thoughts&lt;/h2&gt;
+&lt;p&gt;I ran through some very interesting concepts fairly quickly in this post. I owe much of it to the tidytext package. With very little coding, we can mine a tremendous amount of insights. And I have just scrachted the surface of what’s possible. The seamless integration with the tidyverse, as with igraph and topicmodels does make a huge difference.&lt;/p&gt;
+&lt;p&gt;Nonetheless, text mining is a complex topic and when arriving at more advanced material, &lt;a href=&#34;https://github.com/trinker/topicmodels_learning&#34;&gt;further reading&lt;/a&gt; on the inner workings of these algorithms might come in handy for effective use. The full data and code for this post is available as usual on my Github.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Self-learning Hue Lights</title>
       <link>http://tamaszilagyi.com/blog/self-learning-hue-lights/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
@@ -143,10 +288,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      98  195     30  411
-##   mid      62   93      6  127
-##   bright   37   51      0   26
-##   zero     23  104     29 4180&lt;/code&gt;&lt;/pre&gt;
+##   dim      72  173     19  296
+##   mid      74  121     17  120
+##   bright   37   56      0   30
+##   zero     37   93     29 4298&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;

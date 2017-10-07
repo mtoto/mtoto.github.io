@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="Coding with Data">
+
+<base href="../../">
+<title>
+
+
+     The genius of Rick and Morty - A tidy text analysis 
+
+</title>
+<link rel="canonical" href="../../blog/the-genius-of-rick-and-morty---a-tidy-text-analysis/">
+
+
+<script type="text/javascript">
+    var baseURL = '\/';
+    var host = baseURL.substring(0, baseURL.length - 1).replace(/\//g, '');
+    if ((host === window.location.host) && (window.location.protocol !== 'https:')) {
+        window.location.protocol = 'https:';
+    }
+</script>
+
+
+
+
+    <link rel="stylesheet" href="../../css/vs.css">
+    <script src="../../js/highlight.pack.js"></script>
+    <script>
+  hljs.initHighlightingOnLoad();
+    </script>
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="../../css/reset.css?t=1507047845">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1507047845">
+    <link rel="stylesheet" href="../../css/main.css?t=1507047845">
+    
+        <link rel="stylesheet" href="../../css/override.css?t=1507047845">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="../../img/leaf.ico"
+
+>
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+              <a href="../../"><img class="avatar" src="../../img/profile_pic.png" /></a>
+            
+            <a href="../../"><div class="name">Tamas Szilagyi</div></a>
+            
+              <h3 class="self-intro">Coding with Data</h3>
+            
+            <nav>
+                <ul>
+                    <a href="../../blog/"><li>Blog</li></a>
+                    <a href="../../about/"><li>About</li></a>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+            
+        
+            <a href="mailto:tszilagyi@outlook.com"><img class="icon" src="../../img/email.svg" alt="email" /></a>
+        
+            
+        
+            <a href="//linkedin.com/in/tszilagyi" target="_blank"><img class="icon" src="../../img/linkedin.svg" alt="linkedin" /></a>
+        
+            
+        
+            <a href="//twitter.com/tudosgar" target="_blank"><img class="icon" src="../../img/twitter.svg" alt="twitter" /></a>
+        
+
+        
+            <a href="//github.com/mtoto" target="_blank"><img class="icon" src="../../img/github.svg" alt="github" /></a>
+        
+            
+        
+            <a href="//stackoverflow.com/users/4964651/mtoto?tab=profile" target="_blank"><img class="icon" src="../../img/so.svg" alt="stackoverflow" /></a>
+        
+
+
+        
+
+        
+            <a href="//soundcloud.com/tamas-szilagyi" target="_blank"><img class="icon" src="../../img/soundcloud.svg" alt="soundcloud" /></a>
+        
+
+        
+
+       
+        </div>
+    </div>
+</section>
+    
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    The genius of Rick and Morty - A tidy text analysis
+
+</div>
+
+                    <div class="initials"><a href="../../"></a></div>
+                </div>
+                <div class="meta">
+                    <div class="date" title="Sat Sep 30 2017 23:15:14 -0500">Sep 30, 2017</div>
+                    <div class="reading-time"><div class="middot"></div>6 minutes read</div>
+                </div>
+            </div>
+            <div class="markdown">
+                <div class="figure">
+<img src="http://i.imgur.com/a841k9g.gif" />
+
+</div>
+<style type="text/css">
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+</style>
+<div id="adventures-in-the-multiverse" class="section level2">
+<h2>Adventures in the multiverse</h2>
+<p>For those unfamiliar with the show, Rick and Morty is an animated series about the interuniversal exploits of a half-drunk mad scientist Rick, and his daft grandson Morty. Living under one roof with his daughter, Rick constantly drags his grandson Morty along for adventures into unusual worlds inhabited by surreal creatures. At first hesitant to accompany his eccentric grandad, Morty slowly grows into an indispensable sidekick. Using Rick’s portal gun the two travel through space and time, leaving the rest of the disfunctional family at home.</p>
+<p>Most episodes draw inspiration from or make fun of cult movies such as <em>Back to the Future</em>, <em>A Nightmare on Elm Street</em>, <em>Inception</em> and many other classics by the likes of John Carpenter or David Cronenberg. Besides the ruthless humor and over-the-top visual scenery, the show brilliantly builds independent sci-fi realms, going about their day-to-day according to their wacky rules.</p>
+</div>
+<div id="one-mans-weekend-project-another-mans-treasure" class="section level2">
+<h2>One man’s weekend project, another man’s treasure</h2>
+<p>After reading the book <a href="http://tidytextmining.com/">Tidy Text Mining</a> online, I have been wanting to try out some of the concepts outlined in the book, and the functions of the <a href="https://github.com/juliasilge/tidytext">accompanying package</a> on an interesting dataset. So I was pretty stoked to find <a href="https://github.com/fkeck/subtools">Francois Keck’s <strong>subtools package</strong> on GitHub</a>, that allows for reading .srt files (the usual format for subtitles) straight into R.</p>
+<p>When the subtitle files are stored in folders according to season, the entire series can be read with one command, <code>read.subtitles.serie()</code>. We convert resulting MultiSubtitles object to a data.frame with a second command <code>subDataFrame()</code>. The subtitle text is going to be in the <code>$Text</code> column, surrounded by additional variables for line id, timestamp, season and episode number. This is the format preferred by the tidytext package, as it is by the rest of tidyverse, right now the most popular programming paradigm in R.</p>
+<pre class="r"><code>library(subtools)
+a &lt;- read.subtitles.serie(dir = &quot;/Users/tamas/Documents/my_site/data/rick and morty/&quot;)</code></pre>
+<pre><code>## Read: 3 seasons, 31 episodes</code></pre>
+<pre class="r"><code>#a &lt;- read.subtitles.serie(dir =  &quot;\\\\ad.ing.net/WPS/NL/P/UD/200005/UH44YF/Home/My Documents/ING Work/blog/rm&quot;)
+df &lt;- subDataFrame(a)
+str(df)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    16821 obs. of  8 variables:
+##  $ ID          : chr  &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; ...
+##  $ Timecode.in : chr  &quot;00:00:02.445&quot; &quot;00:00:03.950&quot; &quot;00:00:05.890&quot; &quot;00:00:07.420&quot; ...
+##  $ Timecode.out: chr  &quot;00:00:03.850&quot; &quot;00:00:05.765&quot; &quot;00:00:07.295&quot; &quot;00:00:08.925&quot; ...
+##  $ Text        : chr  &quot;Morty, you got to... come on.&quot; &quot;- You got to come with me. - Rick, what&#39;s going on?&quot; &quot;I got a surprise for you, Morty.&quot; &quot;It&#39;s the middle of the night. What are you talking about?&quot; ...
+##  $ season      : chr  &quot;Season_1&quot; &quot;Season_1&quot; &quot;Season_1&quot; &quot;Season_1&quot; ...
+##  $ season_num  : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ episode_num : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ serie       : chr  &quot;rick and morty&quot; &quot;rick and morty&quot; &quot;rick and morty&quot; &quot;rick and morty&quot; ...</code></pre>
+<p>Now we can dive straight in using the tools most R users are familiar with, such as dplyr or ggplot2. For starters, let’s see how many words the characters utter per episode.</p>
+<pre class="r"><code>library(dplyr)
+library(tidytext)
+library(ggplot2)
+df %&gt;% unnest_tokens(word, Text) %&gt;% 
+        group_by(season_num, episode_num) %&gt;%
+        count() %&gt;%
+        ggplot(aes(n, fill = episode_num)) + geom_density()</code></pre>
+<p><img src="../../blog/2017/2017-09-20-tarantino_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="morty-you-got-tocome-on." class="section level2">
+<h2><em>“Morty, you got to…come on.”</em></h2>
+<p>Let’s start the explorations with the bread and butter of text mining, <em>term frequencies</em>. After excluding stop_words from the dataset, we can peak at the top five words per season.</p>
+<p><img src="../../blog/2017/2017-09-20-tarantino_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Both seasons are dominated by, well, Rick and Morty. The main characters are tirelessly addressing each other, talking one another either into or out of the mess they find themselves in. What stands out most is the absence of Rick’s daughter, Beth from the top 10 in all seasons. She’s perhaps the only sane person of the family, but then again, sanity doesn’t get too much airtime on this show.</p>
+<p>Besides calculating the number of times each word appears, we can similarly get the number of times each two words appear, officially called <em>bi-grams</em>.</p>
+<p>Overall, the top words are almost identical in the three seasons. But where do the seasons differ from each other then? This is where text mining’s notorious acronym, <a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">tf-idf</a> comes to play. It stands for term frequeny - inverse document frequency, where we take the word counts and multiply it by <em>“the logarithmically scaled inverse fraction of the documents that contain the word”</em>. Simply put, we will penalize the words that are common across all seasons, and reward the ones that are not. This way, we bring forth the words most typical of each season. Thanks to tidytext, implemenation is a piece of cake:</p>
+<pre class="r"><code>tidy_df %&gt;% 
+  count(season, word, sort = TRUE) %&gt;%
+  bind_tf_idf(word, season, n) %&gt;%
+  arrange(desc(tf_idf)) %&gt;%
+  mutate(word = factor(word, levels = rev(unique(word)))) %&gt;%
+  top_n(20) %&gt;%
+  ggplot(aes(word, tf_idf, fill = season)) +
+  geom_col() +
+  labs(x = NULL, y = &quot;tf-idf&quot;) +
+  coord_flip()</code></pre>
+<p><img src="../../blog/2017/2017-09-20-tarantino_files/figure-html/unnamed-chunk-5-1.png" width="672" /> To see if this holds, we can look at the words surronding both words in most sentences.</p>
+<pre class="r"><code>library(tidyr)
+stop_words &lt;- stop_words %&gt;%
+        rbind(data.frame(word = c(&quot;xhmikosr&quot;, &quot;www.addic7ed.com&quot;,
+                                  &quot;sync&quot;, &quot;corrections&quot;),
+                         lexicon = &quot;custom&quot;))
+rm_bigrams &lt;- df %&gt;%
+  unnest_tokens(bigram, Text, token = &quot;ngrams&quot;, n = 2) %&gt;%
+  separate(bigram, c(&quot;word1&quot;, &quot;word2&quot;), sep = &quot; &quot;) %&gt;%
+  filter(!word1 %in% stop_words$word) %&gt;%
+  filter(!word2 %in% stop_words$word) %&gt;% 
+  count(word1, word2, sort = TRUE)
+
+rm_bigrams</code></pre>
+<pre><code>## # A tibble: 7,284 x 3
+##      word1 word2     n
+##      &lt;chr&gt; &lt;chr&gt; &lt;int&gt;
+##  1    whoa  whoa    47
+##  2    yeah  yeah    34
+##  3 grandpa  rick    31
+##  4     god  damn    24
+##  5    tiny  rick    24
+##  6      ha    ha    23
+##  7     hey  rick    23
+##  8    holy  crap    23
+##  9  portal   gun    23
+## 10     ice cream    22
+## # ... with 7,274 more rows</code></pre>
+<ul>
+<li>Ideas: words per episode distributions, most words per minute</li>
+</ul>
+<pre class="r"><code>library(igraph)
+library(ggraph)
+rm_bigrams &lt;- df %&gt;%
+  unnest_tokens(bigram, Text, token = &quot;ngrams&quot;, n = 2) %&gt;%
+  separate(bigram, c(&quot;word1&quot;, &quot;word2&quot;), sep = &quot; &quot;) %&gt;%
+  filter(!word1 %in% stop_words$word) %&gt;%
+  filter(!word2 %in% stop_words$word) %&gt;% 
+  group_by(season) %&gt;%
+  count(word1, word2, sort = TRUE) %&gt;%
+  select(word1, word2, season, n)
+
+
+bigram_graph &lt;- rm_bigrams %&gt;%
+  filter(n &gt; 2) %&gt;%
+  graph_from_data_frame()
+
+dg &lt;- decompose.graph(bigram_graph) # returns a list of three graphs
+
+words&lt;-tidy_df %&gt;% 
+  count(word, sort = TRUE) %&gt;%
+  inner_join(data.frame(word = V(dg[[1]])$name))</code></pre>
+<pre><code>## Warning: Column `word` joining character vector and factor, coercing into
+## character vector</code></pre>
+<pre class="r"><code>vertex_attr(dg[[1]], &quot;n&quot;) &lt;- words[match(V(dg[[1]])$name, stop_words$word),]$n
+
+
+ggraph(dg[[1]], layout = &quot;kk&quot;) +
+  geom_edge_link(alpha = .5) +
+  geom_edge_density(aes(fill = season)) +
+  geom_node_point(aes(size = n, alpha =n )) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1)</code></pre>
+<pre><code>## Warning: Removed 62 rows containing missing values (geom_point).</code></pre>
+<p><img src="../../blog/2017/2017-09-20-tarantino_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>ggraph(dg[[1]], layout = &#39;linear&#39;, circular = TRUE) + 
+    geom_edge_arc(aes(colour = season)) + 
+    geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+    coord_fixed()</code></pre>
+<p><img src="../../blog/2017/2017-09-20-tarantino_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+
+                <br>
+                <p><a href="../../blog/">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'tamas-blog';
+    var disqus_identifier = '\/blog\/the-genius-of-rick-and-morty---a-tidy-text-analysis\/';
+    var disqus_title = 'The genius of Rick and Morty - A tidy text analysis';
+    var disqus_url = '\/blog\/the-genius-of-rick-and-morty---a-tidy-text-analysis\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+   <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    });
+    </script>
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-97386385-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/languages/r.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+
+<link rel="stylesheet" href="//css/vs.css">
+<script src="../../js/highlight.pack.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+
