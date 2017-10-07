@@ -214,11 +214,11 @@ tf_idf_df %>% arrange(desc(tf_idf)) %>%
 
 ```
 
-What we get back are the most important elements, characters, motives or places across episodes. I'm somewhat surprised that Mr. Meeseeks didn't come in first though. I was sure as hell annoyed out of my mind after hearing it uttered for the 100th time on the [Meeseeks and Destroy](https://en.wikipedia.org/wiki/Meeseeks_and_Destroy). But then again, Mr Meeseeks does make a cameo in two other seasons, so that kind of torpedoes his chances for the first spot.
+What we get back are the most important elements, characters, motives or places across episodes. I'm somewhat surprised that Mr. Meeseeks didn't come in first though. I was sure as hell annoyed out of my mind after hearing it uttered for the 100th time during the episode [Meeseeks and Destroy](https://en.wikipedia.org/wiki/Meeseeks_and_Destroy). But then again, Mr Meeseeks does make a cameo in two other seasons, so that kind of torpedoes his chances for the first spot.
 
 ## Topic models
 
-Having seen the most unique words of the script by seasons, we will take our analysis one last step further and try to capture the gist of a the show using topic modeling. Broadly speaking, it's an  unsupervised classification method that tries to represent a document as a collection of topics. Here, I will take the classic  [Latent Dirichlet Allocation or shortly LDA ](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) algorithm for a spin. The basic idea behind the is that
+Having seen the most unique words of the script by seasons, we will take our analysis one last step further and try to capture the gist of a the show using topic modeling. Broadly speaking, it's an  unsupervised classification method that tries to represent a document as a collection of topics. Here, I will take the classic  [Latent Dirichlet Allocation or shortly LDA ](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) algorithm for a spin. The basic idea is that
 
 > "...a topic is defined as a mixture over words where each word has a probability
 of belonging to a topic. And a document is a mixture over topics, meaning that a single
