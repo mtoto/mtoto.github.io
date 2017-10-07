@@ -110,7 +110,7 @@ str(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;tf-idf&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;tf-idf&lt;/h2&gt;
-&lt;p&gt;Thus far we have looked at all words across seasons. But where do the seasons differ from each other? And can we summarise each season with a handful of topics? To answer the first question, text mining’s most notorious statistic &lt;a href=&#34;https://en.wikipedia.org/wiki/Tf%E2%80%93idf&#34;&gt;&lt;strong&gt;tf-idf&lt;/strong&gt;&lt;/a&gt; comes to our rescue. It stands for &lt;strong&gt;term frequency - inverse document frequency&lt;/strong&gt;. We take the word counts per season and multiply it by the &lt;em&gt;scaled inverse fraction of seasons that contain the word&lt;/em&gt;. Simply put, we penalize words that are common across all seasons, and reward ones that are not. This way, we bring forth the words most typical of each season. Again the tidytext implementation is super easy.&lt;/p&gt;
+&lt;p&gt;Thus far we have looked at all words across seasons. But where do the seasons differ from each other? And can we summarise each season using a handful of topics? To answer the first question, text mining’s most notorious statistic &lt;a href=&#34;https://en.wikipedia.org/wiki/Tf%E2%80%93idf&#34;&gt;&lt;strong&gt;tf-idf&lt;/strong&gt;&lt;/a&gt; comes to the rescue. It stands for &lt;strong&gt;term frequency - inverse document frequency&lt;/strong&gt;. We take the word counts per season and multiply it by the &lt;em&gt;scaled inverse fraction of seasons that contain the word&lt;/em&gt;. Simply put, we penalize words that are common across all seasons, and reward ones that are not. This way, we bring forth the words most typical of each season. Again the tidytext implementation is super easy.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tf_idf_df &amp;lt;- tidy_df %&amp;gt;% 
         count(season, word, sort = TRUE) %&amp;gt;%
         bind_tf_idf(word, season, n)&lt;/code&gt;&lt;/pre&gt;
@@ -289,10 +289,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      98  176     23  410
-##   mid      50  114     14  107
-##   bright   41   59      0   32
-##   zero     31   94     28 4195&lt;/code&gt;&lt;/pre&gt;
+##   dim      90  190     29  283
+##   mid      89  153      6  161
+##   bright    0    0      0    0
+##   zero     41  100     30 4300&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;

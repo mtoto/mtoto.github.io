@@ -44,11 +44,11 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1507407343">
-    <link rel="stylesheet" href="../../css/pygments.css?t=1507407343">
-    <link rel="stylesheet" href="../../css/main.css?t=1507407343">
+    <link rel="stylesheet" href="../../css/reset.css?t=1507408261">
+    <link rel="stylesheet" href="../../css/pygments.css?t=1507408261">
+    <link rel="stylesheet" href="../../css/main.css?t=1507408261">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1507407343">
+        <link rel="stylesheet" href="../../css/override.css?t=1507408261">
     
 
 
@@ -244,7 +244,7 @@ str(bigram_graph)</code></pre>
 </div>
 <div id="tf-idf" class="section level2">
 <h2>tf-idf</h2>
-<p>Thus far we have looked at all words across seasons. But where do the seasons differ from each other? And can we summarise each season with a handful of topics? To answer the first question, text mining’s most notorious statistic <a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf"><strong>tf-idf</strong></a> comes to our rescue. It stands for <strong>term frequency - inverse document frequency</strong>. We take the word counts per season and multiply it by the <em>scaled inverse fraction of seasons that contain the word</em>. Simply put, we penalize words that are common across all seasons, and reward ones that are not. This way, we bring forth the words most typical of each season. Again the tidytext implementation is super easy.</p>
+<p>Thus far we have looked at all words across seasons. But where do the seasons differ from each other? And can we summarise each season using a handful of topics? To answer the first question, text mining’s most notorious statistic <a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf"><strong>tf-idf</strong></a> comes to the rescue. It stands for <strong>term frequency - inverse document frequency</strong>. We take the word counts per season and multiply it by the <em>scaled inverse fraction of seasons that contain the word</em>. Simply put, we penalize words that are common across all seasons, and reward ones that are not. This way, we bring forth the words most typical of each season. Again the tidytext implementation is super easy.</p>
 <pre class="r"><code>tf_idf_df &lt;- tidy_df %&gt;% 
         count(season, word, sort = TRUE) %&gt;%
         bind_tf_idf(word, season, n)</code></pre>

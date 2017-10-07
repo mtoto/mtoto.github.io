@@ -189,7 +189,7 @@ Looking at the red nodes, we recognize many of the things Rick throws at Morty: 
 
 ## tf-idf
 
-Thus far we have looked at all words across seasons. But where do the seasons differ from each other? And can we summarise each season with a handful of topics?  To answer the first question, text mining's most notorious statistic [**tf-idf**](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) comes to our rescue. It stands for **term frequency - inverse document frequency**. We take the word counts per season and multiply it by the *scaled inverse fraction of seasons that contain the word*. Simply put, we  penalize words that are common across all seasons, and reward ones that are not. This way, we bring forth the words most typical of each season. Again the tidytext implementation is super easy. 
+Thus far we have looked at all words across seasons. But where do the seasons differ from each other? And can we summarise each season using a handful of topics?  To answer the first question, text mining's most notorious statistic [**tf-idf**](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) comes to the rescue. It stands for **term frequency - inverse document frequency**. We take the word counts per season and multiply it by the *scaled inverse fraction of seasons that contain the word*. Simply put, we  penalize words that are common across all seasons, and reward ones that are not. This way, we bring forth the words most typical of each season. Again the tidytext implementation is super easy. 
 
 ```{r}
 tf_idf_df <- tidy_df %>% 
