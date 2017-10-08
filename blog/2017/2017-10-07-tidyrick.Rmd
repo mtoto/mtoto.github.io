@@ -9,12 +9,12 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE)
-knitr::asis_output(htmltools::htmlPreserve('
-<meta property="og:image" content="http://tamaszilagyi.com/data/2017-10-07-tidyrick/mr.png">
-<meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="497">
-<meta property="og:image:height" content="279">
-'))
+knitr::asis_output(htmltools::htmlPreserve("
+<meta property='og:title' content='A tidy text analysis of Rick and Morty'/>
+<meta property='og:image' content='http://tamaszilagyi.com/img/rm.jpg'>
+<meta property='og:description' content='Description that will show in the preview'/>
+<meta property='og:url' content='//tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/' />
+"))
 
 ```
 
