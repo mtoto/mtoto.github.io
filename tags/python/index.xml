@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Python on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/python/index.xml</link>
+    <link>/tags/python/index.xml</link>
     <description>Recent content in Python on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://tamaszilagyi.com/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>A tidy text analysis of Rick and Morty</title>
-      <link>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
+      <link>/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
+      <guid>/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
       <description>&lt;div class=&#34;figure&#34;&gt;
 &lt;img src=&#34;http://i.imgur.com/a841k9g.gif&#34; /&gt;
 
@@ -155,10 +155,10 @@ episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;
     
     <item>
       <title>Self-learning Hue Lights</title>
-      <link>http://tamaszilagyi.com/blog/self-learning-hue-lights/</link>
+      <link>/blog/self-learning-hue-lights/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/self-learning-hue-lights/</guid>
+      <guid>/blog/self-learning-hue-lights/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -288,10 +288,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      91  161     21  433
-##   mid      64  120     14   60
-##   bright   35   63      0    7
-##   zero     30   99     30 4244&lt;/code&gt;&lt;/pre&gt;
+##   dim     103  199     28  341
+##   mid      54   85      6  212
+##   bright   20   50      0    8
+##   zero     43  109     31 4183&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
@@ -339,10 +339,10 @@ jug() %&amp;gt;% post(&amp;quot;/predict-hue&amp;quot;, decorate(predict_hue)) %
     
     <item>
       <title>Creating a Spotify Playlist using Luigi</title>
-      <link>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</link>
+      <link>/blog/creating-a-spotify-playlist-using-luigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</guid>
+      <guid>/blog/creating-a-spotify-playlist-using-luigi/</guid>
       <description>&lt;!-- BLOGDOWN-HEAD --&gt;
 &lt;!-- /BLOGDOWN-HEAD --&gt;
 
