@@ -9,14 +9,6 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE)
-knitr::asis_output(htmltools::htmlPreserve("
-<head>
-  <meta property='og:title' content='A tidy text analysis of Rick and Morty'/>
-  <meta property='og:image' content='http://tamaszilagyi.com/img/rm.jpg'>
-  <meta property='og:description' content='Description that will show in the preview'/>
-  <meta property='og:url' content='//tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/' />
-<head>
-"))
 
 ```
 
@@ -56,7 +48,6 @@ str(df)
 ```{r, echo = F}
 library(subtools)
 a <- read.subtitles.serie(dir = "/Users/tamas/Documents/my_site/data/rick and morty/")
-#a <- read.subtitles.serie(dir =  "\\\\ad.ing.net/WPS/NL/P/UD/200005/UH44YF/Home/My Documents/ING Work/blog/rm")
 df <- subDataFrame(a)
 str(df)
 ```
