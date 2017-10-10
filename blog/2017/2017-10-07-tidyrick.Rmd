@@ -277,7 +277,7 @@ tidy(episodes_lda, matrix = "gamma") %>%
 
 ```
 
-Our previous assumptions are confirmed, the first topic does belong to the episode *Mortynight Run* as does fifth topic to *Auto-Erotic Assimilation*. It is important to note that the results strongly depend on the number of topics supplied to `LDA()`, so inevitably, some experimentation is required to arrive at meaningful results.
+Our previous assumptions are confirmed, the first topic does belong to the episode *Mortynight Run* as does the fifth topic to *Auto-Erotic Assimilation*. It is important to note that the results strongly depend on the number of topics supplied to `LDA()`, so inevitably, some experimentation is required to arrive at meaningful results.
 
 ## Final thoughts
 
