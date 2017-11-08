@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</loc>
+    <lastmod>2017-11-09T21:00:30-05:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</loc>
     <lastmod>2017-10-07T23:15:14-05:00</lastmod>
   </url>
@@ -32,8 +37,14 @@
   </url>
   
   <url>
+    <loc>http://tamaszilagyi.com/tags/ai/</loc>
+    <lastmod>2017-11-09T21:00:30-05:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://tamaszilagyi.com/blog/</loc>
-    <lastmod>2017-10-07T23:15:14-05:00</lastmod>
+    <lastmod>2017-11-09T21:00:30-05:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -44,7 +55,13 @@
   
   <url>
     <loc>http://tamaszilagyi.com/</loc>
-    <lastmod>2017-10-07T23:15:14-05:00</lastmod>
+    <lastmod>2017-11-09T21:00:30-05:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tamaszilagyi.com/tags/deep-learning/</loc>
+    <lastmod>2017-11-09T21:00:30-05:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -73,6 +90,12 @@
   </url>
   
   <url>
+    <loc>http://tamaszilagyi.com/tags/neural-network/</loc>
+    <lastmod>2017-11-09T21:00:30-05:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://tamaszilagyi.com/tags/plot/</loc>
     <lastmod>2017-05-14T21:13:14-05:00</lastmod>
     <priority>0</priority>
@@ -91,14 +114,14 @@
   </url>
   
   <url>
-    <loc>http://tamaszilagyi.com/tags/r/</loc>
-    <lastmod>2017-10-07T23:15:14-05:00</lastmod>
+    <loc>http://tamaszilagyi.com/categories/r/</loc>
+    <lastmod>2017-11-09T21:00:30-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://tamaszilagyi.com/categories/r/</loc>
-    <lastmod>2017-10-07T23:15:14-05:00</lastmod>
+    <loc>http://tamaszilagyi.com/tags/r/</loc>
+    <lastmod>2017-11-09T21:00:30-05:00</lastmod>
     <priority>0</priority>
   </url>
   
