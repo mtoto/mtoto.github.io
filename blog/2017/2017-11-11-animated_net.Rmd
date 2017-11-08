@@ -482,7 +482,7 @@ predict_nn<-function(parameters, X) {
 ![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/result.gif)
 
 
-For the plots, I used the packages [ggplot](https://github.com/tidyverse/ggplot2), [ggraph](https://github.com/thomasp85/ggraph) [gganimate](https://github.com/thomasp85/ggraph), [tweenr](https://github.com/thomasp85/tweenr), [animation](https://cran.r-project.org/web/packages/animation/index.html). Thanks to the creators of these awesome tools, I was able to make all the gifs using only R code. The full script for each of the animations is in the Appendix section visible on my GitHub.
+For the plots, I used the packages [ggplot](https://github.com/tidyverse/ggplot2), [ggraph](https://github.com/thomasp85/ggraph) [gganimate](https://github.com/thomasp85/ggraph), [tweenr](https://github.com/thomasp85/tweenr), [animation](https://cran.r-project.org/web/packages/animation/index.html). Thanks to the creators of these awesome tools, I was able to make all the gifs using only R code. The full script for each of the animations is in the Appendix section at the [bottom of this .Rmd file](https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-11-11-animated_net.Rmd).
 
 ```{r animations appendix, eval = FALSE, echo = FALSE}
 library(ggraph)
