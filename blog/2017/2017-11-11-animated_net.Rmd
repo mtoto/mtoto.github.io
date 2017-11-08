@@ -105,7 +105,7 @@ p2<-ggplot(data1, aes(X1,X2, color = Y))+
         theme(legend.position="bottom") +
         guides(color = FALSE)        
 
-grid.arrange(p1, p2, ncol=2, top=textGrob("Network architecture, and the problem",gp=gpar(fontsize=23,font=8),
+grid.arrange(p1, p2, ncol=2, top=textGrob("Network architecture and the problem",gp=gpar(fontsize=23,font=8),
                                           hjust = 0.75))
 ```
 
