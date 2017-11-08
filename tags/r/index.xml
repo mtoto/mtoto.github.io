@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R on Coding with Data</title>
-    <link>/tags/r/index.xml</link>
+    <link>http://tamaszilagyi.com/tags/r/index.xml</link>
     <description>Recent content in R on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="/tags/r/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tamaszilagyi.com/tags/r/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>An animated neuRal net implementation</title>
-      <link>/blog/an-animated-neural-net-implementation/</link>
+      <link>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</link>
       <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
       
-      <guid>/blog/an-animated-neural-net-implementation/</guid>
+      <guid>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -317,10 +317,10 @@ nn_model &amp;lt;- function(X, Y, n_h, num_iterations = 1000) {
     
     <item>
       <title>A tidy text analysis of Rick and Morty</title>
-      <link>/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
+      <link>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
+      <guid>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
       <description>&lt;div class=&#34;figure&#34;&gt;
 &lt;img src=&#34;http://i.imgur.com/a841k9g.gif&#34; /&gt;
 
@@ -462,10 +462,10 @@ episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;
     
     <item>
       <title>Self-learning Hue Lights</title>
-      <link>/blog/self-learning-hue-lights/</link>
+      <link>http://tamaszilagyi.com/blog/self-learning-hue-lights/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>/blog/self-learning-hue-lights/</guid>
+      <guid>http://tamaszilagyi.com/blog/self-learning-hue-lights/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -595,10 +595,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim     123  213     30  409
-##   mid      41   78      6  190
-##   bright   20   49      0    6
-##   zero     36  103     29 4139&lt;/code&gt;&lt;/pre&gt;
+##   dim     105  184     15  309
+##   mid      55  104     21  128
+##   bright   16   34      0    1
+##   zero     44  121     29 4306&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
