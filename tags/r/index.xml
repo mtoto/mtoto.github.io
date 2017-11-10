@@ -9,313 +9,6 @@
     <atom:link href="http://tamaszilagyi.com/tags/r/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>An animated neuRal net implementation</title>
-      <link>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</link>
-      <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
-      
-      <guid>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</guid>
-      <description>&lt;style type=&#34;text/css&#34;&gt;
-pre code, pre, code {
-  white-space: pre !important;
-  overflow-x: scroll !important;
-  word-break: keep-all !important;
-  word-wrap: initial !important;
-}
-&lt;/style&gt;
-&lt;div id=&#34;yet-another-neural-net-from-scratch-tutorial&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Yet another neural net from scratch tutorial?&lt;/h1&gt;
-&lt;p&gt;One would be forgiven to think that artificial neural networks are the newest and shiniest of modern data science. On the contrary, the main concepts have been around for decades. But it is recent progress in computational resources and the availability of massive datasets that these learning architectures revealed their true powers. AlphaGo, Siri and Alexa, self-driving cars are all running on some form or other of deep artificial neural networks.&lt;/p&gt;
-&lt;p&gt;The hype means the Internet is aflush with tutorials and online resources to get started. Yet, somehow R hasn’t gotten much street cred in the area. Most of the frameworks are implemented in Python, and so are the tutorials. R is supposed to be the de facto lingua franca of statistical computing, so what’s up with that?&lt;/p&gt;
-&lt;p&gt;What follows is a custom build of a simple one hidden-layer neural network, where we’ll save just enough parameters at every iteration to be able to &lt;a href=&#34;https://github.com/dgrtwo/gganimate&#34;&gt;gganimate&lt;/a&gt; the training process afterwards.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;the-main-ingredients&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;The main ingredients&lt;/h1&gt;
-&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-11-11-animated_net_files/figure-html/fig2-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;This post is mostly inspired by &lt;a href=&#34;https://www.coursera.org/specializations/deep-learning&#34;&gt;Andrew Ng’s Deep Learning course&lt;/a&gt; (including the dataset), which I strongly recommend for anyone interested in neural networks. The task is to predict the color of the points in the plot on the right. While it seems like a trivial problem, linear algorithms will inevitably fail at it because the colors are not linearly separable. There’s no single line we can draw that perfectly separates the red dots from the blue dots.&lt;/p&gt;
-&lt;div id=&#34;how-does-the-algorithm-work&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;How does the algorithm work?&lt;/h2&gt;
-&lt;p&gt;The input layer contains the input data. The number of nodes in the input layer is &lt;em&gt;always&lt;/em&gt; equal to the number of features in the data (X, Y coordinates). The input is then &lt;strong&gt;1. propagated forward&lt;/strong&gt; through the hidden layer. Number of hidden nodes and number of hidden layers can be modified at will. The edges between the nodes represent the weights, and the prediction is essentially a function of these weights.&lt;/p&gt;
-&lt;p&gt;Once the data has been passed through the entire network, we get the predictions in the output node and &lt;strong&gt;2. compute the cost&lt;/strong&gt; with respect to the actual labels. At each iteration, we adjust the weights to minimize this cost as much possible.&lt;/p&gt;
-&lt;p&gt;How do we do that? That’s the job of &lt;strong&gt;3. backward propagation&lt;/strong&gt;. By means of gradient descent, we calculate the partial derivatives of all computations with respect to what came after, alas we go &lt;em&gt;backwards&lt;/em&gt;. First the derivatives of the weights of the hidden layer with respect to the output layer, and secondly those of the input layer with respect to the hidden layer. The gradients we obtain are then used to &lt;strong&gt;update the weights&lt;/strong&gt; and start the process all over again. With each pass - also called &lt;strong&gt;epochs&lt;/strong&gt;, we get closer to the optimal weights.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;down-the-rabbit-hole&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Down the rabbit hole&lt;/h1&gt;
-&lt;p&gt;I will now explain in short and code up each of the three computations. The scripts we define will be used inside a single function call that trains the neural network. Significant overhead will be introduced by saving parameters at every iteration, but hopefully the animated plots will be worth it.&lt;/p&gt;
-&lt;div id=&#34;forward-propagation&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;1. Forward propagation&lt;/h2&gt;
-&lt;p&gt;Forward propagation is the first pass through the data, calculating an output based on the weights of each edge. The connections from the input layer to each of the hidden nodes is a linear function, followed by an activation function.&lt;/p&gt;
-&lt;p&gt;The computational steps of forward propagations are &lt;span class=&#34;math inline&#34;&gt;\(Input -&amp;gt; Hidden -&amp;gt; Output\)&lt;/span&gt; .&lt;/p&gt;
-&lt;p&gt;If we break down each of the two connections into a linear function &lt;span class=&#34;math inline&#34;&gt;\(Z^{[i]}\)&lt;/span&gt; and an activation function &lt;span class=&#34;math inline&#34;&gt;\(A^{[i]}\)&lt;/span&gt;, the architecture becomes &lt;span class=&#34;math inline&#34;&gt;\(X -&amp;gt;Z^{[1]}-&amp;gt;A^{[1]}-&amp;gt;Z^{[2]}-&amp;gt;A^{[2]}\)&lt;/span&gt; with &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; as the input data.&lt;/p&gt;
-&lt;p&gt;The activation function is usually a non-linear function that enables the network to cope with non-linear problems. Examples include the &lt;a href=&#34;https://en.wikipedia.org/wiki/Sigmoid_function&#34;&gt;sigmoid function&lt;/a&gt;, &lt;a href=&#34;https://en.wikipedia.org/wiki/Rectifier_neural_networks&#34;&gt;relu&lt;/a&gt; or &lt;a href=&#34;http://mathworld.wolfram.com/HyperbolicTangent.html&#34;&gt;tanh&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;Let’s take for example the connections going &lt;strong&gt;from the input layer to one hidden node&lt;/strong&gt;. If &lt;span class=&#34;math inline&#34;&gt;\(X_{m,n}\)&lt;/span&gt; is the vertically stacked dataset where &lt;em&gt;m = number of features (2)&lt;/em&gt; , &lt;em&gt;n = number of observations&lt;/em&gt;, &lt;span class=&#34;math inline&#34;&gt;\(w\)&lt;/span&gt; is a weight vector of length &lt;em&gt;m&lt;/em&gt;; the linear function in one hidden node can be formally represented as a matrix vector product:&lt;/p&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
-
-w =
- \begin{pmatrix}
-  w_{1} \\
-  w_{2} \\
- \end{pmatrix};
- X = 
- \begin{pmatrix}
-  x_{1,1} &amp;amp; x_{1,2} &amp;amp; \cdots &amp;amp; x_{1,n} \\
-  x_{2,1} &amp;amp; x_{2,2} &amp;amp; \cdots &amp;amp; x_{2,n} \\
- \end{pmatrix}
- \end{align*}\]&lt;/span&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
-  Z = {w^T}X + b= 
-  \begin{pmatrix}
-  w_{1} &amp;amp; w_{2} \\
- \end{pmatrix}
-  \begin{pmatrix}
-  x_{1,1} &amp;amp; x_{1,2} &amp;amp; \cdots &amp;amp; x_{1,n} \\
-  x_{2,1} &amp;amp; x_{2,2} &amp;amp; \cdots &amp;amp; x_{2,n} \\
- \end{pmatrix} 
-  + b
-\end{align*}\]&lt;/span&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
-  Z = 
-    \begin{pmatrix}
-      w_{1}x_{1,1} + 
-      w_{2}x_{2,1}+b &amp;amp; 
-      w_{1}x_{1,2}+ + 
-      w_{2}x_{2,2}+b &amp;amp;
-      \cdots &amp;amp;
-      w_{1}x_{1,n} + 
-      w_{2}x_{2,n}+b
-    \end{pmatrix}
-\end{align*}\]&lt;/span&gt;
-&lt;p&gt;The activation function &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]}\)&lt;/span&gt; is the &lt;em&gt;tanh&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]} = \tanh(Z^{[1]})\)&lt;/span&gt;, for the output layer we’ll use the sigmoid instead &lt;span class=&#34;math inline&#34;&gt;\(A^{[2]} = \sigma(Z^{[2]})\)&lt;/span&gt;. The computation can also be visualised as a subgraph of our neural network:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;412.8&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;It turns out that this implementation scales to multiple hidden nodes without any formal change to the math. Instead of a &lt;em&gt;weight vector&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(w\)&lt;/span&gt;, we are computing the same functions using a &lt;em&gt;weight matrix&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(W\)&lt;/span&gt;. The matrix-vector product now becomes a dot product between the two matrices. With each node in the hidden layer, we add an extra row in the transposed weight matrix. The dimensionality requirements of matrix multiplication are kept intact: &lt;em&gt;The number of columns of first matrix still equal the number of rows of the second&lt;/em&gt;. But the dimensions of the output change accordingly. We go from a transposed vector of length n to an m x n matrix where &lt;em&gt;m = the number of hidden nodes&lt;/em&gt;.&lt;/p&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
-Z = {W^T}X + b= 
-  \begin{pmatrix}
-  w_{1,1} &amp;amp; w_{1,2} \\
-  \vdots  &amp;amp; \vdots  \\
-  w_{n,1} &amp;amp; w_{n,2}  
- \end{pmatrix}
-  \begin{pmatrix}
-  x_{1,1} &amp;amp; \cdots &amp;amp; x_{1,n} \\
-  x_{2,1} &amp;amp; \cdots &amp;amp; x_{2,n} \\
- \end{pmatrix} 
-  + b
-\end{align*}\]&lt;/span&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
-  Z = 
-    \begin{pmatrix}
-      w_{1,1}x_{1,1} + 
-       w_{1,2}x_{2,1}+b &amp;amp; 
-      \cdots &amp;amp;
-      w_{1,1}x_{1,n} + 
-      w_{1,2}x_{2,n}+b 
-      \\
-      \vdots  &amp;amp; \ddots &amp;amp; \vdots\\
-      w_{n,1}x_{1,1} + 
-      w_{n,2}x_{2,1}+b &amp;amp; 
-      \cdots &amp;amp;
-      w_{n,1}x_{1,n} + 
-       w_{n,2}x_{2,n}+b 
-    \end{pmatrix}
-  \end{align*}\]&lt;/span&gt;
-&lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;The last step of going from the hidden layer to the output layer follows the same algebra. I’ll spare you the nitty gritty. Before we propagate forward for the first time, it is important to &lt;strong&gt;randomly initialize the weights&lt;/strong&gt;. Otherwise each connection will compute &lt;em&gt;the exact same thing&lt;/em&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;initialize_parameters &amp;lt;- function(n_x, n_h, n_y) {
-
-    set.seed(2) 
-    # W1 -- weight matrix of shape (n_h, n_x)
-    W1 = matrix(rnorm(n_x*n_h), nrow = n_h, ncol = n_x) * 0.01
-    # b1 -- bias vector of shape (n_h, 1)
-    b1 = rep(0, n_h)
-    # W2 -- weight matrix of shape (n_y, n_h)
-    W2 = matrix(rnorm(n_h*n_y),  nrow = n_y, ncol = n_h) * 0.01
-    # b2 -- bias vector of shape (n_y, 1)
-    b2 = rep(0, n_y)
-
-    parameters = list(W1 = W1,b1 = b1,W2 = W2,b2 = b2)
-    
-    return(parameters)
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Remember the schema is &lt;span class=&#34;math inline&#34;&gt;\(X -&amp;gt;Z^{[1]}-&amp;gt;A^{[1]}-&amp;gt;Z^{[2]}-&amp;gt;A^{[2]}\)&lt;/span&gt;. Both &lt;span class=&#34;math inline&#34;&gt;\(Z^{[1]}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Z^{[2]}\)&lt;/span&gt; are the same linear function, while &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]} = \tanh(Z^{[1]})\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]} = \sigma(Z^{[2]})\)&lt;/span&gt;. The sigmoid function didn’t make it to &lt;code&gt;base&lt;/code&gt; R, so we define it first.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sigmoid &amp;lt;- function(x) {
-   1 / (1 + exp(-x))
-}
-
-forward_propagation &amp;lt;- function(X, parameters) {
-  
-    # Retrieve each parameter from the list &amp;quot;parameters&amp;quot;
-    W1 &amp;lt;- parameters$W1; b1 &amp;lt;- parameters$b1
-    W2 &amp;lt;- parameters$W2; b2 &amp;lt;- parameters$b2
-
-    # Forward propagation
-    Z1 = W1 %*% X + b1
-    A1 = tanh(Z1)
-    Z2 = W2 %*% A1 + b2
-    A2 = sigmoid(Z2)
-    
-    cache &amp;lt;- list(Z1=Z1,A1=A1,Z2=Z2,A2=A2)
-    
-    return(cache)
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Each pass of forward propagation ends with a prediction. Generating a prediction for every pixel of our plot raster, we can simulate decision boundaries. As the algorithm learns, the borders slowly align with the data:&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_bounds.gif&#34; /&gt;
-
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;computing-the-cost&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;2. Computing the cost&lt;/h2&gt;
-&lt;p&gt;As we have seen above, forward propagation is nothing more than a &lt;em&gt;predict&lt;/em&gt; function. When the dataset has been passed through the network, we get an output that can be compared to the actual label. The purpose of the cost function is to inform the model how far the output is from the target value. One of the most popular cost functions is log loss, formally known as:&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[J = - \frac{1}{m} \sum\limits_{i = 0}^{m} \large\left(\small Y\log\left(A^{[2]}\right) + (1-Y)\log\left(1- A^{[2]}\right)  \large  \right) \small \]&lt;/span&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;compute_cost &amp;lt;- function(A2, Y) {
-        
-        # Number of observations
-        m &amp;lt;- dim(Y)[2] 
-        
-        cost &amp;lt;- -1/m * sum(Y * log(A2) + (1-Y)*log(1-A2))
-        
-        return(cost)
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You saw how the algorithm was getting better at predicting the colors with each iteration. This is the result of reducing the cost as the model learns. &lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/costs.gif&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;backward-propagation&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;3. Backward propagation&lt;/h2&gt;
-&lt;p&gt;Out of all building blocks of neural networks, back propagation is perhaps the most difficult to grasp. In a nutshell, it is calculating the error contribution of each weight to cost. The idea is to backward engineer the derivative or &lt;em&gt;slope&lt;/em&gt; of every computation and update the weights so that the cost will decrease at each iteration.&lt;/p&gt;
-&lt;p&gt;We first calculate the gradient of &lt;span class=&#34;math inline&#34;&gt;\(Z^{[2]}\)&lt;/span&gt; with respect to &lt;span class=&#34;math inline&#34;&gt;\(A^{[2]}\)&lt;/span&gt;, this is equal to &lt;span class=&#34;math inline&#34;&gt;\(dZ^{[2]} = A^{[2]} - Y\)&lt;/span&gt;. Based on &lt;span class=&#34;math inline&#34;&gt;\(dZ^{[2]}\)&lt;/span&gt; we then calculate the gradients of the weights (and bias terms) going from the hidden layer to the output layer. We continue going backwards until we obtain the gradients for all the weights and bias terms.&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[A^{[2]} -&amp;gt;dZ^{[2]}-&amp;gt;A^{[1]} -&amp;gt; dZ^{[1]} \\ \quad \quad  \downarrow  \quad \quad \quad \quad \quad  \quad  \downarrow \\ \quad \quad \quad dW^{[2]},db^{[2]} \quad  \quad    dW^{[1]},db^{[1]}\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Below is the list of formulae we will need for the computations. Drilling further into the math is beyond the scope of this post, but there are &lt;a href=&#34;http://briandolhansky.com/blog/2013/9/27/artificial-neural-networks-backpropagation-part-4&#34;&gt;great blog posts around dedicated to the topic&lt;/a&gt;.&lt;/p&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
-
- dZ^{[2]} = A^{[2]} - Y &amp;amp;
- \\ dW^{[2]} = \frac{1}mdZ^{[2]}A^{[1]T} &amp;amp;
- \\ db^{[2]} = \frac{1}m\sum_{n=1}^{m} dZ^{[2]} &amp;amp;
- \\ dZ^{[1]} = W^{[2]T}dZ^{[2]} * (1-A^{[1]2}) &amp;amp;
- \\ dW^{[1]} = \frac{1}mdZ^{[1]}X^{T} &amp;amp;
- \\ db^{[1]} = \frac{1}m\sum_{n=1}^{m} dZ^{[1]}
- 
-\end{align*}\]&lt;/span&gt;
-&lt;p&gt;The math certainly looks scarier than &lt;code&gt;R&lt;/code&gt; code:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;backward_propagation &amp;lt;-function(parameters, cache, X, Y) {
-    
-    m = dim(X)[2]
-    
-    # Retrieve W2 
-    W2 &amp;lt;- parameters$W2
-
-    # Retrieve A1 and A2
-    A1 &amp;lt;- cache[&amp;quot;A1&amp;quot;][[1]]; A2 &amp;lt;- cache[&amp;quot;A2&amp;quot;][[1]]
-
-    # Backward propagation
-    dZ2 &amp;lt;- A2 - Y
-    dW2 &amp;lt;- 1/m * dZ2 %*% t(A1)
-    db2 &amp;lt;- 1/m * sum(dZ2)
-    dZ1 &amp;lt;- t(W2) %*% dZ2 * (1 - A1^2)
-    dW1 &amp;lt;- 1/m * dZ1 %*% t(X)
-    db1 &amp;lt;- 1/m * sum(dZ1)
-
-    grads &amp;lt;- list(dW1 = dW1,db1 = db1, dW2 = dW2,db2 = db2)
-    
-    return(grads)
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Having obtained the gradients, we can choose a &lt;strong&gt;learning rate&lt;/strong&gt; - the size of the step - at which we wish to update the weights at each iteration. This will be the heart of the &lt;a href=&#34;https://en.wikipedia.org/wiki/Gradient_descent&#34;&gt;gradient descent&lt;/a&gt; optimization we will shorty define.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;update_parameters &amp;lt;- function(parameters, grads, learning_rate = 5.2) {
-
-    # Retrieve parameters
-    W1 &amp;lt;- parameters$W1; b1 &amp;lt;- parameters$b1
-    W2 &amp;lt;- parameters$W2; b2 &amp;lt;- parameters$b2
-
-    # Retrieve gradients
-    dW1 &amp;lt;- grads$dW1; db1 &amp;lt;- grads$db1
-    dW2 &amp;lt;- grads$dW2; db2 &amp;lt;- grads$db2
-
-    # Update rule for each parameter
-    W1 &amp;lt;- W1 - learning_rate * dW1
-    b1 &amp;lt;- b1 - learning_rate * db1
-    W2 &amp;lt;- W2 - learning_rate * dW2
-    b2 &amp;lt;- b2 - learning_rate * db2
-
-    parameters &amp;lt;- list(W1 = W1, b1 = b1, W2 = W2, b2 = b2)
-
-    return(parameters)
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The weight adjustments are the most dramatic at the start of the training process. As the slope towards the optimum value flattens, the rate at which weights adjust slows down as well.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_anim.gif&#34; /&gt;
-
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;bringing-it-all-together&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Bringing it all together&lt;/h2&gt;
-&lt;p&gt;Now we have all the ingredients of a neural network, it’s only a matter of putting the pieces together in one function.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidygraph)
-
-nn_model &amp;lt;- function(X, Y, n_h, num_iterations = 1000) {
-
-    set.seed(3)
-    n_x &amp;lt;- 2
-    n_y &amp;lt;- 1
-    
-    # Initialize parameters
-    parameters &amp;lt;- initialize_parameters(n_x, n_h, n_y)
-    list_of_graphs &amp;lt;- list()
-    list_of_params &amp;lt;- list()
-    costs &amp;lt;- c()
-    # Loop: gradient descent
-    for (i in 0:num_iterations){
-         
-        # Forward propagation
-        cache &amp;lt;- forward_propagation(X, parameters)
-        A2 &amp;lt;- cache[&amp;quot;A2&amp;quot;][[1]]
-        
-        # Cost function
-        cost &amp;lt;- compute_cost(A2, Y)
- 
-        # Backpropagation
-        grads &amp;lt;- backward_propagation(parameters, cache, X, Y)
- 
-        # Gradient descent parameter update
-        parameters &amp;lt;- update_parameters(parameters, grads)
-        
-        # Save intermediate weights for plotting
-        w &amp;lt;- c(as.vector(t(parameters$W1)), as.vector(parameters$W2))
-        
-        train_df &amp;lt;- dfg %&amp;gt;% activate(edges) %&amp;gt;% 
-                mutate(weights = w, iteration = i) %&amp;gt;%
-                as_tbl_graph()
-        
-        list_of_params[[i+1]] &amp;lt;- parameters
-        list_of_graphs[[i+1]] &amp;lt;- train_df
-        costs[i+1] &amp;lt;- cost 
-        
-    }
-
-    return(list(list_of_params, list_of_graphs, costs))
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Under &lt;code&gt;# save intermediate weights for plotting&lt;/code&gt; is the overhead introduced by saving objects for the animations throughout this post. The only thing left is the predict function, and we are good to go.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;predict_nn&amp;lt;-function(parameters, X) {
-
-    # Forward propagation 
-    cache = forward_propagation(X, parameters)
-    # Classify 0/1 with 0.5threshold
-    predictions = (cache[&amp;quot;A2&amp;quot;][[1]]&amp;gt; 0.5)
-
-    return(predictions)
-}
-# Run the model: 
-# model &amp;lt;- nn_model(X,Y,n_h=4,100)
-# Predict - 100th iteration weights:
-# predictions = predict_nn(model[[1]][[100]], X)&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/result.gif&#34; /&gt;
-
-&lt;/div&gt;
-&lt;p&gt;For the plots, I used the packages &lt;a href=&#34;https://github.com/tidyverse/ggplot2&#34;&gt;ggplot&lt;/a&gt;, &lt;a href=&#34;https://github.com/thomasp85/ggraph&#34;&gt;ggraph&lt;/a&gt; &lt;a href=&#34;https://github.com/thomasp85/ggraph&#34;&gt;gganimate&lt;/a&gt;, &lt;a href=&#34;https://github.com/thomasp85/tweenr&#34;&gt;tweenr&lt;/a&gt;, &lt;a href=&#34;https://cran.r-project.org/web/packages/animation/index.html&#34;&gt;animation&lt;/a&gt;. Thanks to the creators of these awesome tools, I was able to make all the gifs using only R code. The full script for each of the animations is in the Appendix section at the &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-11-11-animated_net.Rmd&#34;&gt;bottom of this .Rmd file&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
       <title>A tidy text analysis of Rick and Morty</title>
       <link>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
@@ -595,10 +288,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      91  189     33  305
-##   mid      90  164      6  161
-##   bright    0    0      0    0
-##   zero     39   90     26 4278&lt;/code&gt;&lt;/pre&gt;
+##   dim     137  235     17  414
+##   mid      43   75     20  110
+##   bright   11   26      0    2
+##   zero     29  107     28 4218&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
@@ -640,6 +333,72 @@ jug() %&amp;gt;% post(&amp;quot;/predict-hue&amp;quot;, decorate(predict_hue)) %
 &lt;div id=&#34;conclusion&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Conclusion&lt;/h1&gt;
 &lt;p&gt;There is something very satisfying about building your own data products and seeing them at work. Even something as trivial as controlling the light switch for you. I only have data since this year May, so there’s a good chance our model will get smarter as days go by. We can easily schedule to retrain the model every week or even day, without having to lift a finger. Most of the code in this post is packaged up as a handful of &lt;code&gt;R&lt;/code&gt; functions deployed on my Raspberry Pi. Now, when I &lt;em&gt;choose&lt;/em&gt; to pass out on my couch next time, at least lights won’t stay on for too long.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Starting a blog(down)</title>
+      <link>http://tamaszilagyi.com/blog/starting-a-blogdown/</link>
+      <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
+      
+      <guid>http://tamaszilagyi.com/blog/starting-a-blogdown/</guid>
+      <description>&lt;!-- BLOGDOWN-HEAD --&gt;
+&lt;!-- /BLOGDOWN-HEAD --&gt;
+
+&lt;!-- BLOGDOWN-BODY-BEFORE --&gt;
+&lt;!-- /BLOGDOWN-BODY-BEFORE --&gt;
+&lt;div id=&#34;starting-an-analytics-blog&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Starting an analytics blog&lt;/h1&gt;
+&lt;p&gt;Having learned lots from the open source community over the past years - from blogs and videos to attending meetups and awesome conferences - I have decided to start a blog myself, and share some of the things I find interesting. I expect most of the posts to be &lt;code&gt;R&lt;/code&gt; specific, because that’s what I am most comfortable with. However I do enjoy fiddling with other technologies such as &lt;code&gt;Python&lt;/code&gt; or &lt;code&gt;Spark&lt;/code&gt;, so watch out! In a nuthsell though, this blog will be about using open source tools to build all sorts of cool things with &lt;strong&gt;data&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;its-easy&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;It’s easy&lt;/h1&gt;
+&lt;p&gt;You can get your blog up and running with literally three lines of &lt;code&gt;R&lt;/code&gt; code. After hearing about the &lt;a href=&#34;https://github.com/rstudio/blogdown&#34;&gt;&lt;strong&gt;blogdown&lt;/strong&gt;&lt;/a&gt; package on Twitter, I went ahead and downloaded the current build from Github, running &lt;code&gt;install_github(&#39;rstudio/blogdown&#39;)&lt;/code&gt; inside &lt;a href=&#34;https://www.rstudio.com/&#34;&gt;RStudio&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Under the hood, blogdown uses &lt;a href=&#34;https://gohugo.io/&#34;&gt;Hugo&lt;/a&gt; to generate the website, but wraps most functionality nicely, so there’s no need for much manual configuration during the process, if at all.&lt;/p&gt;
+&lt;div id=&#34;setup&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Setup&lt;/h2&gt;
+&lt;p&gt;We first create a folder for the blog on our computer, and set it as our home directory using &lt;code&gt;setwd(&amp;quot;path-to-blog&amp;quot;)&lt;/code&gt;. Then we simply run:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# 1 if you haven&amp;#39;t already, install blogdown
+devtools::install_github(&amp;#39;rstudio/blogdown&amp;#39;)
+# 2 install hugo
+blogdown::install_hugo()
+# 3 create new site
+blogdown::new_site()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That’s it. You now have a complete folder structure initialized in your working directory:&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/img/folderstruct.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;p&gt;The local build of your new site is now running on &lt;code&gt;localhost&lt;/code&gt;. You can see it in RStudio’s Viewer, or inside a browser by clicking &lt;em&gt;Show in new window&lt;/em&gt; in the top left corner of the Viewer.&lt;/p&gt;
+&lt;p&gt;You future blog posts will reside in the &lt;code&gt;content/post&lt;/code&gt; folder. Here we find two pre-existing posts as &lt;code&gt;.Rmd&lt;/code&gt; files. We can start editing these straight away and see the results immediately after saving. Because everytime you save changes, your site is instantly rebuilt. If you come back to work on your existing site, you can simply run the function &lt;code&gt;serve_site()&lt;/code&gt; after you are done editing, and see the site regenerated accordingly in the Viewer.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;customization&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Customization&lt;/h2&gt;
+&lt;p&gt;Now we can begin to customize the look of our blog by installing a theme using the function &lt;code&gt;install_theme(&#39;username/theme&#39;)&lt;/code&gt;. For my site, I picked &lt;a href=&#34;https://github.com/nishanths/cocoa-hugo-theme&#34;&gt;nishanths/cocoa-hugo-theme&lt;/a&gt; which I like very much for its minimalistic design. You can browse other themes on &lt;a href=&#34;https://themes.gohugo.io/&#34;&gt;themes.gohugo.io/&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;configuration&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Configuration&lt;/h2&gt;
+&lt;p&gt;The only thing left to do, is to edit the &lt;code&gt;config.toml&lt;/code&gt; file and set the name of your blog, avatars, or even link a &lt;code&gt;Google Analytics&lt;/code&gt; account - if the theme allows for. The file contains parameters such as:&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;title        = &amp;quot;Tamas Szilagyi&amp;quot;
+baseurl      = &amp;quot;http://tamaszilagyi.com/&amp;quot;
+relativeurls = true
+languageCode = &amp;quot;en-us&amp;quot;
+theme        = &amp;quot;cocoa-hugo-theme&amp;quot;
+faviconfile  = &amp;quot;img/leaf.ico&amp;quot;
+github       = &amp;quot;//github.com/mtoto&amp;quot;
+highlightjs  = true
+avatar       = &amp;quot;img/profile_pic.png&amp;quot; 
+...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If you are going to include &lt;code&gt;R&lt;/code&gt; codechunks in your posts, also don’t forget to set &lt;code&gt;highlightjslanguages = [&amp;quot;r&amp;quot;]&lt;/code&gt;. When the blog is ready, we run &lt;code&gt;build_site()&lt;/code&gt; to compile the files to &lt;code&gt;html&lt;/code&gt; and build the website. What we need for deployment will reside under the &lt;code&gt;/public&lt;/code&gt; folder.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;deployment&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Deployment&lt;/h2&gt;
+&lt;p&gt;Again, publishing is a piece of cake. There are &lt;a href=&#34;https://bookdown.org/yihui/blogdown/deployment.html&#34;&gt;multiple ways&lt;/a&gt; for conveniently deploying a blogdown site, and being somewhat familiar with &lt;a href=&#34;https://pages.github.com/&#34;&gt;Github Pages&lt;/a&gt;, that’s what I went for. I created a new repository named &lt;code&gt;mtoto.github.io&lt;/code&gt; and simply pushed the contents of &lt;code&gt;/public&lt;/code&gt; to the master branch.&lt;/p&gt;
+&lt;p&gt;The website should be almost immediately available at the same address as the repo name. If you want an url other than &lt;code&gt;username.github.io&lt;/code&gt; however, you will need to sign up with a hosting provider. Then put a file in the &lt;code&gt;/public&lt;/code&gt; folder called &lt;code&gt;CNAME&lt;/code&gt;, with a one liner containing your blog url such as &lt;code&gt;tamaszilagyi.com&lt;/code&gt;. After, you push this file to Github and ask your provider to point your domain to the github pages url.&lt;/p&gt;
+&lt;p&gt;And voilà, we have ourselves a full functioning static website that looks great, is easy to manage and as portable as it gets may you decide to switch for different hosting solutions.&lt;/p&gt;
+&lt;p&gt;For a more in-depth overview of what &lt;code&gt;blogdown&lt;/code&gt; is capable of, keep an eye on its &lt;a href=&#34;https://bookdown.org/yihui/blogdown/&#34;&gt;bookdown site&lt;/a&gt; which is currently under development.&lt;/p&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 </description>
     </item>

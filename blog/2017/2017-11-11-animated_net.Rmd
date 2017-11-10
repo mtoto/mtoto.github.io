@@ -8,7 +8,7 @@ header-includes:
 
 date: 2017-11-09T21:00:30-05:00
 categories: ["R"]
-tags: ["Neural Network", "Deep Learning", "R", "AI"]
+tags: ["Neural Network", "Deep Learning", "AI"]
 output: html_document
 ---
 ```{css}

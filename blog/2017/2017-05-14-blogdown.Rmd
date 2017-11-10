@@ -3,7 +3,7 @@ title: "Starting a blog(down)"
 author: "Tamas Szilagyi"
 date: 2017-05-14T21:13:14-05:00
 categories: ["R"]
-tags: ["R Markdown", "plot", "regression"]
+tags: ["Github Pages","R", "blogdown"]
 output: html_document
 ---
 

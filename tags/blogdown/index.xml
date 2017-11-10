@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blogdown on Coding with Data</title>
+    <link>http://tamaszilagyi.com/tags/blogdown/index.xml</link>
+    <description>Recent content in Blogdown on Coding with Data</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="http://tamaszilagyi.com/tags/blogdown/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Starting a blog(down)</title>
+      <link>http://tamaszilagyi.com/blog/starting-a-blogdown/</link>
+      <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
+      
+      <guid>http://tamaszilagyi.com/blog/starting-a-blogdown/</guid>
+      <description>&lt;!-- BLOGDOWN-HEAD --&gt;
+&lt;!-- /BLOGDOWN-HEAD --&gt;
+
+&lt;!-- BLOGDOWN-BODY-BEFORE --&gt;
+&lt;!-- /BLOGDOWN-BODY-BEFORE --&gt;
+&lt;div id=&#34;starting-an-analytics-blog&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Starting an analytics blog&lt;/h1&gt;
+&lt;p&gt;Having learned lots from the open source community over the past years - from blogs and videos to attending meetups and awesome conferences - I have decided to start a blog myself, and share some of the things I find interesting. I expect most of the posts to be &lt;code&gt;R&lt;/code&gt; specific, because that’s what I am most comfortable with. However I do enjoy fiddling with other technologies such as &lt;code&gt;Python&lt;/code&gt; or &lt;code&gt;Spark&lt;/code&gt;, so watch out! In a nuthsell though, this blog will be about using open source tools to build all sorts of cool things with &lt;strong&gt;data&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;its-easy&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;It’s easy&lt;/h1&gt;
+&lt;p&gt;You can get your blog up and running with literally three lines of &lt;code&gt;R&lt;/code&gt; code. After hearing about the &lt;a href=&#34;https://github.com/rstudio/blogdown&#34;&gt;&lt;strong&gt;blogdown&lt;/strong&gt;&lt;/a&gt; package on Twitter, I went ahead and downloaded the current build from Github, running &lt;code&gt;install_github(&#39;rstudio/blogdown&#39;)&lt;/code&gt; inside &lt;a href=&#34;https://www.rstudio.com/&#34;&gt;RStudio&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Under the hood, blogdown uses &lt;a href=&#34;https://gohugo.io/&#34;&gt;Hugo&lt;/a&gt; to generate the website, but wraps most functionality nicely, so there’s no need for much manual configuration during the process, if at all.&lt;/p&gt;
+&lt;div id=&#34;setup&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Setup&lt;/h2&gt;
+&lt;p&gt;We first create a folder for the blog on our computer, and set it as our home directory using &lt;code&gt;setwd(&amp;quot;path-to-blog&amp;quot;)&lt;/code&gt;. Then we simply run:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# 1 if you haven&amp;#39;t already, install blogdown
+devtools::install_github(&amp;#39;rstudio/blogdown&amp;#39;)
+# 2 install hugo
+blogdown::install_hugo()
+# 3 create new site
+blogdown::new_site()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That’s it. You now have a complete folder structure initialized in your working directory:&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/img/folderstruct.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;p&gt;The local build of your new site is now running on &lt;code&gt;localhost&lt;/code&gt;. You can see it in RStudio’s Viewer, or inside a browser by clicking &lt;em&gt;Show in new window&lt;/em&gt; in the top left corner of the Viewer.&lt;/p&gt;
+&lt;p&gt;You future blog posts will reside in the &lt;code&gt;content/post&lt;/code&gt; folder. Here we find two pre-existing posts as &lt;code&gt;.Rmd&lt;/code&gt; files. We can start editing these straight away and see the results immediately after saving. Because everytime you save changes, your site is instantly rebuilt. If you come back to work on your existing site, you can simply run the function &lt;code&gt;serve_site()&lt;/code&gt; after you are done editing, and see the site regenerated accordingly in the Viewer.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;customization&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Customization&lt;/h2&gt;
+&lt;p&gt;Now we can begin to customize the look of our blog by installing a theme using the function &lt;code&gt;install_theme(&#39;username/theme&#39;)&lt;/code&gt;. For my site, I picked &lt;a href=&#34;https://github.com/nishanths/cocoa-hugo-theme&#34;&gt;nishanths/cocoa-hugo-theme&lt;/a&gt; which I like very much for its minimalistic design. You can browse other themes on &lt;a href=&#34;https://themes.gohugo.io/&#34;&gt;themes.gohugo.io/&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;configuration&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Configuration&lt;/h2&gt;
+&lt;p&gt;The only thing left to do, is to edit the &lt;code&gt;config.toml&lt;/code&gt; file and set the name of your blog, avatars, or even link a &lt;code&gt;Google Analytics&lt;/code&gt; account - if the theme allows for. The file contains parameters such as:&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;title        = &amp;quot;Tamas Szilagyi&amp;quot;
+baseurl      = &amp;quot;http://tamaszilagyi.com/&amp;quot;
+relativeurls = true
+languageCode = &amp;quot;en-us&amp;quot;
+theme        = &amp;quot;cocoa-hugo-theme&amp;quot;
+faviconfile  = &amp;quot;img/leaf.ico&amp;quot;
+github       = &amp;quot;//github.com/mtoto&amp;quot;
+highlightjs  = true
+avatar       = &amp;quot;img/profile_pic.png&amp;quot; 
+...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If you are going to include &lt;code&gt;R&lt;/code&gt; codechunks in your posts, also don’t forget to set &lt;code&gt;highlightjslanguages = [&amp;quot;r&amp;quot;]&lt;/code&gt;. When the blog is ready, we run &lt;code&gt;build_site()&lt;/code&gt; to compile the files to &lt;code&gt;html&lt;/code&gt; and build the website. What we need for deployment will reside under the &lt;code&gt;/public&lt;/code&gt; folder.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;deployment&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Deployment&lt;/h2&gt;
+&lt;p&gt;Again, publishing is a piece of cake. There are &lt;a href=&#34;https://bookdown.org/yihui/blogdown/deployment.html&#34;&gt;multiple ways&lt;/a&gt; for conveniently deploying a blogdown site, and being somewhat familiar with &lt;a href=&#34;https://pages.github.com/&#34;&gt;Github Pages&lt;/a&gt;, that’s what I went for. I created a new repository named &lt;code&gt;mtoto.github.io&lt;/code&gt; and simply pushed the contents of &lt;code&gt;/public&lt;/code&gt; to the master branch.&lt;/p&gt;
+&lt;p&gt;The website should be almost immediately available at the same address as the repo name. If you want an url other than &lt;code&gt;username.github.io&lt;/code&gt; however, you will need to sign up with a hosting provider. Then put a file in the &lt;code&gt;/public&lt;/code&gt; folder called &lt;code&gt;CNAME&lt;/code&gt;, with a one liner containing your blog url such as &lt;code&gt;tamaszilagyi.com&lt;/code&gt;. After, you push this file to Github and ask your provider to point your domain to the github pages url.&lt;/p&gt;
+&lt;p&gt;And voilà, we have ourselves a full functioning static website that looks great, is easy to manage and as portable as it gets may you decide to switch for different hosting solutions.&lt;/p&gt;
+&lt;p&gt;For a more in-depth overview of what &lt;code&gt;blogdown&lt;/code&gt; is capable of, keep an eye on its &lt;a href=&#34;https://bookdown.org/yihui/blogdown/&#34;&gt;bookdown site&lt;/a&gt; which is currently under development.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
