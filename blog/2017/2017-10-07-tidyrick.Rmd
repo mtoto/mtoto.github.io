@@ -79,7 +79,7 @@ tidy_df <- df %>%
 
 and aggregate and plot the top 10 words per season.
 
-```{r}
+```{r, eval = F}
 library(dplyr)
 library(ggplot2)
 
@@ -95,6 +95,8 @@ tidy_df %>% group_by(season) %>%
         scale_fill_brewer(palette = "Set1")
 
 ```
+
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-6-1.png)
 
 Both seasons are dominated by, well, Rick and Morty. The main characters are tirelessly addressing each other, talking one another either into or out of the mess they find themselves in. What stands out most is the absence of Rick's daughter, Beth from the top 10 in all seasons. She's perhaps the only sane person of the family, but then again, sanity doesn't get too much airtime on this show. 
 
@@ -130,7 +132,7 @@ str(bigram_graph)
 
 This igraph object contains a directed network, where the vertices are the words and an edge exists between each that appear after one another more than twice. Representing the text as a graph, we can calculate things such as [degree centrality](https://en.wikipedia.org/wiki/Centrality#Degree_centrality), and plot the results.
 
-```{r, echo = F}
+```{r, echo = F, eval = F}
 library(ggraph)
 # Decompose graph to get largest connected network,
 largest_graph <- decompose.graph(bigram_graph)[[1]]
@@ -150,11 +152,14 @@ ggraph(largest_graph, layout = "kk") +
 
 ```
 
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-9-1.png)
+
+
 Looking at the largest connected network, we arrive at the same conclusion as with term frequencies. Rick and Morty are the most important words. They are at the center of the network and so have the highest degree centrality scores.
 
 Besides visualising the importance of words in our network, we can similarly differentiate between words that precede either Rick or Morty. These are all the 1st degree connections (words) that have an edge pointing towards the main characters, but aren't shared among the them.
 
-```{r, echo = FALSE, message = F}
+```{r, echo = FALSE, message = F, eval = F}
 # first (in)degree connections to Rick
 r1 <- names(unlist(neighborhood(largest_graph, 1, nodes="rick", mode="in")))
 r1 <- r1[r1!="morty"]
@@ -185,6 +190,7 @@ ggraph(largest_graph, layout = "kk") +
   theme(legend.position = "bottom")
 
 ```
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-10-1.png)
 
 Looking at the red nodes, we recognize many of the things Rick throws at Morty: *"Relax Morty!...It's science Morty!...Run Morty!"*. There is also a handful of words that precede both characters like *"Geez", "Boy"* or *"God"*. All other words that are more than one degree away, are colored blue as out of range.
 
@@ -200,7 +206,7 @@ tf_idf_df <- tidy_df %>%
 ```
 
 
-```{r, echo = F, warning=F}     
+```{r, echo = F, warning=F, eval = F}     
 tf_idf_df %>% arrange(desc(tf_idf)) %>%
   mutate(word = factor(word, levels = rev(unique(word)))) %>%
   top_n(20) %>%
@@ -215,6 +221,7 @@ tf_idf_df %>% arrange(desc(tf_idf)) %>%
 
 ```
 
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-12-1.png)
 What we get back are the most important elements, characters, motives or places across episodes. I'm somewhat surprised that Mr. Meeseeks didn't come in first though. I was sure as hell annoyed out of my mind after hearing it uttered for the 100th time during the episode [Meeseeks and Destroy](https://en.wikipedia.org/wiki/Meeseeks_and_Destroy). But then again, Mr Meeseeks does make a cameo in two other seasons, so that kind of torpedoes his chances for the first spot.
 
 ## Topic models
@@ -242,7 +249,7 @@ episodes_lda <- LDA(episodes_dtm, k = 6, control = list(seed = 1234))
 
 After `tidy()`ing the results, we can plot the top 10 words that contribute (*beta*) to most to each topic.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval=F}
 tidy(episodes_lda, matrix = "beta") %>%
         group_by(topic) %>%
         top_n(10, beta) %>%
@@ -256,6 +263,9 @@ tidy(episodes_lda, matrix = "beta") %>%
         ggtitle("Word / Topic Probabilities")
 
 ```
+
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-14-1.png)
+
 There's definitely a few topics that contain multiple elements of a particular episode. Take for example **topic 1**. It includes "*Roy*", the name of the videogame Morty plays in the same episode "*Fart*" appears, a gaseous creature kept under locks by aliens. Or **topic 5**, which probably relates to the episode where Rick visits his old lover "*Unity*". It further contains words as "*remember*" and  "*memories*".  The episode ends with Unity repeating "I want it *real*".
 
 Not only can we examine the **word per topic probabilities**, we can also plot **the topic per document probabilities**, or *gamma* values. This lets us see what topic belongs to what episode.
@@ -266,7 +276,7 @@ t<- c("A Rickle in Time", "Mortynight Run", "Auto Erotic Assimilation", "Total R
 titles <- data.frame(document = as.character(1:10) ,title = factor(t, levels = t))
 ```
 
-```{r, warning = F, message = F}
+```{r, warning = F, message = F, eval = F}
 tidy(episodes_lda, matrix = "gamma") %>%
         inner_join(titles) %>%
         ggplot(aes(factor(topic), gamma)) +
@@ -275,6 +285,8 @@ tidy(episodes_lda, matrix = "gamma") %>%
         ggtitle("Dominant Topics per Episode")
 
 ```
+
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-16-1.png)
 
 Our previous assumptions are confirmed, the first topic does belong to the episode *Mortynight Run* as does the fifth topic to *Auto-Erotic Assimilation*. It is important to note that the results strongly depend on the number of topics supplied to `LDA()`, so inevitably, some experimentation is required to arrive at meaningful results.
 

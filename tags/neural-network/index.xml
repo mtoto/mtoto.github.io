@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Neural Network on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/neural-network/index.xml</link>
+    <link>/tags/neural-network/index.xml</link>
     <description>Recent content in Neural Network on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://tamaszilagyi.com/tags/neural-network/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/neural-network/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>An animated neuRal net implementation</title>
-      <link>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</link>
+      <link>/blog/an-animated-neural-net-implementation/</link>
       <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</guid>
+      <guid>/blog/an-animated-neural-net-implementation/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -30,7 +30,10 @@ pre code, pre, code {
 &lt;/div&gt;
 &lt;div id=&#34;the-main-ingredients&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;The main ingredients&lt;/h1&gt;
-&lt;p&gt;&lt;img src=&#34;images/fig2-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-11-11-animated_net_files/figure-html/fig2-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;This post is mostly inspired by &lt;a href=&#34;https://www.coursera.org/specializations/deep-learning&#34;&gt;Andrew Ng’s Deep Learning course&lt;/a&gt; (including the dataset), which I strongly recommend for anyone interested in neural networks. The task is to predict the color of the points in the plot on the right. While it seems like a trivial problem, linear algorithms will inevitably fail at it because the colors are not linearly separable. There’s no single line we can draw that perfectly separates the red dots from the blue dots.&lt;/p&gt;
 &lt;div id=&#34;how-does-the-algorithm-work&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;How does the algorithm work?&lt;/h2&gt;
@@ -86,7 +89,7 @@ w =
     \end{pmatrix}
 \end{align*}\]&lt;/span&gt;
 &lt;p&gt;The activation function &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]}\)&lt;/span&gt; is the &lt;em&gt;tanh&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]} = \tanh(Z^{[1]})\)&lt;/span&gt;, for the output layer we’ll use the sigmoid instead &lt;span class=&#34;math inline&#34;&gt;\(A^{[2]} = \sigma(Z^{[2]})\)&lt;/span&gt;. The computation can also be visualised as a subgraph of our neural network:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-3-1.png&#34; width=&#34;412.8&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-3-1.png&#34; width=&#34;412.8&#34; /&gt; &lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-2-1.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;It turns out that this implementation scales to multiple hidden nodes without any formal change to the math. Instead of a &lt;em&gt;weight vector&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(w\)&lt;/span&gt;, we are computing the same functions using a &lt;em&gt;weight matrix&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(W\)&lt;/span&gt;. The matrix-vector product now becomes a dot product between the two matrices. With each node in the hidden layer, we add an extra row in the transposed weight matrix. The dimensionality requirements of matrix multiplication are kept intact: &lt;em&gt;The number of columns of first matrix still equal the number of rows of the second&lt;/em&gt;. But the dimensions of the output change accordingly. We go from a transposed vector of length n to an m x n matrix where &lt;em&gt;m = the number of hidden nodes&lt;/em&gt;.&lt;/p&gt;
 &lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
 Z = {W^T}X + b= 
@@ -118,7 +121,10 @@ Z = {W^T}X + b=
        w_{n,2}x_{2,n}+b 
     \end{pmatrix}
   \end{align*}\]&lt;/span&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-4-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;The last step of going from the hidden layer to the output layer follows the same algebra. I’ll spare you the nitty gritty. Before we propagate forward for the first time, it is important to &lt;strong&gt;randomly initialize the weights&lt;/strong&gt;. Otherwise each connection will compute &lt;em&gt;the exact same thing&lt;/em&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;initialize_parameters &amp;lt;- function(n_x, n_h, n_y) {
 

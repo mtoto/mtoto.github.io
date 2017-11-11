@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blog on Coding with Data</title>
-    <link>http://tamaszilagyi.com/blog/index.xml</link>
+    <link>/blog/index.xml</link>
     <description>Recent content in Blog on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 09 Nov 2017 21:00:30 -0500</lastBuildDate>
-    <atom:link href="http://tamaszilagyi.com/blog/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/blog/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>An animated neuRal net implementation</title>
-      <link>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</link>
+      <link>/blog/an-animated-neural-net-implementation/</link>
       <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</guid>
+      <guid>/blog/an-animated-neural-net-implementation/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -31,7 +31,10 @@ pre code, pre, code {
 &lt;/div&gt;
 &lt;div id=&#34;the-main-ingredients&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;The main ingredients&lt;/h1&gt;
-&lt;p&gt;&lt;img src=&#34;images/fig2-1.png&#34; width=&#34;864&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-11-11-animated_net_files/figure-html/fig2-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;This post is mostly inspired by &lt;a href=&#34;https://www.coursera.org/specializations/deep-learning&#34;&gt;Andrew Ng’s Deep Learning course&lt;/a&gt; (including the dataset), which I strongly recommend for anyone interested in neural networks. The task is to predict the color of the points in the plot on the right. While it seems like a trivial problem, linear algorithms will inevitably fail at it because the colors are not linearly separable. There’s no single line we can draw that perfectly separates the red dots from the blue dots.&lt;/p&gt;
 &lt;div id=&#34;how-does-the-algorithm-work&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;How does the algorithm work?&lt;/h2&gt;
@@ -87,7 +90,7 @@ w =
     \end{pmatrix}
 \end{align*}\]&lt;/span&gt;
 &lt;p&gt;The activation function &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]}\)&lt;/span&gt; is the &lt;em&gt;tanh&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]} = \tanh(Z^{[1]})\)&lt;/span&gt;, for the output layer we’ll use the sigmoid instead &lt;span class=&#34;math inline&#34;&gt;\(A^{[2]} = \sigma(Z^{[2]})\)&lt;/span&gt;. The computation can also be visualised as a subgraph of our neural network:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-3-1.png&#34; width=&#34;412.8&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-3-1.png&#34; width=&#34;412.8&#34; /&gt; &lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-2-1.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;It turns out that this implementation scales to multiple hidden nodes without any formal change to the math. Instead of a &lt;em&gt;weight vector&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(w\)&lt;/span&gt;, we are computing the same functions using a &lt;em&gt;weight matrix&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(W\)&lt;/span&gt;. The matrix-vector product now becomes a dot product between the two matrices. With each node in the hidden layer, we add an extra row in the transposed weight matrix. The dimensionality requirements of matrix multiplication are kept intact: &lt;em&gt;The number of columns of first matrix still equal the number of rows of the second&lt;/em&gt;. But the dimensions of the output change accordingly. We go from a transposed vector of length n to an m x n matrix where &lt;em&gt;m = the number of hidden nodes&lt;/em&gt;.&lt;/p&gt;
 &lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
 Z = {W^T}X + b= 
@@ -119,7 +122,10 @@ Z = {W^T}X + b=
        w_{n,2}x_{2,n}+b 
     \end{pmatrix}
   \end{align*}\]&lt;/span&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-4-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;The last step of going from the hidden layer to the output layer follows the same algebra. I’ll spare you the nitty gritty. Before we propagate forward for the first time, it is important to &lt;strong&gt;randomly initialize the weights&lt;/strong&gt;. Otherwise each connection will compute &lt;em&gt;the exact same thing&lt;/em&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;initialize_parameters &amp;lt;- function(n_x, n_h, n_y) {
 
@@ -318,10 +324,10 @@ nn_model &amp;lt;- function(X, Y, n_h, num_iterations = 1000) {
     
     <item>
       <title>A tidy text analysis of Rick and Morty</title>
-      <link>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
+      <link>/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
+      <guid>/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
       <description>&lt;div class=&#34;figure&#34;&gt;
 &lt;img src=&#34;http://i.imgur.com/a841k9g.gif&#34; /&gt;
 
@@ -380,7 +386,10 @@ tidy_df %&amp;gt;% group_by(season) %&amp;gt;%
         labs(x = NULL) +
         guides(fill = FALSE) +
         scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-6-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;Both seasons are dominated by, well, Rick and Morty. The main characters are tirelessly addressing each other, talking one another either into or out of the mess they find themselves in. What stands out most is the absence of Rick’s daughter, Beth from the top 10 in all seasons. She’s perhaps the only sane person of the family, but then again, sanity doesn’t get too much airtime on this show.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;network-analysis-on-bi-grams&#34; class=&#34;section level2&#34;&gt;
@@ -409,10 +418,16 @@ str(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
 ## [5] whoa            -&amp;gt;whoa      
 ##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 275 entries ]&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This igraph object contains a directed network, where the vertices are the words and an edge exists between each that appear after one another more than twice. Representing the text as a graph, we can calculate things such as &lt;a href=&#34;https://en.wikipedia.org/wiki/Centrality#Degree_centrality&#34;&gt;degree centrality&lt;/a&gt;, and plot the results.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-9-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;Looking at the largest connected network, we arrive at the same conclusion as with term frequencies. Rick and Morty are the most important words. They are at the center of the network and so have the highest degree centrality scores.&lt;/p&gt;
 &lt;p&gt;Besides visualising the importance of words in our network, we can similarly differentiate between words that precede either Rick or Morty. These are all the 1st degree connections (words) that have an edge pointing towards the main characters, but aren’t shared among the them.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-10-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;Looking at the red nodes, we recognize many of the things Rick throws at Morty: &lt;em&gt;“Relax Morty!…It’s science Morty!…Run Morty!”&lt;/em&gt;. There is also a handful of words that precede both characters like &lt;em&gt;“Geez”, “Boy”&lt;/em&gt; or &lt;em&gt;“God”&lt;/em&gt;. All other words that are more than one degree away, are colored blue as out of range.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;tf-idf&#34; class=&#34;section level2&#34;&gt;
@@ -421,8 +436,7 @@ str(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tf_idf_df &amp;lt;- tidy_df %&amp;gt;% 
         count(season, word, sort = TRUE) %&amp;gt;%
         bind_tf_idf(word, season, n)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;What we get back are the most important elements, characters, motives or places across episodes. I’m somewhat surprised that Mr. Meeseeks didn’t come in first though. I was sure as hell annoyed out of my mind after hearing it uttered for the 100th time during the episode &lt;a href=&#34;https://en.wikipedia.org/wiki/Meeseeks_and_Destroy&#34;&gt;Meeseeks and Destroy&lt;/a&gt;. But then again, Mr Meeseeks does make a cameo in two other seasons, so that kind of torpedoes his chances for the first spot.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-12-1.png&#34; /&gt; What we get back are the most important elements, characters, motives or places across episodes. I’m somewhat surprised that Mr. Meeseeks didn’t come in first though. I was sure as hell annoyed out of my mind after hearing it uttered for the 100th time during the episode &lt;a href=&#34;https://en.wikipedia.org/wiki/Meeseeks_and_Destroy&#34;&gt;Meeseeks and Destroy&lt;/a&gt;. But then again, Mr Meeseeks does make a cameo in two other seasons, so that kind of torpedoes his chances for the first spot.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;topic-models&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Topic models&lt;/h2&gt;
@@ -442,7 +456,11 @@ episodes_dtm &amp;lt;- tidy_df %&amp;gt;% filter(season_num == 2 &amp;amp; !word
 
 episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;After &lt;code&gt;tidy()&lt;/code&gt;ing the results, we can plot the top 10 words that contribute (&lt;em&gt;beta&lt;/em&gt;) to most to each topic.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt; There’s definitely a few topics that contain multiple elements of a particular episode. Take for example &lt;strong&gt;topic 1&lt;/strong&gt;. It includes “&lt;em&gt;Roy&lt;/em&gt;”, the name of the videogame Morty plays in the same episode “&lt;em&gt;Fart&lt;/em&gt;” appears, a gaseous creature kept under locks by aliens. Or &lt;strong&gt;topic 5&lt;/strong&gt;, which probably relates to the episode where Rick visits his old lover “&lt;em&gt;Unity&lt;/em&gt;”. It further contains words as “&lt;em&gt;remember&lt;/em&gt;” and “&lt;em&gt;memories&lt;/em&gt;”. The episode ends with Unity repeating “I want it &lt;em&gt;real&lt;/em&gt;”.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-14-1.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;p&gt;There’s definitely a few topics that contain multiple elements of a particular episode. Take for example &lt;strong&gt;topic 1&lt;/strong&gt;. It includes “&lt;em&gt;Roy&lt;/em&gt;”, the name of the videogame Morty plays in the same episode “&lt;em&gt;Fart&lt;/em&gt;” appears, a gaseous creature kept under locks by aliens. Or &lt;strong&gt;topic 5&lt;/strong&gt;, which probably relates to the episode where Rick visits his old lover “&lt;em&gt;Unity&lt;/em&gt;”. It further contains words as “&lt;em&gt;remember&lt;/em&gt;” and “&lt;em&gt;memories&lt;/em&gt;”. The episode ends with Unity repeating “I want it &lt;em&gt;real&lt;/em&gt;”.&lt;/p&gt;
 &lt;p&gt;Not only can we examine the &lt;strong&gt;word per topic probabilities&lt;/strong&gt;, we can also plot &lt;strong&gt;the topic per document probabilities&lt;/strong&gt;, or &lt;em&gt;gamma&lt;/em&gt; values. This lets us see what topic belongs to what episode.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tidy(episodes_lda, matrix = &amp;quot;gamma&amp;quot;) %&amp;gt;%
         inner_join(titles) %&amp;gt;%
@@ -450,7 +468,10 @@ episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;
         geom_boxplot() +
         facet_wrap(~ title) +
         ggtitle(&amp;quot;Dominant Topics per Episode&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-16-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;Our previous assumptions are confirmed, the first topic does belong to the episode &lt;em&gt;Mortynight Run&lt;/em&gt; as does the fifth topic to &lt;em&gt;Auto-Erotic Assimilation&lt;/em&gt;. It is important to note that the results strongly depend on the number of topics supplied to &lt;code&gt;LDA()&lt;/code&gt;, so inevitably, some experimentation is required to arrive at meaningful results.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;final-thoughts&#34; class=&#34;section level2&#34;&gt;
@@ -463,10 +484,10 @@ episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;
     
     <item>
       <title>Self-learning Hue Lights</title>
-      <link>http://tamaszilagyi.com/blog/self-learning-hue-lights/</link>
+      <link>/blog/self-learning-hue-lights/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/self-learning-hue-lights/</guid>
+      <guid>/blog/self-learning-hue-lights/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -543,10 +564,16 @@ binned_df &amp;lt;- binned_df %&amp;gt;% filter(!as.Date(log_time) %in% off_days
 ## bright    dim    mid   zero 
 ##    598   1533   1710  23889&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Roughly 86% of the time the lamps are off, resulting in an unbalanced dataset. What about brightness values lamps were &lt;em&gt;on&lt;/em&gt;, according to the three remaining categories?&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-6-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;The distribution seems to be close to normal with a positive skew, and a massive outlier all the way at the end of the spectrum. That’s maximum brightness, the default when I switch the lights on/off with a physical switch.&lt;/p&gt;
 &lt;p&gt;To get an intuition for my usage patterns, I’ll also plot a histogram of hour of the day for all four categories.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-7-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;The only times the lamps are &lt;strong&gt;not&lt;/strong&gt; structurally off, is in the evening and the early hours. Dim and mid values are the dominant category after 8PM instead. Another slight dip in zero appears around and shortly after midnight, compensated by the second largest peak in dim, and a few instances of mid and bright. Bright observations in general are sparse and will be tough to predict.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;can-we-learn-this&#34; class=&#34;section level2&#34;&gt;
@@ -596,12 +623,15 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim     119  212     29  397
-##   mid      44   68      6  120
-##   bright   22   52      0    4
-##   zero     35  111     30 4223&lt;/code&gt;&lt;/pre&gt;
+##   dim      49  144     21  293
+##   mid      74  133     15  108
+##   bright   53   66      0   28
+##   zero     44  100     29 4315&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lets-ship-it&#34; class=&#34;section level1&#34;&gt;
@@ -647,10 +677,10 @@ jug() %&amp;gt;% post(&amp;quot;/predict-hue&amp;quot;, decorate(predict_hue)) %
     
     <item>
       <title>Creating a Spotify Playlist using Luigi</title>
-      <link>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</link>
+      <link>/blog/creating-a-spotify-playlist-using-luigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</guid>
+      <guid>/blog/creating-a-spotify-playlist-using-luigi/</guid>
       <description>&lt;!-- BLOGDOWN-HEAD --&gt;
 &lt;!-- /BLOGDOWN-HEAD --&gt;
 
@@ -933,10 +963,10 @@ class spotify_morning_playlist(luigi.Task):
     
     <item>
       <title>Analyzing My Spotify Listening History</title>
-      <link>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</link>
+      <link>/blog/analyzing-my-spotify-listening-history/</link>
       <pubDate>Sun, 02 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</guid>
+      <guid>/blog/analyzing-my-spotify-listening-history/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -1063,7 +1093,10 @@ plot &amp;lt;- merged %&amp;gt;%
         guides(fill = FALSE) +
         theme(axis.text.x = element_text(angle = 90, hjust = 1))
 plot&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-6-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;Most of the songs in my top 10 have a similar pattern: The first few days after discovering them, there is a sharp increase in the number of plays. Sometimes it takes a couple of listens for me to get into a track, but usually I start obsessing over it immediately. One obvious exception is the song &lt;em&gt;Habiba&lt;/em&gt;, the song I listened to the most. The first time I heard the song, it must have gone unnoticed. Two months later, I started playing it virtually on repeat.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;listening-times&#34; class=&#34;section level1&#34;&gt;
@@ -1081,12 +1114,18 @@ merged %&amp;gt;% group_by(time_of_day = hour(played_at),
         ggtitle(&amp;quot;Number of Listens per hour of the day&amp;quot;) +
         xlab(&amp;quot;Hour&amp;quot;) +
         ylab(&amp;quot;Plays&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-8-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;Well, there’s a few interesting things here. On &lt;strong&gt;weekdays&lt;/strong&gt; I listen to slightly more music than on weekends, mostly due to regular listening habits early on and during the day. The peak in the morning corresponds to me biking to work, followed by dip around 10 (daily stand-ups anyone?). Then, I put my headphones back on until about 14:00, to finish my Spotify activities in the evening when I get home.&lt;/p&gt;
 &lt;p&gt;On the other hand, I listen to slightly more music in the afternoon and evening when it’s &lt;strong&gt;weekend&lt;/strong&gt;. Additionally, all early hours listening happens solely on weekends.&lt;/p&gt;
 &lt;p&gt;I am also interested whether there is such a thing as &lt;em&gt;morning artists vs. afternoon/evening artists&lt;/em&gt;. In other words, which artists do I listen to more often in the morning than &lt;em&gt;after noon&lt;/em&gt;, or the other way around. The approach I took is to count the number plays by artists, and calculate a ratio of morning / evening for each one. The result I plotted with what is apparently called a &lt;a href=&#34;http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#Diverging%20Lollipop%20Chart&#34;&gt;diverging lollipop chart&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;The code snippet to produce this plot is tad bit too long to include here, but you can find all the code in the original RMarkdown file on &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-06-02-spotifyR.Rmd&#34;&gt;Github&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-9-1.png&#34; /&gt;
+
+&lt;/div&gt;
 &lt;p&gt;On the y-axis we have the artists. The x-axis depicts the aforementioned ratio, and the size of the &lt;em&gt;lollipop&lt;/em&gt; stands for the number of plays in the given direction, also displayed by the label.&lt;/p&gt;
 &lt;p&gt;The artists with the biggest divergences are &lt;a href=&#34;https://open.spotify.com/artist/0HlOk15cW7PeziVcItQLco&#34;&gt;Zen Mechanics&lt;/a&gt; and &lt;a href=&#34;https://open.spotify.com/artist/1k8VBufn1nBs8LN9n4snc8&#34;&gt;Stereo MC’s&lt;/a&gt;. For both artists, the number of plays is almost equal to the difference ratio. That means I played songs in the opposite timeframe &lt;strong&gt;only once&lt;/strong&gt;. As a matter of fact, there are artists such as &lt;a href=&#34;https://open.spotify.com/artist/03HEHGJoLPdARs4nrtUidr&#34;&gt;Junior Kimbrough&lt;/a&gt; or &lt;a href=&#34;https://open.spotify.com/artist/3mNygoyrEKLgo6sx0MzwOL&#34;&gt;Ali Farka Touré&lt;/a&gt; whom I played more often in each direction, but because the plays are distributed more evenly, the ratio is not as extreme.&lt;/p&gt;
 &lt;/div&gt;
@@ -1185,10 +1224,10 @@ gganimate(gg_life)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Starting a blog(down)</title>
-      <link>http://tamaszilagyi.com/blog/starting-a-blogdown/</link>
+      <link>/blog/starting-a-blogdown/</link>
       <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/starting-a-blogdown/</guid>
+      <guid>/blog/starting-a-blogdown/</guid>
       <description>&lt;!-- BLOGDOWN-HEAD --&gt;
 &lt;!-- /BLOGDOWN-HEAD --&gt;
 

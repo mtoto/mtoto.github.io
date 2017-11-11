@@ -84,7 +84,7 @@ What follows is a custom build of a simple one hidden-layer neural network, wher
  
 # The main ingredients
 
-```{r fig2, fig.height = 5.5, fig.width = 9, fig.align = "center", echo = F, message = F}
+```{r fig2, fig.height = 5.5, fig.width = 9, fig.align = "center", echo = F, message = F, eval = F}
 require(gridExtra)
 library(grid)
 
@@ -108,6 +108,8 @@ p2<-ggplot(data1, aes(X1,X2, color = Y))+
 grid.arrange(p1, p2, ncol=2, top=textGrob("Network architecture and the problem",gp=gpar(fontsize=23,font=8),
                                           hjust = 0.75))
 ```
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-11-11-animated_net_files/figure-html/fig2-1.png)
+
 
 This post is mostly inspired by [Andrew Ng's Deep Learning course](https://www.coursera.org/specializations/deep-learning) (including the dataset), which I strongly recommend for anyone interested in neural networks. The task is to predict the color of the points in the plot on the right. While it seems like a trivial problem, linear algorithms will inevitably fail at it because the colors are not linearly separable. There's no single line we can draw that perfectly separates the red dots from the blue dots.
 
@@ -202,6 +204,7 @@ as_tbl_graph(df[1:2,], directed = TRUE) %>%
 
         
 ```
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-2-1.png)
 
 It turns out that this implementation scales to multiple hidden nodes without any formal change to the math. Instead of a *weight vector* $w$, we are computing the same functions using a *weight matrix* $W$. The matrix-vector product now becomes a dot product between the two matrices. With each node in the hidden layer, we add an extra row in the transposed weight matrix. The dimensionality requirements of matrix multiplication are kept intact: *The number of columns of first matrix still equal the number of rows of the second*. But the dimensions of the output change accordingly. We go from a transposed vector of length n to an m x n matrix where *m =  the number of hidden nodes*.
 
@@ -238,7 +241,7 @@ Z = {W^T}X + b=
   \end{align*}
   
  
-```{r, echo = F, warning = F, message = F}
+```{r, echo = F, warning = F, message = F, eval = F}
 dfg %>% filter(name!=7) %>%
     activate(nodes) %>% 
     mutate(name = c("x2","x1","z1", "z2", "z3", "z4")) %>%
@@ -259,6 +262,7 @@ dfg %>% filter(name!=7) %>%
     scale_y_continuous(position = "right") +
     ylab(TeX("$\\tanh(W^{[1]T} X + b)$"))
 ```
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-4-1.png)
 
 The last step of going from the hidden layer to the output layer follows the same algebra. I'll spare you the nitty gritty. Before we propagate forward for the first time, it is important to **randomly initialize the weights**. Otherwise each connection will compute *the exact same thing*.
 
@@ -485,6 +489,7 @@ predict_nn<-function(parameters, X) {
 For the plots, I used the packages [ggplot](https://github.com/tidyverse/ggplot2), [ggraph](https://github.com/thomasp85/ggraph) [gganimate](https://github.com/thomasp85/ggraph), [tweenr](https://github.com/thomasp85/tweenr), [animation](https://cran.r-project.org/web/packages/animation/index.html). Thanks to the creators of these awesome tools, I was able to make all the gifs using only R code. The full script for each of the animations is in the Appendix section at the [bottom of this .Rmd file](https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-11-11-animated_net.Rmd).
 
 ```{r animations appendix, eval = FALSE, echo = FALSE}
+# ANIMATIONS APPENDIX
 library(ggraph)
 library(ggforce)
 library(gganimate)
