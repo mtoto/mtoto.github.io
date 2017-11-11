@@ -16,7 +16,7 @@ pre code, pre, code {
 ```
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, fig.path = "images/")
 # functions
 source("/Users/tamas/Documents/my_site/data/functions.R")
 ```

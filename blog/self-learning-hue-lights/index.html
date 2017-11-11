@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1510357163">
-    <link rel="stylesheet" href="../../css/main.css?t=1510357163">
+    <link rel="stylesheet" href="../../css/reset.css?t=1510405094">
+    <link rel="stylesheet" href="../../css/main.css?t=1510405094">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1510357163">
+        <link rel="stylesheet" href="../../css/override.css?t=1510405094">
     
 
 
@@ -224,10 +224,10 @@ binned_df &lt;- binned_df %&gt;% filter(!as.Date(log_time) %in% off_days$date)</
 ## bright    dim    mid   zero 
 ##    598   1533   1710  23889</code></pre>
 <p>Roughly 86% of the time the lamps are off, resulting in an unbalanced dataset. What about brightness values lamps were <em>on</em>, according to the three remaining categories?</p>
-<p><img src="../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="images/unnamed-chunk-6-1.png" width="672" /></p>
 <p>The distribution seems to be close to normal with a positive skew, and a massive outlier all the way at the end of the spectrum. That’s maximum brightness, the default when I switch the lights on/off with a physical switch.</p>
 <p>To get an intuition for my usage patterns, I’ll also plot a histogram of hour of the day for all four categories.</p>
-<p><img src="../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="images/unnamed-chunk-7-1.png" width="672" /></p>
 <p>The only times the lamps are <strong>not</strong> structurally off, is in the evening and the early hours. Dim and mid values are the dominant category after 8PM instead. Another slight dip in zero appears around and shortly after midnight, compensated by the second largest peak in dim, and a few instances of mid and bright. Bright observations in general are sparse and will be tough to predict.</p>
 </div>
 <div id="can-we-learn-this" class="section level2">
@@ -277,12 +277,12 @@ gbmFit &lt;- train(y ~ ., data = training,
 table(preds, testing$y)</code></pre>
 <pre><code>##         
 ## preds     dim  mid bright zero
-##   dim     137  235     17  414
-##   mid      43   75     20  110
-##   bright   11   26      0    2
-##   zero     29  107     28 4218</code></pre>
+##   dim     119  212     29  397
+##   mid      44   68      6  120
+##   bright   22   52      0    4
+##   zero     35  111     30 4223</code></pre>
 <p>Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.</p>
-<p><img src="../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="images/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.</p>
 </div>
 <div id="lets-ship-it" class="section level1">
