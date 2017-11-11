@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tidyr on Coding with Data</title>
-    <link>/tags/tidyr/index.xml</link>
+    <link>http://tamaszilagyi.com/tags/tidyr/index.xml</link>
     <description>Recent content in Tidyr on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="/tags/tidyr/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tamaszilagyi.com/tags/tidyr/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Analyzing My Spotify Listening History</title>
-      <link>/blog/analyzing-my-spotify-listening-history/</link>
+      <link>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</link>
       <pubDate>Sun, 02 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>/blog/analyzing-my-spotify-listening-history/</guid>
+      <guid>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -140,10 +140,7 @@ plot &amp;lt;- merged %&amp;gt;%
         guides(fill = FALSE) +
         theme(axis.text.x = element_text(angle = 90, hjust = 1))
 plot&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-6-1.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Most of the songs in my top 10 have a similar pattern: The first few days after discovering them, there is a sharp increase in the number of plays. Sometimes it takes a couple of listens for me to get into a track, but usually I start obsessing over it immediately. One obvious exception is the song &lt;em&gt;Habiba&lt;/em&gt;, the song I listened to the most. The first time I heard the song, it must have gone unnoticed. Two months later, I started playing it virtually on repeat.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;listening-times&#34; class=&#34;section level1&#34;&gt;
@@ -161,18 +158,12 @@ merged %&amp;gt;% group_by(time_of_day = hour(played_at),
         ggtitle(&amp;quot;Number of Listens per hour of the day&amp;quot;) +
         xlab(&amp;quot;Hour&amp;quot;) +
         ylab(&amp;quot;Plays&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-8-1.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Well, there’s a few interesting things here. On &lt;strong&gt;weekdays&lt;/strong&gt; I listen to slightly more music than on weekends, mostly due to regular listening habits early on and during the day. The peak in the morning corresponds to me biking to work, followed by dip around 10 (daily stand-ups anyone?). Then, I put my headphones back on until about 14:00, to finish my Spotify activities in the evening when I get home.&lt;/p&gt;
 &lt;p&gt;On the other hand, I listen to slightly more music in the afternoon and evening when it’s &lt;strong&gt;weekend&lt;/strong&gt;. Additionally, all early hours listening happens solely on weekends.&lt;/p&gt;
 &lt;p&gt;I am also interested whether there is such a thing as &lt;em&gt;morning artists vs. afternoon/evening artists&lt;/em&gt;. In other words, which artists do I listen to more often in the morning than &lt;em&gt;after noon&lt;/em&gt;, or the other way around. The approach I took is to count the number plays by artists, and calculate a ratio of morning / evening for each one. The result I plotted with what is apparently called a &lt;a href=&#34;http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#Diverging%20Lollipop%20Chart&#34;&gt;diverging lollipop chart&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;The code snippet to produce this plot is tad bit too long to include here, but you can find all the code in the original RMarkdown file on &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-06-02-spotifyR.Rmd&#34;&gt;Github&lt;/a&gt;.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-9-1.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;On the y-axis we have the artists. The x-axis depicts the aforementioned ratio, and the size of the &lt;em&gt;lollipop&lt;/em&gt; stands for the number of plays in the given direction, also displayed by the label.&lt;/p&gt;
 &lt;p&gt;The artists with the biggest divergences are &lt;a href=&#34;https://open.spotify.com/artist/0HlOk15cW7PeziVcItQLco&#34;&gt;Zen Mechanics&lt;/a&gt; and &lt;a href=&#34;https://open.spotify.com/artist/1k8VBufn1nBs8LN9n4snc8&#34;&gt;Stereo MC’s&lt;/a&gt;. For both artists, the number of plays is almost equal to the difference ratio. That means I played songs in the opposite timeframe &lt;strong&gt;only once&lt;/strong&gt;. As a matter of fact, there are artists such as &lt;a href=&#34;https://open.spotify.com/artist/03HEHGJoLPdARs4nrtUidr&#34;&gt;Junior Kimbrough&lt;/a&gt; or &lt;a href=&#34;https://open.spotify.com/artist/3mNygoyrEKLgo6sx0MzwOL&#34;&gt;Ali Farka Touré&lt;/a&gt; whom I played more often in each direction, but because the plays are distributed more evenly, the ratio is not as extreme.&lt;/p&gt;
 &lt;/div&gt;

@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Hue on Coding with Data</title>
-    <link>/tags/hue/index.xml</link>
+    <link>http://tamaszilagyi.com/tags/hue/index.xml</link>
     <description>Recent content in Hue on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="/tags/hue/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tamaszilagyi.com/tags/hue/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>A tidy text analysis of Rick and Morty</title>
-      <link>/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
+      <link>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
+      <guid>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
       <description>&lt;div class=&#34;figure&#34;&gt;
 &lt;img src=&#34;http://i.imgur.com/a841k9g.gif&#34; /&gt;
 
@@ -170,10 +170,10 @@ episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;
     
     <item>
       <title>Self-learning Hue Lights</title>
-      <link>/blog/self-learning-hue-lights/</link>
+      <link>http://tamaszilagyi.com/blog/self-learning-hue-lights/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>/blog/self-learning-hue-lights/</guid>
+      <guid>http://tamaszilagyi.com/blog/self-learning-hue-lights/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -250,16 +250,10 @@ binned_df &amp;lt;- binned_df %&amp;gt;% filter(!as.Date(log_time) %in% off_days
 ## bright    dim    mid   zero 
 ##    598   1533   1710  23889&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Roughly 86% of the time the lamps are off, resulting in an unbalanced dataset. What about brightness values lamps were &lt;em&gt;on&lt;/em&gt;, according to the three remaining categories?&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-6-1.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The distribution seems to be close to normal with a positive skew, and a massive outlier all the way at the end of the spectrum. That’s maximum brightness, the default when I switch the lights on/off with a physical switch.&lt;/p&gt;
 &lt;p&gt;To get an intuition for my usage patterns, I’ll also plot a histogram of hour of the day for all four categories.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-7-1.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The only times the lamps are &lt;strong&gt;not&lt;/strong&gt; structurally off, is in the evening and the early hours. Dim and mid values are the dominant category after 8PM instead. Another slight dip in zero appears around and shortly after midnight, compensated by the second largest peak in dim, and a few instances of mid and bright. Bright observations in general are sparse and will be tough to predict.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;can-we-learn-this&#34; class=&#34;section level2&#34;&gt;
@@ -309,15 +303,12 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      49  144     21  293
-##   mid      74  133     15  108
-##   bright   53   66      0   28
-##   zero     44  100     29 4315&lt;/code&gt;&lt;/pre&gt;
+##   dim      73  169     16  303
+##   mid      67  115     19  133
+##   bright   37   60      0   35
+##   zero     43   99     30 4273&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;images/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;lets-ship-it&#34; class=&#34;section level1&#34;&gt;

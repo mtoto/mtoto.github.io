@@ -124,7 +124,7 @@ top10
 
 How did these songs reach the top? Is there a relationship between the first time I played the song in the past three months, the number of total plays, and the period I played each the song the most? One way to explore these questions is by plotting a cumulative histogram depicting the number of plays over time for each track.
 
-```{r,eval=F}
+```{r}
 # Using ggplot2
 library(ggplot2)
 library(zoo)
@@ -151,15 +151,12 @@ plot <- merged %>%
 plot
 ```
 
-![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-6-1.png)
-
-
 Most of the songs in my top 10 have a similar pattern: The first few days after discovering them, there is a sharp increase in the number of plays. Sometimes it takes a couple of listens for me to get into a track, but usually I start obsessing over it immediately. One obvious exception is the song *Habiba*, the song I listened to the most. The first time I heard the song, it must have gone unnoticed. Two months later, I started playing it virtually on repeat.
 
 # Listening times
 Moving on, let's look at what time of the day I listen to Spotify the most. I expect weekdays to exhibit a somewhat different pattern than weekends. We can plot separate timelines of the total number of listens per hour of the day for both weekdays and weekends. Unfortunately, there are more weekdays than weekends, so we need to normalize their respective counts to arrive at a meaningful comparison.
 
-```{r, eval = F}
+```{r}
 library(lubridate)
 
 merged %>% group_by(time_of_day = hour(played_at),
@@ -176,8 +173,6 @@ merged %>% group_by(time_of_day = hour(played_at),
 
 ```
 
-![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-8-1.png)
-
 Well, there's a few interesting things here. On **weekdays** I listen to slightly more music than on weekends, mostly due to regular listening habits early on and during the day. The peak in the morning corresponds to me biking to work, followed by dip around 10 (daily stand-ups anyone?). Then, I put my headphones back on until about 14:00, to finish my Spotify activities in the evening when I get home. 
 
 On the other hand, I listen to slightly more music in the afternoon and evening when it's **weekend**. Additionally, all early hours listening happens solely on weekends.
@@ -186,7 +181,7 @@ I am also interested whether there is such a thing as *morning artists vs. after
 
 The code snippet to produce this plot is tad bit too long to include here, but you can find all the code in the original RMarkdown file on [Github](https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-06-02-spotifyR.Rmd).
 
-```{r, warning=FALSE, echo = F, eval = F}
+```{r, warning=FALSE, echo = F}
 plot_2 <- merged %>% 
         mutate(day_or_night = ifelse(between(hour(played_at),5,12),
                                      "morning",
@@ -233,9 +228,6 @@ plot_2 <- merged %>%
 plot_2
 
 ```
-
-![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-06-02-spotifyR_files/figure-html/unnamed-chunk-9-1.png)
-
 
 On the y-axis we have the artists. The x-axis depicts the aforementioned ratio, and the size of the *lollipop* stands for the number of plays in the given direction, also displayed by the label.
 

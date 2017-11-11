@@ -10,18 +10,18 @@
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Coding with Data">
 
-<base href="../../">
+<base href="http://tamaszilagyi.com/">
 <title>
 
 
      An animated neuRal net implementation 
 
 </title>
-<link rel="canonical" href="../../blog/an-animated-neural-net-implementation/">
+<link rel="canonical" href="http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/">
 
 
 <script type="text/javascript">
-    var baseURL = '\/';
+    var baseURL = 'http:\/\/tamaszilagyi.com\/';
     var host = baseURL.substring(0, baseURL.length - 1).replace(/\//g, '');
     if ((host === window.location.host) && (window.location.protocol !== 'https:')) {
         window.location.protocol = 'https:';
@@ -31,8 +31,8 @@
 
 
 
-    <link rel="stylesheet" href="../../css/vs.css">
-    <script src="../../js/highlight.pack.js"></script>
+    <link rel="stylesheet" href="http://tamaszilagyi.com/css/vs.css">
+    <script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
     <script>
   hljs.initHighlightingOnLoad();
     </script>
@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1510406759">
-    <link rel="stylesheet" href="../../css/main.css?t=1510406759">
+    <link rel="stylesheet" href="../../css/reset.css?t=1510407501">
+    <link rel="stylesheet" href="../../css/main.css?t=1510407501">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1510406759">
+        <link rel="stylesheet" href="../../css/override.css?t=1510407501">
     
 
 
@@ -140,7 +140,7 @@
 
 </div>
 
-                    <div class="initials"><a href="../../"></a></div>
+                    <div class="initials"><a href="http://tamaszilagyi.com/"></a></div>
                 </div>
                 <div class="meta">
                     <div class="date" title="Thu Nov 9 2017 21:00:30 -0500">Nov 9, 2017</div>
@@ -164,10 +164,7 @@ pre code, pre, code {
 </div>
 <div id="the-main-ingredients" class="section level1">
 <h1>The main ingredients</h1>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-11-11-animated_net_files/figure-html/fig2-1.png" />
-
-</div>
+<p><img src="images/fig2-1.png" width="864" style="display: block; margin: auto;" /></p>
 <p>This post is mostly inspired by <a href="https://www.coursera.org/specializations/deep-learning">Andrew Ng’s Deep Learning course</a> (including the dataset), which I strongly recommend for anyone interested in neural networks. The task is to predict the color of the points in the plot on the right. While it seems like a trivial problem, linear algorithms will inevitably fail at it because the colors are not linearly separable. There’s no single line we can draw that perfectly separates the red dots from the blue dots.</p>
 <div id="how-does-the-algorithm-work" class="section level2">
 <h2>How does the algorithm work?</h2>
@@ -223,7 +220,7 @@ w =
     \end{pmatrix}
 \end{align*}\]</span>
 <p>The activation function <span class="math inline">\(A^{[1]}\)</span> is the <em>tanh</em> <span class="math inline">\(A^{[1]} = \tanh(Z^{[1]})\)</span>, for the output layer we’ll use the sigmoid instead <span class="math inline">\(A^{[2]} = \sigma(Z^{[2]})\)</span>. The computation can also be visualised as a subgraph of our neural network:</p>
-<p><img src="images/unnamed-chunk-3-1.png" width="412.8" /> <img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-2-1.png" /></p>
+<p><img src="images/unnamed-chunk-3-1.png" width="412.8" /></p>
 <p>It turns out that this implementation scales to multiple hidden nodes without any formal change to the math. Instead of a <em>weight vector</em> <span class="math inline">\(w\)</span>, we are computing the same functions using a <em>weight matrix</em> <span class="math inline">\(W\)</span>. The matrix-vector product now becomes a dot product between the two matrices. With each node in the hidden layer, we add an extra row in the transposed weight matrix. The dimensionality requirements of matrix multiplication are kept intact: <em>The number of columns of first matrix still equal the number of rows of the second</em>. But the dimensions of the output change accordingly. We go from a transposed vector of length n to an m x n matrix where <em>m = the number of hidden nodes</em>.</p>
 <span class="math display">\[\begin{align*}
 Z = {W^T}X + b= 
@@ -255,10 +252,7 @@ Z = {W^T}X + b=
        w_{n,2}x_{2,n}+b 
     \end{pmatrix}
   \end{align*}\]</span>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-4-1.png" />
-
-</div>
+<p><img src="images/unnamed-chunk-4-1.png" width="672" /></p>
 <p>The last step of going from the hidden layer to the output layer follows the same algebra. I’ll spare you the nitty gritty. Before we propagate forward for the first time, it is important to <strong>randomly initialize the weights</strong>. Otherwise each connection will compute <em>the exact same thing</em>.</p>
 <pre class="r"><code>initialize_parameters &lt;- function(n_x, n_h, n_y) {
 
@@ -461,9 +455,9 @@ nn_model &lt;- function(X, Y, n_h, num_iterations = 1000) {
                 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'tamas-blog';
-    var disqus_identifier = '\/blog\/an-animated-neural-net-implementation\/';
+    var disqus_identifier = 'http:\/\/tamaszilagyi.com\/blog\/an-animated-neural-net-implementation\/';
     var disqus_title = 'An animated neuRal net implementation';
-    var disqus_url = '\/blog\/an-animated-neural-net-implementation\/';
+    var disqus_url = 'http:\/\/tamaszilagyi.com\/blog\/an-animated-neural-net-implementation\/';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -514,8 +508,8 @@ ga('send', 'pageview');
 
 
 
-<link rel="stylesheet" href="//css/vs.css">
-<script src="../../js/highlight.pack.js"></script>
+<link rel="stylesheet" href="http://tamaszilagyi.com//css/vs.css">
+<script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
 <script>
   hljs.initHighlightingOnLoad();
 </script>

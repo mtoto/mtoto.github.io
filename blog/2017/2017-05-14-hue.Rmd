@@ -78,7 +78,7 @@ table(binned_df$y)
 
 Roughly 86% of the time the lamps are off, resulting in an unbalanced dataset. What about brightness values lamps were *on*, according to the three remaining categories?
 
-```{r, echo = F, eval = F}
+```{r, echo = F}
 library(ggplot2)
 binned_df %>% filter(bri != 0) %>%
         ggplot(., aes(bri, fill = y, alpha = .5)) +
@@ -86,13 +86,12 @@ binned_df %>% filter(bri != 0) %>%
         guides(alpha = FALSE) + 
         ggtitle("Density of brightness by categories")
 ```
-![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-6-1.png)
 
 The distribution seems to be close to normal with a positive skew, and a massive outlier all the way at the end of the spectrum. That's maximum brightness, the default when I switch the lights on/off with a physical switch. 
 
 To get an intuition for my usage patterns, I'll also plot a histogram of hour of the day for all four categories.
 
-```{r, echo = F, eval = F}
+```{r, echo = F}
 binned_df %>% mutate(hour = lubridate::hour(as.POSIXct(log_time, tz = "Europe/Amsterdam")),
                      y = factor(y, levels = c("dim","mid","bright", "zero"))) %>%
         ggplot(., aes(hour, fill = y, alpha = .5)) +
@@ -101,7 +100,6 @@ binned_df %>% mutate(hour = lubridate::hour(as.POSIXct(log_time, tz = "Europe/Am
         facet_wrap(~y) + 
         ggtitle("Distribution of categories by hour of the day")
 ```
-![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-7-1.png)
 
 The only times the lamps are **not** structurally off, is in the evening and the early hours. Dim and mid values are the dominant category after 8PM instead. Another slight dip in zero appears around and shortly after midnight, compensated by the second largest peak in dim, and a few instances of mid and bright. Bright observations in general are sparse and will be tough to predict.
 
@@ -165,7 +163,7 @@ table(preds, testing$y)
 
 Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let's look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.
 
-```{r, echo = F, eval = F}
+```{r, echo = F}
 testing %>% cbind(preds) %>%
         mutate(hour = lubridate::hour(as.POSIXct(log_time, tz = "Europe/Amsterdam")),
                y = factor(y, levels = c("dim","mid","bright", "zero"))) %>% 
@@ -177,7 +175,6 @@ testing %>% cbind(preds) %>%
         facet_wrap(~value) + 
         ggtitle("Distribution of categories by hour of the day")
 ```
-![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png)
 
 Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me. 
 
