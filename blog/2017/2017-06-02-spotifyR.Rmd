@@ -16,7 +16,7 @@ pre code, pre, code {
 ```
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.path = "images/")
+knitr::opts_chunk$set(echo = TRUE)
 
 library(dplyr)
 library(tidyr)
