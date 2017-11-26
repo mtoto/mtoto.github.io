@@ -14,7 +14,7 @@ pre code, pre, code {
   word-wrap: initial !important;
 }
 ```
-# Intro
+# Introduction
 
 In the [previous post](http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/), I shared an analysis of my Spotify listening history using R. In this post, I will discuss what came before having the data: collecting, cleaning and saving it. As the title suggest, we will even go a step further and automate the creation of a weekly top 10 playlist in Spotify using the very same dataset.
 

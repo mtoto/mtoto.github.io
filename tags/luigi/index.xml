@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Luigi on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/luigi/index.xml</link>
+    <link>/tags/luigi/index.xml</link>
     <description>Recent content in Luigi on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://tamaszilagyi.com/tags/luigi/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/luigi/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Creating a Spotify Playlist using Luigi</title>
-      <link>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</link>
+      <link>/blog/creating-a-spotify-playlist-using-luigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</guid>
+      <guid>/blog/creating-a-spotify-playlist-using-luigi/</guid>
       <description>&lt;!-- BLOGDOWN-HEAD --&gt;
 &lt;!-- /BLOGDOWN-HEAD --&gt;
 
@@ -27,8 +27,8 @@ pre code, pre, code {
   word-wrap: initial !important;
 }
 &lt;/style&gt;
-&lt;div id=&#34;intro&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Intro&lt;/h1&gt;
+&lt;div id=&#34;introduction&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;In the &lt;a href=&#34;http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/&#34;&gt;previous post&lt;/a&gt;, I shared an analysis of my Spotify listening history using R. In this post, I will discuss what came before having the data: collecting, cleaning and saving it. As the title suggest, we will even go a step further and automate the creation of a weekly top 10 playlist in Spotify using the very same dataset.&lt;/p&gt;
 &lt;p&gt;The main ingredient will be Luigi, a Python framework for workflow management Spotify open-sourced a couple of years ago. According to &lt;a href=&#34;http://luigi.readthedocs.io/en/stable/index.html&#34;&gt;docs&lt;/a&gt;:&lt;/p&gt;
 &lt;blockquote&gt;

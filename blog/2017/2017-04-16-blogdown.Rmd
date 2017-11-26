@@ -1,0 +1,72 @@
+---
+title: "Starting a blog(down)"
+author: "Tamas Szilagyi"
+date: 2017-04-16T21:13:14-05:00
+categories: ["R"]
+tags: ["R Markdown", "plot", "regression"]
+output: html_document
+---
+
+# Starting a blog
+
+Having learnt lots from the open source community over the past years, from blogs and videos to attending meetups and awesome conferences, I have decided to start a blog myself and share some of the things I find interesting. Essentialy it will boil down to using open source tools to build cool things with data.
+
+# It's easy
+
+You can get your blog up and running with literally three lines of `R` code. I have first heard about the [blogdown](https://github.com/rstudio/blogdown) package on Twitter, and to see if the rumours were true, I went on to download the current build from Github, using `devtools::install_github('rstudio/blogdown')`.
+
+Under the hood, blogdown uses [Hugo](https://gohugo.io/) to generate the website, but wraps most functionality nicely, so there's no need for much manual configuration during the process, if at all.
+
+## Setup 
+
+We first create a folder for our blog on our computer, and set it as our home directory by `setwd("path-to-blog")` inside `RStudio`. Now we simply run:
+
+```{r, eval = FALSE}
+# 1 if you haven't already, install blogdown
+devtools::install_github('rstudio/blogdown')
+# 2 install hugo
+blogdown::install_hugo()
+# 3 create new site
+blogdown::new_site()
+```
+
+That's it. You now have a complete folder structure initialized in your working directory:
+
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/img/folderstruct.png)
+
+The local build of your new site is now running on `localhost`. You can see it in RSutdio's `Viewer`, or inside a browser by clicking *Show in new window* in the top right corner of the `Viewer`. 
+
+You future blog posts will reside in the `content/post` folder. Here we find two dummy posts as `.Rmd` files that we can start editing straight away and see the results immediately after saving. Because everytime you save changes, your site is instantly rebuilt. If you come back to work on your existing site, you can simply run `serve_site()` and see your site regenerated according to your latest edits.
+
+## Customization
+
+Now we can now begin to customize the look of our blog by installing a theme using the function `install_theme('username/theme')`. For my site, I picked [nishanths/cocoa-hugo-theme](https://github.com/nishanths/cocoa-hugo-theme) which I like very much for its minimalistic design. You can browse other themes on [themes.gohugo.io/](https://themes.gohugo.io/).
+
+## Configuration
+
+The only thing left to do now is to edit the `config.toml` file  to set the name of your blog, avatars, or even link a `Google Analytics` account if the theme allows for. The file contains parameters such as:
+
+```{text, eval = FALSE}
+title        = "Tamas Szilagyi"
+baseurl      = "http://tamaszilagyi.com/"
+relativeurls = true
+languageCode = "en-us"
+theme        = "cocoa-hugo-theme"
+faviconfile  = "img/leaf.ico"
+github       = "//github.com/mtoto"
+highlightjs  = true
+avatar       = "img/profile_pic.png" 
+...
+```
+
+If you are going to include `R` codechunks in your posts, also don't forget to set `highlightjslanguages = ["r"]`. When the blog is ready, we run `build_site()` to compiles the files to html and build the website. What we need for deployment will reside under the `public/` folder.
+
+## Deployment
+
+Again, publishing is a piece of cake. There are [multiple ways](https://bookdown.org/yihui/blogdown/deployment.html) for conveniently deploy a blogdown site, and being somewhat familiar with [Github Pages](https://pages.github.com/), that's what I went for. I created a new repository named `mtoto.github.io` and simply pushed the contents of `public/` to the master branch. 
+
+The website should be almost immediately available at the same address as the repo name. If you want an url other than `username.github.io` however, you will need to sign up with a hosting provider. Then put a file in the `public/` called `CNAME` with a one liner containing your blog url such as `www.mywebsite.com`. After, you push this file to Github and ask your provider to point your domain to the github pages url. 
+
+And voilà, we have ourselves a full functioning static website that looks great, is easy to manage and as portable as it gets may you decide to switch for different hosting solutions.
+
+

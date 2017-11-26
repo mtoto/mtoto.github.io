@@ -10,18 +10,18 @@
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Coding with Data">
 
-<base href="http://tamaszilagyi.com/">
+<base href="../../">
 <title>
 
 
      Creating a Spotify Playlist using Luigi 
 
 </title>
-<link rel="canonical" href="http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/">
+<link rel="canonical" href="../../blog/creating-a-spotify-playlist-using-luigi/">
 
 
 <script type="text/javascript">
-    var baseURL = 'http:\/\/tamaszilagyi.com\/';
+    var baseURL = '\/';
     var host = baseURL.substring(0, baseURL.length - 1).replace(/\//g, '');
     if ((host === window.location.host) && (window.location.protocol !== 'https:')) {
         window.location.protocol = 'https:';
@@ -31,8 +31,8 @@
 
 
 
-    <link rel="stylesheet" href="http://tamaszilagyi.com/css/vs.css">
-    <script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+    <link rel="stylesheet" href="../../css/vs.css">
+    <script src="../../js/highlight.pack.js"></script>
     <script>
   hljs.initHighlightingOnLoad();
     </script>
@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1510407852">
-    <link rel="stylesheet" href="../../css/main.css?t=1510407852">
+    <link rel="stylesheet" href="../../css/reset.css?t=1511658052">
+    <link rel="stylesheet" href="../../css/main.css?t=1511658052">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1510407852">
+        <link rel="stylesheet" href="../../css/override.css?t=1511658052">
     
 
 
@@ -140,7 +140,7 @@
 
 </div>
 
-                    <div class="initials"><a href="http://tamaszilagyi.com/"></a></div>
+                    <div class="initials"><a href="../../"></a></div>
                 </div>
                 <div class="meta">
                     <div class="date" title="Sat Jul 22 2017 21:13:14 -0500">Jul 22, 2017</div>
@@ -161,8 +161,8 @@ pre code, pre, code {
   word-wrap: initial !important;
 }
 </style>
-<div id="intro" class="section level1">
-<h1>Intro</h1>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
 <p>In the <a href="http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/">previous post</a>, I shared an analysis of my Spotify listening history using R. In this post, I will discuss what came before having the data: collecting, cleaning and saving it. As the title suggest, we will even go a step further and automate the creation of a weekly top 10 playlist in Spotify using the very same dataset.</p>
 <p>The main ingredient will be Luigi, a Python framework for workflow management Spotify open-sourced a couple of years ago. According to <a href="http://luigi.readthedocs.io/en/stable/index.html">docs</a>:</p>
 <blockquote>
@@ -434,9 +434,9 @@ class spotify_morning_playlist(luigi.Task):
                 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'tamas-blog';
-    var disqus_identifier = 'http:\/\/tamaszilagyi.com\/blog\/creating-a-spotify-playlist-using-luigi\/';
+    var disqus_identifier = '\/blog\/creating-a-spotify-playlist-using-luigi\/';
     var disqus_title = 'Creating a Spotify Playlist using Luigi';
-    var disqus_url = 'http:\/\/tamaszilagyi.com\/blog\/creating-a-spotify-playlist-using-luigi\/';
+    var disqus_url = '\/blog\/creating-a-spotify-playlist-using-luigi\/';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -487,8 +487,8 @@ ga('send', 'pageview');
 
 
 
-<link rel="stylesheet" href="http://tamaszilagyi.com//css/vs.css">
-<script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+<link rel="stylesheet" href="//css/vs.css">
+<script src="../../js/highlight.pack.js"></script>
 <script>
   hljs.initHighlightingOnLoad();
 </script>
