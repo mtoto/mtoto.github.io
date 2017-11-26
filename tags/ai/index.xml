@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Ai on Coding with Data</title>
-    <link>/tags/ai/index.xml</link>
+    <link>http://tamaszilagyi.com/tags/ai/index.xml</link>
     <description>Recent content in Ai on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="/tags/ai/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tamaszilagyi.com/tags/ai/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>An animated neuRal net implementation</title>
-      <link>/blog/an-animated-neural-net-implementation/</link>
+      <link>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</link>
       <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
       
-      <guid>/blog/an-animated-neural-net-implementation/</guid>
+      <guid>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
