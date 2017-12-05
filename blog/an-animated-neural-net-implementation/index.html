@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1511658453">
-    <link rel="stylesheet" href="../../css/main.css?t=1511658453">
+    <link rel="stylesheet" href="../../css/reset.css?t=1512501783">
+    <link rel="stylesheet" href="../../css/main.css?t=1512501783">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1511658453">
+        <link rel="stylesheet" href="../../css/override.css?t=1512501783">
     
 
 
@@ -270,7 +270,7 @@ Z = {W^T}X + b=
     
     return(parameters)
 }</code></pre>
-<p>Remember the schema is <span class="math inline">\(X -&gt;Z^{[1]}-&gt;A^{[1]}-&gt;Z^{[2]}-&gt;A^{[2]}\)</span>. Both <span class="math inline">\(Z^{[1]}\)</span> and <span class="math inline">\(Z^{[2]}\)</span> are the same linear function, while <span class="math inline">\(A^{[1]} = \tanh(Z^{[1]})\)</span> and <span class="math inline">\(A^{[1]} = \sigma(Z^{[2]})\)</span>. The sigmoid function didn’t make it to <code>base</code> R, so we define it first.</p>
+<p>Remember the schema is <span class="math inline">\(X -&gt;Z^{[1]}-&gt;A^{[1]}-&gt;Z^{[2]}-&gt;A^{[2]}\)</span>. Both <span class="math inline">\(Z^{[1]}\)</span> and <span class="math inline">\(Z^{[2]}\)</span> are the same linear function, while <span class="math inline">\(A^{[1]} = \tanh(Z^{[1]})\)</span> and <span class="math inline">\(A^{[2]} = \sigma(Z^{[2]})\)</span>. The sigmoid function didn’t make it to <code>base</code> R, so we define it first.</p>
 <pre class="r"><code>sigmoid &lt;- function(x) {
    1 / (1 + exp(-x))
 }

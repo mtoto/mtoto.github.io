@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1511658453">
-    <link rel="stylesheet" href="../../css/main.css?t=1511658453">
+    <link rel="stylesheet" href="../../css/reset.css?t=1512501783">
+    <link rel="stylesheet" href="../../css/main.css?t=1512501783">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1511658453">
+        <link rel="stylesheet" href="../../css/override.css?t=1512501783">
     
 
 
@@ -277,10 +277,10 @@ gbmFit &lt;- train(y ~ ., data = training,
 table(preds, testing$y)</code></pre>
 <pre><code>##         
 ## preds     dim  mid bright zero
-##   dim      85  192     18  366
-##   mid      62  100     17   73
-##   bright   39   40      0   20
-##   zero     34  111     30 4285</code></pre>
+##   dim      86  172     26  284
+##   mid      76  139     11  139
+##   bright   18   40      0    2
+##   zero     40   92     28 4319</code></pre>
 <p>Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.</p>
 <p><img src="../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.</p>

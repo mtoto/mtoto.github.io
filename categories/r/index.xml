@@ -136,7 +136,7 @@ Z = {W^T}X + b=
     
     return(parameters)
 }&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Remember the schema is &lt;span class=&#34;math inline&#34;&gt;\(X -&amp;gt;Z^{[1]}-&amp;gt;A^{[1]}-&amp;gt;Z^{[2]}-&amp;gt;A^{[2]}\)&lt;/span&gt;. Both &lt;span class=&#34;math inline&#34;&gt;\(Z^{[1]}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Z^{[2]}\)&lt;/span&gt; are the same linear function, while &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]} = \tanh(Z^{[1]})\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]} = \sigma(Z^{[2]})\)&lt;/span&gt;. The sigmoid function didn’t make it to &lt;code&gt;base&lt;/code&gt; R, so we define it first.&lt;/p&gt;
+&lt;p&gt;Remember the schema is &lt;span class=&#34;math inline&#34;&gt;\(X -&amp;gt;Z^{[1]}-&amp;gt;A^{[1]}-&amp;gt;Z^{[2]}-&amp;gt;A^{[2]}\)&lt;/span&gt;. Both &lt;span class=&#34;math inline&#34;&gt;\(Z^{[1]}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Z^{[2]}\)&lt;/span&gt; are the same linear function, while &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]} = \tanh(Z^{[1]})\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(A^{[2]} = \sigma(Z^{[2]})\)&lt;/span&gt;. The sigmoid function didn’t make it to &lt;code&gt;base&lt;/code&gt; R, so we define it first.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sigmoid &amp;lt;- function(x) {
    1 / (1 + exp(-x))
 }
@@ -610,10 +610,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      85  192     18  366
-##   mid      62  100     17   73
-##   bright   39   40      0   20
-##   zero     34  111     30 4285&lt;/code&gt;&lt;/pre&gt;
+##   dim      86  172     26  284
+##   mid      76  139     11  139
+##   bright   18   40      0    2
+##   zero     40   92     28 4319&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;

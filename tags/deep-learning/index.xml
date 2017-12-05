@@ -136,7 +136,7 @@ Z = {W^T}X + b=
     
     return(parameters)
 }&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Remember the schema is &lt;span class=&#34;math inline&#34;&gt;\(X -&amp;gt;Z^{[1]}-&amp;gt;A^{[1]}-&amp;gt;Z^{[2]}-&amp;gt;A^{[2]}\)&lt;/span&gt;. Both &lt;span class=&#34;math inline&#34;&gt;\(Z^{[1]}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Z^{[2]}\)&lt;/span&gt; are the same linear function, while &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]} = \tanh(Z^{[1]})\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]} = \sigma(Z^{[2]})\)&lt;/span&gt;. The sigmoid function didn’t make it to &lt;code&gt;base&lt;/code&gt; R, so we define it first.&lt;/p&gt;
+&lt;p&gt;Remember the schema is &lt;span class=&#34;math inline&#34;&gt;\(X -&amp;gt;Z^{[1]}-&amp;gt;A^{[1]}-&amp;gt;Z^{[2]}-&amp;gt;A^{[2]}\)&lt;/span&gt;. Both &lt;span class=&#34;math inline&#34;&gt;\(Z^{[1]}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Z^{[2]}\)&lt;/span&gt; are the same linear function, while &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]} = \tanh(Z^{[1]})\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(A^{[2]} = \sigma(Z^{[2]})\)&lt;/span&gt;. The sigmoid function didn’t make it to &lt;code&gt;base&lt;/code&gt; R, so we define it first.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sigmoid &amp;lt;- function(x) {
    1 / (1 + exp(-x))
 }

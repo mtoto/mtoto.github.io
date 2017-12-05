@@ -282,7 +282,7 @@ initialize_parameters <- function(n_x, n_h, n_y) {
 }
 ```
 
-Remember the schema is $X ->Z^{[1]}->A^{[1]}->Z^{[2]}->A^{[2]}$. Both $Z^{[1]}$ and $Z^{[2]}$ are the same linear function, while $A^{[1]} = \tanh(Z^{[1]})$ and $A^{[1]} = \sigma(Z^{[2]})$. The sigmoid function didn't make it to `base` R, so we define it first.
+Remember the schema is $X ->Z^{[1]}->A^{[1]}->Z^{[2]}->A^{[2]}$. Both $Z^{[1]}$ and $Z^{[2]}$ are the same linear function, while $A^{[1]} = \tanh(Z^{[1]})$ and $A^{[2]} = \sigma(Z^{[2]})$. The sigmoid function didn't make it to `base` R, so we define it first.
 
 ```{r}
 sigmoid <- function(x) {
