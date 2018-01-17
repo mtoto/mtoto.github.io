@@ -597,9 +597,9 @@ bigram_graph &amp;lt;- df %&amp;gt;%
   graph_from_data_frame()
 
 print(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## IGRAPH 7d93551 DN-- 310 280 -- 
+&lt;pre&gt;&lt;code&gt;## IGRAPH 187fc32 DN-- 310 280 -- 
 ## + attr: name (v/c), season (e/c), n (e/n)
-## + edges from 7d93551 (vertex names):
+## + edges from 187fc32 (vertex names):
 ## [1] tiny        -&amp;gt;rick    yeah        -&amp;gt;yeah    ice         -&amp;gt;cream  
 ## [4] god         -&amp;gt;damn    whoa        -&amp;gt;whoa   
 ##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 20 entries ]
@@ -804,10 +804,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      94  216     34  192
-##   mid      72  135      6   86
-##   bright    0    0      0    0
-##   zero     54   92     25 4466&lt;/code&gt;&lt;/pre&gt;
+##   dim      96  206     31  382
+##   mid      46   81      6   96
+##   bright   37   57      0   32
+##   zero     41   99     28 4234&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
