@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 ![](http://i.imgur.com/a841k9g.gif)
 
 
-```{css}
+```{css, echo = FALSE}
 pre code, pre, code {
   white-space: pre !important;
   overflow-x: scroll !important;
@@ -35,7 +35,7 @@ Most episodes draw inspiration from or make fun of cult movies such as Back to t
 
 After reading the book [Tidy Text Mining](http://tidytextmining.com/) online, I have been wanting to try out some of the concepts outlined in the book, and the functions of the [accompanying package](https://github.com/juliasilge/tidytext), on an interesting dataset. So I was pretty stoked to find [Francois Keck's **subtools package** on GitHub](https://github.com/fkeck/subtools), that allows for reading *.srt* files (the usual format for subtitles) straight into R. With season 3 of Rick and Morty coming to an end last week, the stars have finally aligned to roll up my sleeves and have some fun with text mining.
 
-It is very easy to find English subtitles for pretty much anything on the internet. With subtools, an entire series can be read with one command from the containing folder, `read.subtitles.serie()`. We convert the resulting MultiSubtitles object to a data.frame with a second command `subDataFrame()`. 
+It is very easy to find English subtitles for pretty much anything on the Internet. With subtools, an entire series can be read with one command from the containing folder, `read.subtitles.serie()`. We convert the resulting MultiSubtitles object to a data.frame with a second command `subDataFrame()`. 
 
 ```{r, eval = F}
 library(subtools)
@@ -127,7 +127,7 @@ bigram_graph <- df %>%
   filter(n > 2) %>%
   graph_from_data_frame()
 
-str(bigram_graph)
+print(bigram_graph)
 ```
 
 This igraph object contains a directed network, where the vertices are the words and an edge exists between each that appear after one another more than twice. Representing the text as a graph, we can calculate things such as [degree centrality](https://en.wikipedia.org/wiki/Centrality#Degree_centrality), and plot the results.

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="Coding with Data">
+
+<base href="../../">
+<title>
+
+
+     Shiny App Testing in Docker 
+
+</title>
+<link rel="canonical" href="../../blog/shiny-app-testing-in-docker/">
+
+
+<script type="text/javascript">
+    var baseURL = '\/';
+    var host = baseURL.substring(0, baseURL.length - 1).replace(/\//g, '');
+    if ((host === window.location.host) && (window.location.protocol !== 'https:')) {
+        window.location.protocol = 'https:';
+    }
+</script>
+
+
+
+
+    <link rel="stylesheet" href="../../css/vs.css">
+    <script src="../../js/highlight.pack.js"></script>
+    <script>
+  hljs.initHighlightingOnLoad();
+    </script>
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="../../css/reset.css?t=1515613544">
+    <link rel="stylesheet" href="../../css/main.css?t=1515613544">
+    
+        <link rel="stylesheet" href="../../css/override.css?t=1515613544">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="../../img/leaf.ico"
+
+>
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+              <a href="../../"><img class="avatar" src="../../img/profile_pic.png" /></a>
+            
+            <a href="../../"><div class="name">Tamas Szilagyi</div></a>
+            
+              <h3 class="self-intro">Coding with Data</h3>
+            
+            <nav>
+                <ul>
+                    <a href="../../blog/"><li>Blog</li></a>
+                    <a href="../../about/"><li>About</li></a>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+            
+        
+            <a href="mailto:tszilagyi@outlook.com"><img class="icon" src="../../img/email.svg" alt="email" /></a>
+        
+            
+        
+            <a href="//linkedin.com/in/tszilagyi" target="_blank"><img class="icon" src="../../img/linkedin.svg" alt="linkedin" /></a>
+        
+            
+        
+            <a href="//twitter.com/tudosgar" target="_blank"><img class="icon" src="../../img/twitter.svg" alt="twitter" /></a>
+        
+
+        
+            <a href="//github.com/mtoto" target="_blank"><img class="icon" src="../../img/github.svg" alt="github" /></a>
+        
+            
+        
+            <a href="//stackoverflow.com/users/4964651/mtoto?tab=profile" target="_blank"><img class="icon" src="../../img/so.svg" alt="stackoverflow" /></a>
+        
+
+
+        
+
+        
+            <a href="//soundcloud.com/tamas-szilagyi" target="_blank"><img class="icon" src="../../img/soundcloud.svg" alt="soundcloud" /></a>
+        
+
+        
+
+       
+        </div>
+    </div>
+</section>
+    
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Shiny App Testing in Docker
+
+</div>
+
+                    <div class="initials"><a href="../../"></a></div>
+                </div>
+                <div class="meta">
+                    <div class="date" title="Fri Jan 12 2018 22:13:14 -0500">Jan 12, 2018</div>
+                    <div class="reading-time"><div class="middot"></div>3 minutes read</div>
+                </div>
+            </div>
+            <div class="markdown">
+                <div id="theres-probably-a-docker-image-for-that" class="section level2">
+<h2>There’s probably a Docker image for that</h2>
+<p>Containers are everywhere, even in the realms of data science. One can think of them as small self-contained enviromnents, encapsulating your application and its dependencies. If that sounds a lot like a virtual machine to you, you are not entirely wrong. But unlike VM’s, containers run on the host system’s kernel and the processes inside can only see and access their immediate surroundings.</p>
+<p>Thanks to the good people behind the <a href="https://hub.docker.com/u/rocker/">rocker project</a>, there’s already pleny of R-specific Docker images available for peeps looking to containerize their R code. The most often cited benefits are <em>portability</em> and <em>reproducability</em> of your analysis. In the same vain, <a href="https://maraaverick.rbind.io/2017/11/docker-izing-your-work-in-r/">lots of great material</a> is out there with respect to what these bad boys exactly are and how to get them up and running. But I haven’t found much on <em>Docker based workflows</em>, especially how to go about developing dockerized shiny apps. Because what if I want to build a shiny dashboard inside a container, integrate it with <a href="https://travis-ci.org/">Travis CI</a> and run tests on every single commit to GitHub.</p>
+</div>
+<div id="testable-shiny-apps" class="section level2">
+<h2>Testable shiny apps</h2>
+<p>Before moving on to containers and stuffs, there is another dope tool we need to discuss: The package <a href="https://github.com/rstudio/shinytest">shinytest</a>, an automated testing agent for, you guessed it…shiny apps. It works as follows:</p>
+<blockquote>
+<p>Shinytest uses snapshot-based testing strategy. The first time it runs a set of tests for an application, it performs some scripted interactions with the app and takes one or more snapshots of the application’s state. These snapshots are saved to disk so that future runs of the tests can compare their results to them.</p>
+</blockquote>
+<p>The interface could not be easier. You install the package and when the first iteration of your shiny app is ready to roll, you simply run <code>recordTest()</code>:</p>
+<pre class="r"><code>devtools::install_github(&quot;rstudio/shinytest&quot;)
+library(shinytest)
+
+recordTest(&quot;path/to/app&quot;)</code></pre>
+<p>This launches an iframe consisting of your shiny app where you can control what to test. Each interaction with the dashboard is recorded, and when you hit <strong>Take snaphsop</strong>, the state of your dashboard is recorded:</p>
+<div class="figure">
+<img src="data/dockershiny/recordtest.gif" />
+
+</div>
+</div>
+<div id="a-container-can-we-has-it" class="section level2">
+<h2>A container, can we has i🐳🐳t? 🐳���🐳���🐳🐳</h2>
+<p>First off we’ll need a Dockerfile containing the instructions to build our Docker image. It usually starts with a baseEach instruction is a layer, and usually in the form of unix commnands that install the dependeciess of your project. As few layers as possible. Small is beautiful. Get rid of underused dependencies</p>
+<p>That’s why code should be built for production from day 1. This means programming in a enviromenent with transparent dependencies, version control, unit-testing and of course clearcut documentation.</p>
+<p>Code that’s running on your laptop is worthless, if it’s running in production is worth money</p>
+<ul>
+<li>travis ci</li>
+<li>docker</li>
+<li>shinytest</li>
+</ul>
+</div>
+<div id="docker-shiny" class="section level1">
+<h1>Docker / Shiny</h1>
+<p>-Rocker stuff -portability, general docker benefits -keep em small: <a href="https://www.youtube.com/watch?v=pPsREQbf3PA&amp;list=PLvlyVHcFEOfnCqR5yLtY5n_8I4hBwLhkF&amp;index=30&amp;t=187s" class="uri">https://www.youtube.com/watch?v=pPsREQbf3PA&amp;list=PLvlyVHcFEOfnCqR5yLtY5n_8I4hBwLhkF&amp;index=30&amp;t=187s</a> -shiny benefits -building a docker file</p>
+</div>
+<div id="testing-with-shiny" class="section level1">
+<h1>Testing with shiny</h1>
+<p>-shinytest -plotly fuckup -gif of ui</p>
+</div>
+<div id="travis" class="section level1">
+<h1>travis</h1>
+<ul>
+<li>Rule of thumb for unit tests: test anything with a dependancy. it only took me 20 builds to get it working so don’t be discouraged.</li>
+<li>set docker login vars: travis env set DOCKER_USERNAME myusername travis env set DOCKER_PASSWORD secretsecret</li>
+</ul>
+</div>
+
+                <br>
+                <p><a href="../../blog/">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'tamas-blog';
+    var disqus_identifier = '\/blog\/shiny-app-testing-in-docker\/';
+    var disqus_title = 'Shiny App Testing in Docker';
+    var disqus_url = '\/blog\/shiny-app-testing-in-docker\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+   <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    });
+    </script>
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-97386385-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/languages/r.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+
+<link rel="stylesheet" href="//css/vs.css">
+<script src="../../js/highlight.pack.js"></script>
+<script>
+  hljs.initHighlightingOnLoad();
+</script>
+
+
+

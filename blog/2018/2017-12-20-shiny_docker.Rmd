@@ -1,0 +1,80 @@
+---
+title: "Shiny App Testing in Docker"
+author: "Tamas Szilagyi"
+date: 2018-01-12T22:13:14-05:00
+categories: ["R"]
+tags: ["R", "Docker", "Travis-CI", "shiny","testthat"]
+output: html_document
+---
+```{css, include = FALSE}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## There's probably a Docker image for that   
+
+Containers are everywhere, even in the realms of data science. One can think of them as small self-contained enviromnents, encapsulating your application and its dependencies. If that sounds a lot like a virtual machine to you, you are not entirely wrong. But unlike VM's, containers run on the host system's kernel and the processes inside can only see and access their immediate surroundings. 
+
+Thanks to the good people behind the [rocker project](https://hub.docker.com/u/rocker/), there's already pleny of R-specific Docker images available for peeps looking to containerize their R code. The most often cited benefits are  *portability* and *reproducability* of your analysis. In the same vain, [lots of great material](https://maraaverick.rbind.io/2017/11/docker-izing-your-work-in-r/) is out there with respect to what these bad boys exactly are and how to get them up and running. But I haven't found much on *Docker based workflows*, especially how to go about developing dockerized shiny apps. Because what if I want to build a shiny dashboard inside a container, integrate it with [Travis CI](https://travis-ci.org/) and run tests on every single commit to GitHub. 
+
+
+## Testable shiny apps
+
+Before moving on to containers and stuffs, there is another dope tool we need to discuss: The package [shinytest](https://github.com/rstudio/shinytest), an automated testing agent for, you guessed it...shiny apps. It works as follows:
+
+> Shinytest uses snapshot-based testing strategy. The first time it runs a set of tests for an application, it performs some scripted interactions with the app and takes one or more snapshots of the application’s state. These snapshots are saved to disk so that future runs of the tests can compare their results to them.
+
+The interface could not be easier. You install the package and when the first iteration of your shiny app is ready to roll, you simply run `recordTest()`:
+
+```{r shinytest first run, eval = FALSE}
+devtools::install_github("rstudio/shinytest")
+library(shinytest)
+
+recordTest("path/to/app")
+```
+
+This launches an iframe consisting of your shiny app where you can control what to test. Each interaction with the dashboard is recorded, and when you hit **Take snaphsop**, the state of your dashboard is recorded:
+
+![](data/dockershiny/recordtest.gif)
+
+
+## A container, can we has i🐳🐳t? 🐳���🐳���🐳🐳
+
+First off we'll need a Dockerfile containing the instructions to build our Docker image. It usually starts with a baseEach instruction is a layer, and usually in the form of unix commnands that install the dependeciess of your project. As few layers as possible. Small is beautiful. Get rid of underused dependencies
+
+That's why code should be built for production from day 1. This means programming in a enviromenent with transparent dependencies, version control, unit-testing and of course clearcut documentation.
+
+Code that's running on your laptop is worthless, if it's running in production is worth money
+
+- travis ci
+- docker
+- shinytest
+
+# Docker / Shiny
+-Rocker stuff
+-portability, general docker benefits
+-keep em small: https://www.youtube.com/watch?v=pPsREQbf3PA&list=PLvlyVHcFEOfnCqR5yLtY5n_8I4hBwLhkF&index=30&t=187s
+-shiny benefits
+-building a docker file
+
+# Testing with shiny
+-shinytest
+-plotly fuckup
+-gif of ui
+
+# travis
+- Rule of thumb for unit tests: test anything with a dependancy.
+it only took me 20 builds to get it working so don't be discouraged.
+- set docker login vars: 
+travis env set DOCKER_USERNAME myusername
+travis env set DOCKER_PASSWORD secretsecret
+
+

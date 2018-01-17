@@ -1,0 +1,236 @@
+---
+title: "Dockerized Shiny App development"
+author: "Tamas Szilagyi"
+date: 2018-01-16T22:13:14-05:00
+categories: ["R"]
+tags: ["R", "Docker", "Travis-CI", "shiny","testthat"]
+output: html_document
+---
+```{css, echo = FALSE}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Getting on the Docker (container) ship
+
+Containers are everywhere, including the realms of data science. You can think of them as small self-contained environments, encapsulating an application and its dependencies. If that sounds a lot like a virtual machine, you are not entirely wrong. But unlike VM's, containers run on the host system's kernel and the processes inside can only see and access their immediate surroundings.  
+
+Thanks to the good people behind the [rocker project](https://hub.docker.com/u/rocker/), there's already plenty of R-specific Docker images available for folks looking to containerize their R code. The most often cited benefits are  *portability* and *reproducibility* of your analysis. In the same vein, [lots of great material](https://maraaverick.rbind.io/2017/11/docker-izing-your-work-in-r/) is out there with respect to what these bad boys exactly are and how to get them up and running. 
+
+But I haven't found much on *Docker based workflows*, especially how to go about developing dockerized shiny apps. Because what if I want to build a shiny dashboard inside a container, integrate it with [Travis CI](https://travis-ci.org/) and run tests on every single commit to GitHub? The code in this post is based on a bare bones shiny app (containing USA Trade data) I built for illustration purposes. You can find the app [here](http://usatrade.tamaszilagyi.com/), and all the code on [GitHub](https://github.com/mtoto/markets_shiny).
+
+## Testable shiny apps
+
+We all heard of unit testing, but can we test an actual shiny application? As often the case in the R world, *there is already a package for that:* [shinytest](https://github.com/rstudio/shinytest) - an automated testing agent for, you guessed it...shiny apps. It works as follows:
+
+> Shinytest uses snapshot-based testing strategy. The first time it runs a set of tests for an application, it performs some scripted interactions with the app and takes one or more snapshots of the application’s state. These snapshots are saved to disk so that future runs of the tests can compare their results to them.
+
+The interface could not be easier. You install the package and when the first version of your shiny app is ready to roll, you simply run `recordTest()`:
+
+```{r shinytest first run, eval = FALSE}
+devtools::install_github("rstudio/shinytest")
+library(shinytest)
+
+recordTest("path/to/app")
+```
+
+This launches an iframe consisting of your dashboard and controls over what to test. Each interaction with the dashboard is recorded, and when you hit **take snapshot**, the state of your dashboard is saved, along with raw scripts to reproduce the interactions.
+
+![](https://i.imgur.com/t3xcuCX.gif)
+
+Upon exiting the test event recorder, a new folder `test/` is created inside the app's directory, containing both the test script - `dates.R`, as well as the application's state as a .json and a .png file respectively in `test/dates-expected`. The latter serve as the expected output, based on which consequent runs of tests will be evaluated. Using my example app, `dates.R` looks like this:
+
+```{r shiny test script, eval = FALSE}
+options(shiny.testmode=TRUE)
+
+app <- ShinyDriver$new("../", seed = 123)
+app$snapshotInit("dates")
+
+app$setInputs(date1 = "2000-10-02")
+app$setInputs(date2 = "2013-11-01")
+app$snapshot()
+```
+
+Now, running `testApp("path/to/app")` will look for test scripts inside the `test/` folder, and run them to recreate the state of the test recording, comparing the output to what's expected. It is generally a good idea to only compare the .json files, because the screenshots of the app (the .png file) will likely differ of various systems. We pass the argument `compareImages = FALSE` to bypass default behavior. A full fledged test script will then look like this:
+
+```{r run_test script, eval = FALSE}
+library(testthat)
+test_that("Application works", {
+        expect_pass(testApp("/srv/shiny-server/myapp/",
+                            testnames = "dates",
+                            compareImages = FALSE))
+})
+````
+
+I found that having ggplot2 (or plotly) plots as part of your dashboard, there is always a tiny bit of randomness present in the output. And so the tests fail. It is better to explicitly export parts of the plot objects in my opinion, because they will be a more reliable yardstick to compare against. To do so, we add a few lines of code to `server.R`.
+
+```{r exports in server.R, eval = FALSE}
+exportTestValues(plot_balance = { ggplot_build(p_b)$data },
+                 plot_total   = { ggplot_build(p_t)$data },
+                 plot_import  = { ggplot_build(p_i)$data },
+                 plot_export  = { ggplot_build(p_e)$data } )
+```
+
+Secondly, we customize which parts of the application's state should be saved and checked for inside `app$snapshot()`, using the `items = ` argument and update `dates.R` so that only the `input` and `export` parts of our .json files are evaluated:
+
+```{r shiny test script 2, eval = FALSE}
+...
+app$setInputs(date1 = "2000-10-02")
+app$setInputs(date2 = "2013-11-01")
+app$snapshot(items = list(input = TRUE, export = TRUE))
+```
+
+That is all you really need to get going with shinytest. Keep in mind that the package is still in development, and things might change in the future. For an in-depth walkthrough of shinytest's capabilities, have a look at the [official site](https://rstudio.github.io/shinytest/articles/shinytest.html).
+
+## A 🐳 container, can we has it?
+
+Now that our shiny app is complete with test scripts, the whole thing can be packaged up and put inside a container. Of course we could deploy the shiny dashboard without a container too, but at the end of the day it makes everybody's life a lot easier. 
+
+Because if our container runs on our machine, it will also run on **any machine** that has Docker. Without compatibility issues, independent from host version or platform distribution. In a real life scenario this significantly reduces time between prototypting and deployment, not the least because of the typically lightweight footprint of a Docker image.
+
+To containerize our shiny app, we first need to create an image that encompasses our:
+
+1. Shiny application 
+2. R packages our app needs 
+3. System level dependencies these packages need
+
+We build our image layer by layer, starting with the [rocker/shiny image ](https://hub.docker.com/r/rocker/shiny/) - which includes the minimal requirements for a Shiny Server. Then, we add everything else our application requires; finishing with copying the contents of our app to `/srv/shiny-server/usa-trade/`, where the dashboard will be served from. These instructions are written to the `Dockerfile`, as follows:
+
+```{r, eval = FALSE}
+FROM rocker/shiny
+MAINTAINER Tamas Szilagyi (tszilagyi@outlook.com)
+
+## install R package dependencies (and clean up)
+RUN apt-get update && apt-get install -y gnupg2 \
+    libssl-dev \
+    && apt-get clean \ 
+    && rm -rf /var/lib/apt/lists/ \ 
+    && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+    
+## install packages from CRAN (and clean up)
+RUN Rscript -e "install.packages(c('devtools','dplyr','tidyr','fuzzyjoin','stringr','ggthemes','quantmod','ggplot2','shinydashboard','shinythemes'), repos='https://cran.rstudio.com/')" \
+    && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+
+## install packages from github (and clean up)
+RUN Rscript -e "devtools::install_github('rstudio/shinytest','rstudio/webdriver')" \
+    && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+
+## install phantomjs
+RUN Rscript -e "webdriver::install_phantomjs()"
+
+## assume shiny app is in build folder /app2
+COPY ./app2 /srv/shiny-server/usa-trade/
+```
+
+The smaller your Docker image, the better. Here's a couple of guidelines to keep in mind when creating one:
+
+ 1. Always use **shared base images** (what comes after the `FROM` statement) specific to your application, instead of trying to reinvent the wheel every time you write a Dockerfile. 
+ 2. Try to **avoid underused dependencies**. Going back to the my example app, I could've installed the package [tidyquant](https://cran.r-project.org/web/packages/tidyquant/index.html) to get my trade data in a tidy format out of the box, yet because the package has an insane amount of dependencies (including having Java installed); I wrote three [helper functions](https://github.com/mtoto/markets_shiny/blob/master/app2/functions.R#L14) instead.
+ 3. Make sure **temporary files are removed** after the installation of libraries and packages.
+ 4. Push down commands that will likely invalidate the **cache**, so Docker only rebuilds layers that change (more on this in the next section).
+
+With the Dockerfile finished, it is time to make ourselves familiar with the essential Docker commands: 
+
+- **docker pull** pulls an image from the registry (Dockerhub).
+- **docker build** builds a docker image from our Dockerfile.
+- **docker run** instantiates the container from our image.
+- **docker exec** execute commands from within the container.
+- **docker rm** deletes a container.
+- **docker login** login to Dockerhub (to upload our image).
+- **docker push** uploads the image back to Dockerhub.
+
+Let's say we want to run our shiny app on a server that has Docker installed. Assuming we have a [GitHub repo](https://github.com/mtoto/markets_shiny) containing all relevant files and our Dockerfile is to be found on [Dockerhub](https://hub.docker.com/r/mtoto/shiny/), we can expose our shiny app to the world as follows:
+
+```{r, eval = FALSE}
+# 1 clone into repo containing app 
+git clone https://github.com/mtoto/markets_shiny.git
+# 2 pull Docker file from Dockerhub
+docker pull mtoto/shiny:latest
+# 3 build Docker image, tag it 'mtoto/shiny:latest'
+docker build -t mtoto/shiny:latest .
+# 4 run container in detached mode, listening on port 80, name it 'site'
+docker run -d -p 80:3838 --name site mtoto/shiny:latest
+```
+
+And our app should be visible on *ht&#8203;ps://myserver.com/usa-trade* by default. 
+
+## Integration with Travis CI
+
+If you are a seasoned R package developer, you are no stranger to Travis CI. It is a **Continuous Integration** tool that automatically performs checks and runs tests on your code every time you push a commit to GitHub. The broad idea behind continuous integration is to encourage test-driven development, thereby allowing for frequent commits to the codebase without having to worry about integration problems. 
+
+Travis supports many languages - including R, and can also build from Docker images. After creating an account on the [Travis website](https://travis-ci.org), connect with GitHub and pick the repository for which you'd like to use it. 
+
+The repo needs to contain a `.travis.yml` file, encapsulating the instructions for Travis. 
+You'd tempted to write `language: R` as the first line, but if we do that Travis will implicitly assume we are developing an R package and will start looking for the `DESCRIPTION` file we do not have. Instead, I went with the undocumented option `language: generic`[^1], as we'll be only running Docker commands anyway.
+
+The naive approach would be to build our Docker image on every single run, instantiate a test container, run tests inside and upon success get rid of the container. Such a `.travis.yml` would look like this:
+
+```{text, eval = F}
+language: generic
+sudo: required
+
+services:
+- docker
+
+before_install:
+- docker build -t markets-shiny .
+- docker run -d -p 3838:3838 markets-shiny:latest --name test
+
+script:
+- docker exec test R -f run_tests.R
+
+after_script:
+- docker rm -f test
+```
+
+The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we'd only rebuild the changed layers after downloading the image from Dockerhub. 
+
+To make sure everything is nice and up to date, we will push the changes back to Dockerhub after every successful run. We need credentials to do so, but Travis conveniently allows for defining environment variables inside the repository settings (or via the CLI):
+
+![](https://i.imgur.com/gdTnLjd.png)
+
+Now we can go wild and revamp `.travis.yml` accordingly:
+
+```{text, eval = FALSE}
+language: generic
+sudo: required
+
+services:
+- docker
+
+before_install:
+- docker pull mtoto/shiny:latest
+- docker build --cache-from mtoto/shiny:latest -t mtoto/shiny:latest . 
+- docker run --rm -d -p 3838:3838 --name test mtoto/shiny:latest
+
+script:
+- docker exec test R -f /srv/shiny-server/usa-trade/run_tests.R
+
+after_success:
+- docker rm -f test
+- docker login -u mtoto -p $DOCKER_PASSWORD
+- docker tag mtoto/shiny:latest mtoto/shiny:$TRAVIS_BUILD_NUMBER
+- docker push mtoto/shiny
+```
+
+
+After the second run (once the latest image is on Dockerhub), the build time is reduced by a factor of 10. Sweet. When we use the flag `--cache-from`, Docker only rebuilds changed layers, ie. modifications to our shiny app. We can see this in the Travis log as `---> Using cache`:
+
+![](https://i.imgur.com/hTNuQhY.png)
+
+Keep in mind when making significant changes to your dashboard, it is important to update the tests that create fresh expected outputs reflecting these changes. If you don't trust the outputs will align, remember to use `exportTestValues()` and fill it up with the new objects. 
+
+## Was it all worth it?
+
+While this workflow might feel like over-engineering, once all the tools are set up to work in tandem, shiny dashboard development becomes surprisingly efficient. The icing on the cake is that you are creating a dashboard that is pretty much ready for deployment from day one. Devops will love you for it, trust me.
+
+[^1]: In reality this points to `language: bash`, `language: sh` and `language: shell`.
+

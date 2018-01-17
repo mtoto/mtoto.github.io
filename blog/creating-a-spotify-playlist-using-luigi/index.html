@@ -10,18 +10,18 @@
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Coding with Data">
 
-<base href="http://tamaszilagyi.com/">
+<base href="../../">
 <title>
 
 
      Creating a Spotify Playlist using Luigi 
 
 </title>
-<link rel="canonical" href="http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/">
+<link rel="canonical" href="../../blog/creating-a-spotify-playlist-using-luigi/">
 
 
 <script type="text/javascript">
-    var baseURL = 'http:\/\/tamaszilagyi.com\/';
+    var baseURL = '\/';
     var host = baseURL.substring(0, baseURL.length - 1).replace(/\//g, '');
     if ((host === window.location.host) && (window.location.protocol !== 'https:')) {
         window.location.protocol = 'https:';
@@ -31,8 +31,8 @@
 
 
 
-    <link rel="stylesheet" href="http://tamaszilagyi.com/css/vs.css">
-    <script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+    <link rel="stylesheet" href="../../css/vs.css">
+    <script src="../../js/highlight.pack.js"></script>
     <script>
   hljs.initHighlightingOnLoad();
     </script>
@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1512501783">
-    <link rel="stylesheet" href="../../css/main.css?t=1512501783">
+    <link rel="stylesheet" href="../../css/reset.css?t=1516180725">
+    <link rel="stylesheet" href="../../css/main.css?t=1516180725">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1512501783">
+        <link rel="stylesheet" href="../../css/override.css?t=1516180725">
     
 
 
@@ -140,7 +140,7 @@
 
 </div>
 
-                    <div class="initials"><a href="http://tamaszilagyi.com/"></a></div>
+                    <div class="initials"><a href="../../"></a></div>
                 </div>
                 <div class="meta">
                     <div class="date" title="Sat Jul 22 2017 21:13:14 -0500">Jul 22, 2017</div>
@@ -148,12 +148,7 @@
                 </div>
             </div>
             <div class="markdown">
-                <!-- BLOGDOWN-HEAD -->
-<!-- /BLOGDOWN-HEAD -->
-
-<!-- BLOGDOWN-BODY-BEFORE -->
-<!-- /BLOGDOWN-BODY-BEFORE -->
-<style type="text/css">
+                <style type="text/css">
 pre code, pre, code {
   white-space: pre !important;
   overflow-x: scroll !important;
@@ -186,13 +181,11 @@ pre code, pre, code {
 import json
 import datetime
 from spotify_creds import *
-
 # Get access token
 def access_token():
     
     body_params = {&#39;grant_type&#39; : &#39;refresh_token&#39;,
                 &#39;refresh_token&#39; : refresh_token}
-
     url = &#39;https://accounts.spotify.com/api/token&#39;
     response = requests.post(url, 
                              data = body_params, 
@@ -200,29 +193,24 @@ def access_token():
     
     response_dict = json.loads(response.content)
     accessToken = response_dict.get(&#39;access_token&#39;)
-
     return accessToken
     
 # Get most recent songs and append the response
 # to a new json file every day
 def download_data():
-
     current_time = datetime.datetime.now().strftime(&#39;%Y-%m-%d&#39;)
     filename = &#39;/spotify/json/spotify_tracks_%s.json&#39; % current_time
     
     accesToken = access_token()
     headers = {&#39;Authorization&#39;: &#39;Bearer &#39; + accesToken }
     payload = {&#39;limit&#39;: 50}
-
     url = &#39;https://api.spotify.com/v1/me/player/recently-played&#39;
     response = requests.get(url, headers = headers,
                             params = payload)
     data = response.json()
-
     with open(filename, &#39;a&#39;) as f:
         json.dump(data[&#39;items&#39;], f)
-        f.write(&#39;\n&#39;)
-</code></pre>
+        f.write(&#39;\n&#39;)</code></pre>
 <p>Now, to make sure that I don’t miss any songs I have listened to, I will set up a cronjob to execute <code>download_data()</code> (that’s what <code>logger.py</code> contains) every three hours. We first make this file executable</p>
 <pre class="bash"><code>chmod +x /spotify/logger.py</code></pre>
 <p>open crontab,</p>
@@ -255,13 +243,11 @@ def deduplicate(file):
 <pre class="python"><code>import luigi
 from datetime import date, timedelta
 from functions import *
-
 # External task at the bottom of our dependancy graph,
 # only looks to see if output of cronjob exists,
 # by default from yesterday.
 class local_raw_json(luigi.ExternalTask):
     date = luigi.DateParameter(default = date.today()-timedelta(1)) 
-
     def output(self):
         return luigi.LocalTarget(&#39;spotify/json/spotify_tracks_%s.json&#39; % 
                                  self.date.strftime(&#39;%Y-%m-%d&#39;))
@@ -270,7 +256,6 @@ class local_raw_json(luigi.ExternalTask):
 <p>External tasks with no dependencies are common first steps, especially if we are relying on an external datadump somewhere else.</p>
 <pre class="python"><code>import json
 from luigi.s3 import S3Target, S3Client
-
 # Task that runs our deduplicate() on local file 
 # and writes the output to S3 bucket.
 class spotify_clean_aws(luigi.Task):
@@ -285,13 +270,11 @@ class spotify_clean_aws(luigi.Task):
             
         with self.output().open(&#39;w&#39;) as out_file:
             json.dump(data, out_file)
-
     def output(self):
         client = S3Client(host = &#39;s3.us-east-2.amazonaws.com&#39;)
         return S3Target(&#39;s3://myspotifydata/spotify_tracks_%s.json&#39; % 
                         self.date.strftime(&#39;%Y-%m-%d&#39;), 
-                        client=client)
-</code></pre>
+                        client=client)</code></pre>
 <p>The second tasks is <code>spotify_clean_aws</code>. This is where we run the <code>deduplicate()</code> function defined earlier and write the output to an <a href="https://aws.amazon.com/s3/">AWS S3</a> bucket. In contrary to the first task, all three methods are present:</p>
 <p><strong>Require</strong> that the raw json file exists, and also <code>clone()</code> the parameters from the first task. This way the same date parameter will be passed to both tasks.</p>
 <p><strong>Run</strong> the function <code>deduplicate()</code> on the input file and save the result as a .json.</p>
@@ -321,7 +304,6 @@ aws_secret_access_key = YOUR_SECRET_KEY </code></pre>
 class spotify_merge_weekly_aws(luigi.Task):
     date = luigi.DateParameter(default = (date.today()-timedelta(8)))
     daterange = luigi.IntParameter(7)
-
     def requires(self):
         # take data from the 7 days following date param (8 days prior to current date by default)
         return [spotify_clean_aws(i) for i in [self.date + timedelta(x) for x in range(self.daterange)]]
@@ -360,7 +342,6 @@ def replace_tracks(tracks):
     headers = {&#39;Authorization&#39;: &#39;Bearer &#39; + accesToken,
                &#39;Content-Type&#39;:&#39;application/json&#39;}
     data = {&quot;uris&quot;: &#39;,&#39;.join(tracks)}
-
     response = requests.put(url, headers = headers,
                             params = data)
                             
@@ -393,7 +374,6 @@ def create_playlist(dataset, date):
 class spotify_morning_playlist(luigi.Task):
     date = luigi.DateParameter(default = (date.today()-timedelta(8)))
     daterange = luigi.IntParameter(7)
-
     def requires(self):
         return self.clone(spotify_merge_weekly_aws)
     
@@ -410,8 +390,7 @@ class spotify_morning_playlist(luigi.Task):
         client = S3Client(host = &#39;s3.us-east-2.amazonaws.com&#39;)
         return S3Target(&#39;s3://myspotifydata/spotify_top10_%s.json&#39; % 
                         (self.date.strftime(&#39;%Y-%m-%d&#39;) + &#39;_&#39; + str(self.daterange)), 
-                        client=client)
-</code></pre>
+                        client=client)</code></pre>
 <p>I have put all of the tasks in a file named <code>tasks.py</code>. Luigi does not provide a scheduling mechanism out of the box, so we’ll trigger the tasks from crontab instead. For example every Monday at 7AM:</p>
 <pre class="bash"><code>0 7 * * 1 /usr/bin/python /spotify/tasks.py spotify_morning_playlist</code></pre>
 <p>Note that we should have the <a href="http://luigi.readthedocs.io/en/stable/central_scheduler.html">Central Scheduler</a> running in the background for the above to execute. The neat thing is that we only need to trigger the last task, and then Luigi considers all the dependencies and runs them if needed (ie. if the target file does not exists). Additionally, Luigi has a real nice GUI running on <code>localhost:8082</code>, where we can visualise the complete dependency graph and monitor the progress of our tasks: <img src="http://tamaszilagyi.com/img/dag.png" /></p>
@@ -434,9 +413,9 @@ class spotify_morning_playlist(luigi.Task):
                 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'tamas-blog';
-    var disqus_identifier = 'http:\/\/tamaszilagyi.com\/blog\/creating-a-spotify-playlist-using-luigi\/';
+    var disqus_identifier = '\/blog\/creating-a-spotify-playlist-using-luigi\/';
     var disqus_title = 'Creating a Spotify Playlist using Luigi';
-    var disqus_url = 'http:\/\/tamaszilagyi.com\/blog\/creating-a-spotify-playlist-using-luigi\/';
+    var disqus_url = '\/blog\/creating-a-spotify-playlist-using-luigi\/';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -487,8 +466,8 @@ ga('send', 'pageview');
 
 
 
-<link rel="stylesheet" href="http://tamaszilagyi.com//css/vs.css">
-<script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+<link rel="stylesheet" href="//css/vs.css">
+<script src="../../js/highlight.pack.js"></script>
 <script>
   hljs.initHighlightingOnLoad();
 </script>

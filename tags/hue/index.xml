@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Hue on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/hue/index.xml</link>
+    <link>/tags/hue/index.xml</link>
     <description>Recent content in Hue on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://tamaszilagyi.com/tags/hue/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/hue/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>A tidy text analysis of Rick and Morty</title>
-      <link>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
+      <link>/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
+      <guid>/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
       <description>&lt;div class=&#34;figure&#34;&gt;
 &lt;img src=&#34;http://i.imgur.com/a841k9g.gif&#34; /&gt;
 
@@ -34,7 +34,7 @@ pre code, pre, code {
 &lt;div id=&#34;one-mans-weekend-project-another-mans-treasure&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;One man’s weekend project, another man’s treasure&lt;/h2&gt;
 &lt;p&gt;After reading the book &lt;a href=&#34;http://tidytextmining.com/&#34;&gt;Tidy Text Mining&lt;/a&gt; online, I have been wanting to try out some of the concepts outlined in the book, and the functions of the &lt;a href=&#34;https://github.com/juliasilge/tidytext&#34;&gt;accompanying package&lt;/a&gt;, on an interesting dataset. So I was pretty stoked to find &lt;a href=&#34;https://github.com/fkeck/subtools&#34;&gt;Francois Keck’s &lt;strong&gt;subtools package&lt;/strong&gt; on GitHub&lt;/a&gt;, that allows for reading &lt;em&gt;.srt&lt;/em&gt; files (the usual format for subtitles) straight into R. With season 3 of Rick and Morty coming to an end last week, the stars have finally aligned to roll up my sleeves and have some fun with text mining.&lt;/p&gt;
-&lt;p&gt;It is very easy to find English subtitles for pretty much anything on the internet. With subtools, an entire series can be read with one command from the containing folder, &lt;code&gt;read.subtitles.serie()&lt;/code&gt;. We convert the resulting MultiSubtitles object to a data.frame with a second command &lt;code&gt;subDataFrame()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;It is very easy to find English subtitles for pretty much anything on the Internet. With subtools, an entire series can be read with one command from the containing folder, &lt;code&gt;read.subtitles.serie()&lt;/code&gt;. We convert the resulting MultiSubtitles object to a data.frame with a second command &lt;code&gt;subDataFrame()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(subtools)
 a &amp;lt;- read.subtitles.serie(dir = &amp;quot;/series/rick and morty/&amp;quot;)
 df &amp;lt;- subDataFrame(a)
@@ -95,14 +95,14 @@ bigram_graph &amp;lt;- df %&amp;gt;%
   filter(n &amp;gt; 2) %&amp;gt;%
   graph_from_data_frame()
 
-str(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## IGRAPH DN-- 310 280 -- 
+print(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## IGRAPH 7d93551 DN-- 310 280 -- 
 ## + attr: name (v/c), season (e/c), n (e/n)
-## + edges (vertex names):
-## [1] tiny            -&amp;gt;rick       yeah            -&amp;gt;yeah      
-## [3] ice             -&amp;gt;cream      god             -&amp;gt;damn      
-## [5] whoa            -&amp;gt;whoa      
-##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 275 entries ]&lt;/code&gt;&lt;/pre&gt;
+## + edges from 7d93551 (vertex names):
+## [1] tiny        -&amp;gt;rick    yeah        -&amp;gt;yeah    ice         -&amp;gt;cream  
+## [4] god         -&amp;gt;damn    whoa        -&amp;gt;whoa   
+##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 20 entries ]
+## + ... omitted several edges&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This igraph object contains a directed network, where the vertices are the words and an edge exists between each that appear after one another more than twice. Representing the text as a graph, we can calculate things such as &lt;a href=&#34;https://en.wikipedia.org/wiki/Centrality#Degree_centrality&#34;&gt;degree centrality&lt;/a&gt;, and plot the results.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
 &lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-9-1.png&#34; /&gt;
@@ -170,10 +170,10 @@ episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;
     
     <item>
       <title>Self-learning Hue Lights</title>
-      <link>http://tamaszilagyi.com/blog/self-learning-hue-lights/</link>
+      <link>/blog/self-learning-hue-lights/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/self-learning-hue-lights/</guid>
+      <guid>/blog/self-learning-hue-lights/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -303,10 +303,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      86  172     26  284
-##   mid      76  139     11  139
-##   bright   18   40      0    2
-##   zero     40   92     28 4319&lt;/code&gt;&lt;/pre&gt;
+##   dim      94  216     34  192
+##   mid      72  135      6   86
+##   bright    0    0      0    0
+##   zero     54   92     25 4466&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;

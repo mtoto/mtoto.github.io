@@ -1,0 +1,58 @@
+---
+title: "Shiny App Testing in Docker"
+author: "Tamas Szilagyi"
+date: 2017-12-20T22:13:14-05:00
+categories: ["R"]
+tags: ["R", "Docker", "Travis-CI", "shiny","testthat"]
+output: html_document
+---
+```{css}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Yo dawg, I heard you like Docker so I...
+
+Containerizing applications has been creeping into every corner of software development. A good barometer is the inception date of the [rocker project](https://hub.docker.com/u/rocker/) , which provides Docker containers for R users.  It's been around since 2014, damn. What is a container? In a nutshell, it's self-contained enviromnen consisting of your application and its dependencies. It feels like a Virtual Machine, but it's not. Containers uses the host system's kernel to run, but the processes inside only see and access their own little container enviromennt.
+
+So it shouldn't come as a suprise that the good people maintaining the rocker project have already built [shiny image](https://hub.docker.com/r/rocker/shiny/~/dockerfile/) to dockerize shiny applications. While there is some material on the Interwebz on how to get your containerized shiny dashboard up in the air, I haven't found much on *how to develop* a shiny app that lives inside Docker. What if I am really OCD and want to build this app using [Travis CI](https://travis-ci.org/) that will run my unit tests and [shinytests](https://github.com/rstudio/shinytest) on every single commit to GitHub. It might feel like over engineering things, but when the opportunity arises for deployment, we be ready, will you?
+
+## Building the Docker file
+
+Coming into data science from a variety of backgrounds, not all of us are equally well versed in the intricacies of robust software development. Working iteratively, going back and forth cleaning the dataset, making a couple of plots and maybe even fitting a model. The code is working without hiccups on our local machine, so surely it will too in a production enviromnent. Chances are low. But then, what about that *real* software engineer over there, who will happily deploy our untested, undocumented mess of a codebase anyway? Again, chances aren't looking good    
+
+That's why code should be built for production from day 1. This means programming in a enviromenent with transparent dependencies, version control, unit-testing and of course clearcut documentation.
+
+Code that's running on your laptop is worthless, if it's running in production is worth money
+
+- travis ci
+- docker
+- shinytest
+
+# Docker / Shiny
+-Rocker stuff
+-portability, general docker benefits
+-keep em small: https://www.youtube.com/watch?v=pPsREQbf3PA&list=PLvlyVHcFEOfnCqR5yLtY5n_8I4hBwLhkF&index=30&t=187s
+-shiny benefits
+-building a docker file
+
+# Testing with shiny
+-shinytest
+-plotly fuckup
+-gif of ui
+
+# travis
+it only took me 20 builds to get it working so don't be discouraged.
+- set docker login vars: 
+travis env set DOCKER_USERNAME myusername
+travis env set DOCKER_PASSWORD secretsecret
+
+

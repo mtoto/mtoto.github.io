@@ -2,24 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Luigi on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/luigi/index.xml</link>
+    <link>/tags/luigi/index.xml</link>
     <description>Recent content in Luigi on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://tamaszilagyi.com/tags/luigi/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/luigi/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Creating a Spotify Playlist using Luigi</title>
-      <link>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</link>
+      <link>/blog/creating-a-spotify-playlist-using-luigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</guid>
-      <description>&lt;!-- BLOGDOWN-HEAD --&gt;
-&lt;!-- /BLOGDOWN-HEAD --&gt;
-
-&lt;!-- BLOGDOWN-BODY-BEFORE --&gt;
-&lt;!-- /BLOGDOWN-BODY-BEFORE --&gt;
-&lt;style type=&#34;text/css&#34;&gt;
+      <guid>/blog/creating-a-spotify-playlist-using-luigi/</guid>
+      <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
   overflow-x: scroll !important;
@@ -52,13 +47,11 @@ pre code, pre, code {
 import json
 import datetime
 from spotify_creds import *
-
 # Get access token
 def access_token():
     
     body_params = {&amp;#39;grant_type&amp;#39; : &amp;#39;refresh_token&amp;#39;,
                 &amp;#39;refresh_token&amp;#39; : refresh_token}
-
     url = &amp;#39;https://accounts.spotify.com/api/token&amp;#39;
     response = requests.post(url, 
                              data = body_params, 
@@ -66,29 +59,24 @@ def access_token():
     
     response_dict = json.loads(response.content)
     accessToken = response_dict.get(&amp;#39;access_token&amp;#39;)
-
     return accessToken
     
 # Get most recent songs and append the response
 # to a new json file every day
 def download_data():
-
     current_time = datetime.datetime.now().strftime(&amp;#39;%Y-%m-%d&amp;#39;)
     filename = &amp;#39;/spotify/json/spotify_tracks_%s.json&amp;#39; % current_time
     
     accesToken = access_token()
     headers = {&amp;#39;Authorization&amp;#39;: &amp;#39;Bearer &amp;#39; + accesToken }
     payload = {&amp;#39;limit&amp;#39;: 50}
-
     url = &amp;#39;https://api.spotify.com/v1/me/player/recently-played&amp;#39;
     response = requests.get(url, headers = headers,
                             params = payload)
     data = response.json()
-
     with open(filename, &amp;#39;a&amp;#39;) as f:
         json.dump(data[&amp;#39;items&amp;#39;], f)
-        f.write(&amp;#39;\n&amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;
+        f.write(&amp;#39;\n&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Now, to make sure that I don’t miss any songs I have listened to, I will set up a cronjob to execute &lt;code&gt;download_data()&lt;/code&gt; (that’s what &lt;code&gt;logger.py&lt;/code&gt; contains) every three hours. We first make this file executable&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;chmod +x /spotify/logger.py&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;open crontab,&lt;/p&gt;
@@ -121,13 +109,11 @@ def deduplicate(file):
 &lt;pre class=&#34;python&#34;&gt;&lt;code&gt;import luigi
 from datetime import date, timedelta
 from functions import *
-
 # External task at the bottom of our dependancy graph,
 # only looks to see if output of cronjob exists,
 # by default from yesterday.
 class local_raw_json(luigi.ExternalTask):
     date = luigi.DateParameter(default = date.today()-timedelta(1)) 
-
     def output(self):
         return luigi.LocalTarget(&amp;#39;spotify/json/spotify_tracks_%s.json&amp;#39; % 
                                  self.date.strftime(&amp;#39;%Y-%m-%d&amp;#39;))
@@ -136,7 +122,6 @@ class local_raw_json(luigi.ExternalTask):
 &lt;p&gt;External tasks with no dependencies are common first steps, especially if we are relying on an external datadump somewhere else.&lt;/p&gt;
 &lt;pre class=&#34;python&#34;&gt;&lt;code&gt;import json
 from luigi.s3 import S3Target, S3Client
-
 # Task that runs our deduplicate() on local file 
 # and writes the output to S3 bucket.
 class spotify_clean_aws(luigi.Task):
@@ -151,13 +136,11 @@ class spotify_clean_aws(luigi.Task):
             
         with self.output().open(&amp;#39;w&amp;#39;) as out_file:
             json.dump(data, out_file)
-
     def output(self):
         client = S3Client(host = &amp;#39;s3.us-east-2.amazonaws.com&amp;#39;)
         return S3Target(&amp;#39;s3://myspotifydata/spotify_tracks_%s.json&amp;#39; % 
                         self.date.strftime(&amp;#39;%Y-%m-%d&amp;#39;), 
-                        client=client)
-&lt;/code&gt;&lt;/pre&gt;
+                        client=client)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The second tasks is &lt;code&gt;spotify_clean_aws&lt;/code&gt;. This is where we run the &lt;code&gt;deduplicate()&lt;/code&gt; function defined earlier and write the output to an &lt;a href=&#34;https://aws.amazon.com/s3/&#34;&gt;AWS S3&lt;/a&gt; bucket. In contrary to the first task, all three methods are present:&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Require&lt;/strong&gt; that the raw json file exists, and also &lt;code&gt;clone()&lt;/code&gt; the parameters from the first task. This way the same date parameter will be passed to both tasks.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Run&lt;/strong&gt; the function &lt;code&gt;deduplicate()&lt;/code&gt; on the input file and save the result as a .json.&lt;/p&gt;
@@ -187,7 +170,6 @@ aws_secret_access_key = YOUR_SECRET_KEY &lt;/code&gt;&lt;/pre&gt;
 class spotify_merge_weekly_aws(luigi.Task):
     date = luigi.DateParameter(default = (date.today()-timedelta(8)))
     daterange = luigi.IntParameter(7)
-
     def requires(self):
         # take data from the 7 days following date param (8 days prior to current date by default)
         return [spotify_clean_aws(i) for i in [self.date + timedelta(x) for x in range(self.daterange)]]
@@ -226,7 +208,6 @@ def replace_tracks(tracks):
     headers = {&amp;#39;Authorization&amp;#39;: &amp;#39;Bearer &amp;#39; + accesToken,
                &amp;#39;Content-Type&amp;#39;:&amp;#39;application/json&amp;#39;}
     data = {&amp;quot;uris&amp;quot;: &amp;#39;,&amp;#39;.join(tracks)}
-
     response = requests.put(url, headers = headers,
                             params = data)
                             
@@ -259,7 +240,6 @@ def create_playlist(dataset, date):
 class spotify_morning_playlist(luigi.Task):
     date = luigi.DateParameter(default = (date.today()-timedelta(8)))
     daterange = luigi.IntParameter(7)
-
     def requires(self):
         return self.clone(spotify_merge_weekly_aws)
     
@@ -276,8 +256,7 @@ class spotify_morning_playlist(luigi.Task):
         client = S3Client(host = &amp;#39;s3.us-east-2.amazonaws.com&amp;#39;)
         return S3Target(&amp;#39;s3://myspotifydata/spotify_top10_%s.json&amp;#39; % 
                         (self.date.strftime(&amp;#39;%Y-%m-%d&amp;#39;) + &amp;#39;_&amp;#39; + str(self.daterange)), 
-                        client=client)
-&lt;/code&gt;&lt;/pre&gt;
+                        client=client)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;I have put all of the tasks in a file named &lt;code&gt;tasks.py&lt;/code&gt;. Luigi does not provide a scheduling mechanism out of the box, so we’ll trigger the tasks from crontab instead. For example every Monday at 7AM:&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;0 7 * * 1 /usr/bin/python /spotify/tasks.py spotify_morning_playlist&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Note that we should have the &lt;a href=&#34;http://luigi.readthedocs.io/en/stable/central_scheduler.html&#34;&gt;Central Scheduler&lt;/a&gt; running in the background for the above to execute. The neat thing is that we only need to trigger the last task, and then Luigi considers all the dependencies and runs them if needed (ie. if the target file does not exists). Additionally, Luigi has a real nice GUI running on &lt;code&gt;localhost:8082&lt;/code&gt;, where we can visualise the complete dependency graph and monitor the progress of our tasks: &lt;img src=&#34;http://tamaszilagyi.com/img/dag.png&#34; /&gt;&lt;/p&gt;
