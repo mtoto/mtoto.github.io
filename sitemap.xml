@@ -2,177 +2,177 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>/blog/dockerized-shiny-app-development/</loc>
+    <loc>http://tamaszilagyi.com/blog/dockerized-shiny-app-development/</loc>
     <lastmod>2018-01-16T22:13:14-05:00</lastmod>
   </url>
   
   <url>
-    <loc>/blog/an-animated-neural-net-implementation/</loc>
+    <loc>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</loc>
     <lastmod>2017-11-09T21:00:30-05:00</lastmod>
   </url>
   
   <url>
-    <loc>/blog/a-tidy-text-analysis-of-rick-and-morty/</loc>
+    <loc>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</loc>
     <lastmod>2017-10-07T23:15:14-05:00</lastmod>
   </url>
   
   <url>
-    <loc>/blog/self-learning-hue-lights/</loc>
+    <loc>http://tamaszilagyi.com/blog/self-learning-hue-lights/</loc>
     <lastmod>2017-08-30T23:15:14-05:00</lastmod>
   </url>
   
   <url>
-    <loc>/blog/creating-a-spotify-playlist-using-luigi/</loc>
+    <loc>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</loc>
     <lastmod>2017-07-22T21:13:14-05:00</lastmod>
   </url>
   
   <url>
-    <loc>/blog/analyzing-my-spotify-listening-history/</loc>
+    <loc>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</loc>
     <lastmod>2017-07-02T21:13:14-05:00</lastmod>
   </url>
   
   <url>
-    <loc>/blog/starting-a-blogdown/</loc>
+    <loc>http://tamaszilagyi.com/blog/starting-a-blogdown/</loc>
     <lastmod>2017-05-14T21:13:14-05:00</lastmod>
   </url>
   
   <url>
-    <loc>/about/</loc>
+    <loc>http://tamaszilagyi.com/about/</loc>
     <lastmod>2016-05-05T21:48:51-07:00</lastmod>
   </url>
   
   <url>
-    <loc>/tags/ai/</loc>
+    <loc>http://tamaszilagyi.com/tags/ai/</loc>
     <lastmod>2017-11-09T21:00:30-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/blog/</loc>
+    <loc>http://tamaszilagyi.com/blog/</loc>
     <lastmod>2018-01-16T22:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/blogdown/</loc>
+    <loc>http://tamaszilagyi.com/tags/blogdown/</loc>
     <lastmod>2017-05-14T21:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/</loc>
+    <loc>http://tamaszilagyi.com/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/</loc>
+    <loc>http://tamaszilagyi.com/</loc>
     <lastmod>2018-01-16T22:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/deep-learning/</loc>
+    <loc>http://tamaszilagyi.com/tags/deep-learning/</loc>
     <lastmod>2017-11-09T21:00:30-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/docker/</loc>
+    <loc>http://tamaszilagyi.com/tags/docker/</loc>
     <lastmod>2018-01-16T22:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/dplyr/</loc>
+    <loc>http://tamaszilagyi.com/tags/dplyr/</loc>
     <lastmod>2017-07-02T21:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/ggplot/</loc>
+    <loc>http://tamaszilagyi.com/tags/ggplot/</loc>
     <lastmod>2017-07-02T21:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/github-pages/</loc>
+    <loc>http://tamaszilagyi.com/tags/github-pages/</loc>
     <lastmod>2017-05-14T21:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/hue/</loc>
+    <loc>http://tamaszilagyi.com/tags/hue/</loc>
     <lastmod>2017-10-07T23:15:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/luigi/</loc>
+    <loc>http://tamaszilagyi.com/tags/luigi/</loc>
     <lastmod>2017-07-22T21:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/neural-network/</loc>
+    <loc>http://tamaszilagyi.com/tags/neural-network/</loc>
     <lastmod>2017-11-09T21:00:30-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/purrr/</loc>
+    <loc>http://tamaszilagyi.com/tags/purrr/</loc>
     <lastmod>2017-07-02T21:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/python/</loc>
+    <loc>http://tamaszilagyi.com/tags/python/</loc>
     <lastmod>2017-10-07T23:15:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/r/</loc>
+    <loc>http://tamaszilagyi.com/tags/r/</loc>
     <lastmod>2018-01-16T22:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/r/</loc>
+    <loc>http://tamaszilagyi.com/categories/r/</loc>
     <lastmod>2018-01-16T22:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/shiny/</loc>
+    <loc>http://tamaszilagyi.com/tags/shiny/</loc>
     <lastmod>2018-01-16T22:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/spotify/</loc>
+    <loc>http://tamaszilagyi.com/tags/spotify/</loc>
     <lastmod>2017-07-22T21:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/</loc>
+    <loc>http://tamaszilagyi.com/tags/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/testthat/</loc>
+    <loc>http://tamaszilagyi.com/tags/testthat/</loc>
     <lastmod>2018-01-16T22:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/tidyr/</loc>
+    <loc>http://tamaszilagyi.com/tags/tidyr/</loc>
     <lastmod>2017-07-02T21:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/travis-ci/</loc>
+    <loc>http://tamaszilagyi.com/tags/travis-ci/</loc>
     <lastmod>2018-01-16T22:13:14-05:00</lastmod>
     <priority>0</priority>
   </url>
