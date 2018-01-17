@@ -33,7 +33,7 @@ We all heard of unit testing, but can we test an actual shiny application? As of
 
 > Shinytest uses snapshot-based testing strategy. The first time it runs a set of tests for an application, it performs some scripted interactions with the app and takes one or more snapshots of the application’s state. These snapshots are saved to disk so that future runs of the tests can compare their results to them.
 
-The interface could not be easier. You install the package and when the first version of your shiny app is ready to roll, you simply run `recordTest()`:
+The interface is super easy. You install the package and when the first version of your shiny app is ready to roll, you simply run `recordTest()`:
 
 ```{r shinytest first run, eval = FALSE}
 devtools::install_github("rstudio/shinytest")
@@ -46,7 +46,7 @@ This launches an iframe consisting of your dashboard and controls over what to t
 
 ![](https://i.imgur.com/t3xcuCX.gif)
 
-Upon exiting the test event recorder, a new folder `test/` is created inside the app's directory, containing both the test script - `dates.R`, as well as the application's state as a .json and a .png file respectively in `test/dates-expected`. The latter serve as the expected output, based on which consequent runs of tests will be evaluated. Using my example app, `dates.R` looks like this:
+Upon exiting the test event recorder, a new folder `test/` is created inside the app's directory, containing both the test script - `dates.R`, as well as the application's state as a .json and a .png files in `test/dates-expected`. The latter serve as expected output, based on which consequent runs of tests shall be evaluated. Using my example app, `dates.R` looks like this:
 
 ```{r shiny test script, eval = FALSE}
 options(shiny.testmode=TRUE)
@@ -70,7 +70,7 @@ test_that("Application works", {
 })
 ````
 
-I found that having ggplot2 (or plotly) plots as part of your dashboard, there is always a tiny bit of randomness present in the output. And so the tests fail. It is better to explicitly export parts of the plot objects in my opinion, because they will be a more reliable yardstick to compare against. To do so, we add a few lines of code to `server.R`.
+I found that having ggplot2 (or plotly) plots as part of your dashboard, there is always a tiny bit of randomness present in the output. And hence the tests fail. It is better to explicitly export parts of the plot objects in my opinion, because they will be a more reliable yardstick to compare against. To do so, we add a few lines of code to `server.R`.
 
 ```{r exports in server.R, eval = FALSE}
 exportTestValues(plot_balance = { ggplot_build(p_b)$data },
@@ -79,7 +79,7 @@ exportTestValues(plot_balance = { ggplot_build(p_b)$data },
                  plot_export  = { ggplot_build(p_e)$data } )
 ```
 
-Secondly, we customize which parts of the application's state should be saved and checked for inside `app$snapshot()`, using the `items = ` argument and update `dates.R` so that only the `input` and `export` parts of our .json files are evaluated:
+As a follow up, we customize which parts of the application's state should be saved and checked for inside `app$snapshot()`, using the `items = ` argument and update `dates.R` so that only the `input` and `export` (and *not the* `output`) sections of our .json files are evaluated:
 
 ```{r shiny test script 2, eval = FALSE}
 ...
@@ -191,7 +191,7 @@ after_script:
 - docker rm -f test
 ```
 
-The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we'd only rebuild the changed layers after downloading the image from Dockerhub. 
+The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we'd only rebuild the changed layers after downloading the latest image from Dockerhub. 
 
 To make sure everything is nice and up to date, we will push the changes back to Dockerhub after every successful run. We need credentials to do so, but Travis conveniently allows for defining environment variables inside the repository settings (or via the CLI):
 

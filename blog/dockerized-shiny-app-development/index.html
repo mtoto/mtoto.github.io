@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1516215424">
-    <link rel="stylesheet" href="../../css/main.css?t=1516215424">
+    <link rel="stylesheet" href="../../css/reset.css?t=1516228980">
+    <link rel="stylesheet" href="../../css/main.css?t=1516228980">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1516215424">
+        <link rel="stylesheet" href="../../css/override.css?t=1516228980">
     
 
 
@@ -168,7 +168,7 @@ pre code, pre, code {
 <blockquote>
 <p>Shinytest uses snapshot-based testing strategy. The first time it runs a set of tests for an application, it performs some scripted interactions with the app and takes one or more snapshots of the application’s state. These snapshots are saved to disk so that future runs of the tests can compare their results to them.</p>
 </blockquote>
-<p>The interface could not be easier. You install the package and when the first version of your shiny app is ready to roll, you simply run <code>recordTest()</code>:</p>
+<p>The interface is super easy. You install the package and when the first version of your shiny app is ready to roll, you simply run <code>recordTest()</code>:</p>
 <pre class="r"><code>devtools::install_github(&quot;rstudio/shinytest&quot;)
 library(shinytest)
 
@@ -178,7 +178,7 @@ recordTest(&quot;path/to/app&quot;)</code></pre>
 <img src="https://i.imgur.com/t3xcuCX.gif" />
 
 </div>
-<p>Upon exiting the test event recorder, a new folder <code>test/</code> is created inside the app’s directory, containing both the test script - <code>dates.R</code>, as well as the application’s state as a .json and a .png file respectively in <code>test/dates-expected</code>. The latter serve as the expected output, based on which consequent runs of tests will be evaluated. Using my example app, <code>dates.R</code> looks like this:</p>
+<p>Upon exiting the test event recorder, a new folder <code>test/</code> is created inside the app’s directory, containing both the test script - <code>dates.R</code>, as well as the application’s state as a .json and a .png files in <code>test/dates-expected</code>. The latter serve as expected output, based on which consequent runs of tests shall be evaluated. Using my example app, <code>dates.R</code> looks like this:</p>
 <pre class="r"><code>options(shiny.testmode=TRUE)
 
 app &lt;- ShinyDriver$new(&quot;../&quot;, seed = 123)
@@ -194,12 +194,12 @@ test_that(&quot;Application works&quot;, {
                             testnames = &quot;dates&quot;,
                             compareImages = FALSE))
 })</code></pre>
-<p>I found that having ggplot2 (or plotly) plots as part of your dashboard, there is always a tiny bit of randomness present in the output. And so the tests fail. It is better to explicitly export parts of the plot objects in my opinion, because they will be a more reliable yardstick to compare against. To do so, we add a few lines of code to <code>server.R</code>.</p>
+<p>I found that having ggplot2 (or plotly) plots as part of your dashboard, there is always a tiny bit of randomness present in the output. And hence the tests fail. It is better to explicitly export parts of the plot objects in my opinion, because they will be a more reliable yardstick to compare against. To do so, we add a few lines of code to <code>server.R</code>.</p>
 <pre class="r"><code>exportTestValues(plot_balance = { ggplot_build(p_b)$data },
                  plot_total   = { ggplot_build(p_t)$data },
                  plot_import  = { ggplot_build(p_i)$data },
                  plot_export  = { ggplot_build(p_e)$data } )</code></pre>
-<p>Secondly, we customize which parts of the application’s state should be saved and checked for inside <code>app$snapshot()</code>, using the <code>items =</code> argument and update <code>dates.R</code> so that only the <code>input</code> and <code>export</code> parts of our .json files are evaluated:</p>
+<p>As a follow up, we customize which parts of the application’s state should be saved and checked for inside <code>app$snapshot()</code>, using the <code>items =</code> argument and update <code>dates.R</code> so that only the <code>input</code> and <code>export</code> (and <em>not the</em> <code>output</code>) sections of our .json files are evaluated:</p>
 <pre class="r"><code>...
 app$setInputs(date1 = &quot;2000-10-02&quot;)
 app$setInputs(date2 = &quot;2013-11-01&quot;)
@@ -289,7 +289,7 @@ script:
 
 after_script:
 - docker rm -f test</code></pre>
-<p>The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we’d only rebuild the changed layers after downloading the image from Dockerhub.</p>
+<p>The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we’d only rebuild the changed layers after downloading the latest image from Dockerhub.</p>
 <p>To make sure everything is nice and up to date, we will push the changes back to Dockerhub after every successful run. We need credentials to do so, but Travis conveniently allows for defining environment variables inside the repository settings (or via the CLI):</p>
 <div class="figure">
 <img src="https://i.imgur.com/gdTnLjd.png" />

@@ -35,7 +35,7 @@ pre code, pre, code {
 &lt;blockquote&gt;
 &lt;p&gt;Shinytest uses snapshot-based testing strategy. The first time it runs a set of tests for an application, it performs some scripted interactions with the app and takes one or more snapshots of the application’s state. These snapshots are saved to disk so that future runs of the tests can compare their results to them.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;The interface could not be easier. You install the package and when the first version of your shiny app is ready to roll, you simply run &lt;code&gt;recordTest()&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;The interface is super easy. You install the package and when the first version of your shiny app is ready to roll, you simply run &lt;code&gt;recordTest()&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;devtools::install_github(&amp;quot;rstudio/shinytest&amp;quot;)
 library(shinytest)
 
@@ -45,7 +45,7 @@ recordTest(&amp;quot;path/to/app&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;img src=&#34;https://i.imgur.com/t3xcuCX.gif&#34; /&gt;
 
 &lt;/div&gt;
-&lt;p&gt;Upon exiting the test event recorder, a new folder &lt;code&gt;test/&lt;/code&gt; is created inside the app’s directory, containing both the test script - &lt;code&gt;dates.R&lt;/code&gt;, as well as the application’s state as a .json and a .png file respectively in &lt;code&gt;test/dates-expected&lt;/code&gt;. The latter serve as the expected output, based on which consequent runs of tests will be evaluated. Using my example app, &lt;code&gt;dates.R&lt;/code&gt; looks like this:&lt;/p&gt;
+&lt;p&gt;Upon exiting the test event recorder, a new folder &lt;code&gt;test/&lt;/code&gt; is created inside the app’s directory, containing both the test script - &lt;code&gt;dates.R&lt;/code&gt;, as well as the application’s state as a .json and a .png files in &lt;code&gt;test/dates-expected&lt;/code&gt;. The latter serve as expected output, based on which consequent runs of tests shall be evaluated. Using my example app, &lt;code&gt;dates.R&lt;/code&gt; looks like this:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;options(shiny.testmode=TRUE)
 
 app &amp;lt;- ShinyDriver$new(&amp;quot;../&amp;quot;, seed = 123)
@@ -61,12 +61,12 @@ test_that(&amp;quot;Application works&amp;quot;, {
                             testnames = &amp;quot;dates&amp;quot;,
                             compareImages = FALSE))
 })&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;I found that having ggplot2 (or plotly) plots as part of your dashboard, there is always a tiny bit of randomness present in the output. And so the tests fail. It is better to explicitly export parts of the plot objects in my opinion, because they will be a more reliable yardstick to compare against. To do so, we add a few lines of code to &lt;code&gt;server.R&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;I found that having ggplot2 (or plotly) plots as part of your dashboard, there is always a tiny bit of randomness present in the output. And hence the tests fail. It is better to explicitly export parts of the plot objects in my opinion, because they will be a more reliable yardstick to compare against. To do so, we add a few lines of code to &lt;code&gt;server.R&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;exportTestValues(plot_balance = { ggplot_build(p_b)$data },
                  plot_total   = { ggplot_build(p_t)$data },
                  plot_import  = { ggplot_build(p_i)$data },
                  plot_export  = { ggplot_build(p_e)$data } )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Secondly, we customize which parts of the application’s state should be saved and checked for inside &lt;code&gt;app$snapshot()&lt;/code&gt;, using the &lt;code&gt;items =&lt;/code&gt; argument and update &lt;code&gt;dates.R&lt;/code&gt; so that only the &lt;code&gt;input&lt;/code&gt; and &lt;code&gt;export&lt;/code&gt; parts of our .json files are evaluated:&lt;/p&gt;
+&lt;p&gt;As a follow up, we customize which parts of the application’s state should be saved and checked for inside &lt;code&gt;app$snapshot()&lt;/code&gt;, using the &lt;code&gt;items =&lt;/code&gt; argument and update &lt;code&gt;dates.R&lt;/code&gt; so that only the &lt;code&gt;input&lt;/code&gt; and &lt;code&gt;export&lt;/code&gt; (and &lt;em&gt;not the&lt;/em&gt; &lt;code&gt;output&lt;/code&gt;) sections of our .json files are evaluated:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;...
 app$setInputs(date1 = &amp;quot;2000-10-02&amp;quot;)
 app$setInputs(date2 = &amp;quot;2013-11-01&amp;quot;)
@@ -156,7 +156,7 @@ script:
 
 after_script:
 - docker rm -f test&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we’d only rebuild the changed layers after downloading the image from Dockerhub.&lt;/p&gt;
+&lt;p&gt;The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we’d only rebuild the changed layers after downloading the latest image from Dockerhub.&lt;/p&gt;
 &lt;p&gt;To make sure everything is nice and up to date, we will push the changes back to Dockerhub after every successful run. We need credentials to do so, but Travis conveniently allows for defining environment variables inside the repository settings (or via the CLI):&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
 &lt;img src=&#34;https://i.imgur.com/gdTnLjd.png&#34; /&gt;
