@@ -74,8 +74,8 @@ app$setInputs(date2 = &amp;quot;2013-11-01&amp;quot;)
 app$snapshot(items = list(input = TRUE, export = TRUE))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;That is all you really need to get going with shinytest. Keep in mind that the package is still in development, and things might change in the future. For an in-depth walkthrough of shinytest’s capabilities, have a look at the &lt;a href=&#34;https://rstudio.github.io/shinytest/articles/shinytest.html&#34;&gt;official site&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;a-container-can-we-has-it&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;A 🐳 container, can we has it?&lt;/h2&gt;
+&lt;div id=&#34;a-container-can-we-haz-it&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;A 🐳 container, can we haz it?&lt;/h2&gt;
 &lt;p&gt;Now that our shiny app is complete with test scripts, the whole thing can be packaged up and put inside a container. Of course we could deploy the shiny dashboard without a container too, but at the end of the day it makes everybody’s life a lot easier.&lt;/p&gt;
 &lt;p&gt;Because if our container runs on our machine, it will also run on &lt;strong&gt;any machine&lt;/strong&gt; that has Docker. Without compatibility issues, independent from host version or platform distribution. In a real life scenario this significantly reduces time between prototypting and deployment, not the least because of the typically lightweight footprint of a Docker image.&lt;/p&gt;
 &lt;p&gt;To containerize our shiny app, we first need to create an image that encompasses our:&lt;/p&gt;
@@ -157,7 +157,7 @@ script:
 
 after_script:
 - docker rm -f test&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we’d only rebuild the changed layers after downloading the latest image from Dockerhub.&lt;/p&gt;
+&lt;p&gt;The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we’d only rebuild the changed layers after downloading the latest image from the registry.&lt;/p&gt;
 &lt;p&gt;To make sure everything is nice and up to date, we will push the changes back to Dockerhub after every successful run. We need credentials to do so, but Travis conveniently allows for defining environment variables inside the repository settings (or via the CLI):&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
 &lt;img src=&#34;https://i.imgur.com/gdTnLjd.png&#34; /&gt;
@@ -598,9 +598,9 @@ bigram_graph &amp;lt;- df %&amp;gt;%
   graph_from_data_frame()
 
 print(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## IGRAPH cf112be DN-- 310 280 -- 
+&lt;pre&gt;&lt;code&gt;## IGRAPH a1e029b DN-- 310 280 -- 
 ## + attr: name (v/c), season (e/c), n (e/n)
-## + edges from cf112be (vertex names):
+## + edges from a1e029b (vertex names):
 ## [1] tiny        -&amp;gt;rick    yeah        -&amp;gt;yeah    ice         -&amp;gt;cream  
 ## [4] god         -&amp;gt;damn    whoa        -&amp;gt;whoa   
 ##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 20 entries ]
@@ -805,10 +805,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      77  187     16  330
-##   mid      63  113     23  149
-##   bright   37   58      0   34
-##   zero     43   85     26 4231&lt;/code&gt;&lt;/pre&gt;
+##   dim     102  179     21  358
+##   mid      64  125     16  144
+##   bright   19   48      0    5
+##   zero     35   91     28 4237&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;

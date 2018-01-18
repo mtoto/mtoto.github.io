@@ -92,7 +92,7 @@ app$snapshot(items = list(input = TRUE, export = TRUE))
 
 That is all you really need to get going with shinytest. Keep in mind that the package is still in development, and things might change in the future. For an in-depth walkthrough of shinytest's capabilities, have a look at the [official site](https://rstudio.github.io/shinytest/articles/shinytest.html).
 
-## A 🐳 container, can we has it?
+## A 🐳 container, can we haz it?
 
 Now that our shiny app is complete with test scripts, the whole thing can be packaged up and put inside a container. Of course we could deploy the shiny dashboard without a container too, but at the end of the day it makes everybody's life a lot easier. 
 
@@ -193,7 +193,7 @@ after_script:
 - docker rm -f test
 ```
 
-The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we'd only rebuild the changed layers after downloading the latest image from Dockerhub. 
+The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we'd only rebuild the changed layers after downloading the latest image from the registry. 
 
 To make sure everything is nice and up to date, we will push the changes back to Dockerhub after every successful run. We need credentials to do so, but Travis conveniently allows for defining environment variables inside the repository settings (or via the CLI):
 
