@@ -25,7 +25,9 @@ Containers are everywhere, including the realms of data science. You can think o
 
 Thanks to the good people behind the [rocker project](https://hub.docker.com/u/rocker/), there's already plenty of R-specific Docker images available for folks looking to containerize their R code. The most often cited benefits are  *portability* and *reproducibility* of your analysis. In the same vein, [lots of great material](https://maraaverick.rbind.io/2017/11/docker-izing-your-work-in-r/) is out there with respect to what these bad boys exactly are and how to get them up and running. 
 
-But I haven't found much on *Docker based workflows*, especially how to go about developing dockerized shiny apps. Because what if I want to build a shiny dashboard inside a container, integrate it with [Travis CI](https://travis-ci.org/) and run tests on every single commit to GitHub? The code in this post is based on a bare bones shiny app (containing USA Trade data) I built for illustration purposes. You can find the app [here](http://usatrade.tamaszilagyi.com/), and all the code on [GitHub](https://github.com/mtoto/markets_shiny).
+But I haven't found much on *Docker based workflows*, especially how to go about developing dockerized shiny apps. Because what if I want to build a shiny dashboard inside a container, integrate it with [Travis CI](https://travis-ci.org/) and run tests on every single commit to GitHub? 
+
+The code in this post is based on a bare bones shiny app (containing USA Trade data) I built for illustration purposes. You can find the app [here](http://usatrade.tamaszilagyi.com/), and all the code on [GitHub](https://github.com/mtoto/markets_shiny).
 
 ## Testable shiny apps
 

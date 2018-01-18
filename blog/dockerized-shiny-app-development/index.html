@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1516228980">
-    <link rel="stylesheet" href="../../css/main.css?t=1516228980">
+    <link rel="stylesheet" href="../../css/reset.css?t=1516296648">
+    <link rel="stylesheet" href="../../css/main.css?t=1516296648">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1516228980">
+        <link rel="stylesheet" href="../../css/override.css?t=1516296648">
     
 
 
@@ -160,7 +160,8 @@ pre code, pre, code {
 <h2>Getting on the Docker (container) ship</h2>
 <p>Containers are everywhere, including the realms of data science. You can think of them as small self-contained environments, encapsulating an application and its dependencies. If that sounds a lot like a virtual machine, you are not entirely wrong. But unlike VM’s, containers run on the host system’s kernel and the processes inside can only see and access their immediate surroundings.</p>
 <p>Thanks to the good people behind the <a href="https://hub.docker.com/u/rocker/">rocker project</a>, there’s already plenty of R-specific Docker images available for folks looking to containerize their R code. The most often cited benefits are <em>portability</em> and <em>reproducibility</em> of your analysis. In the same vein, <a href="https://maraaverick.rbind.io/2017/11/docker-izing-your-work-in-r/">lots of great material</a> is out there with respect to what these bad boys exactly are and how to get them up and running.</p>
-<p>But I haven’t found much on <em>Docker based workflows</em>, especially how to go about developing dockerized shiny apps. Because what if I want to build a shiny dashboard inside a container, integrate it with <a href="https://travis-ci.org/">Travis CI</a> and run tests on every single commit to GitHub? The code in this post is based on a bare bones shiny app (containing USA Trade data) I built for illustration purposes. You can find the app <a href="http://usatrade.tamaszilagyi.com/">here</a>, and all the code on <a href="https://github.com/mtoto/markets_shiny">GitHub</a>.</p>
+<p>But I haven’t found much on <em>Docker based workflows</em>, especially how to go about developing dockerized shiny apps. Because what if I want to build a shiny dashboard inside a container, integrate it with <a href="https://travis-ci.org/">Travis CI</a> and run tests on every single commit to GitHub?</p>
+<p>The code in this post is based on a bare bones shiny app (containing USA Trade data) I built for illustration purposes. You can find the app <a href="http://usatrade.tamaszilagyi.com/">here</a>, and all the code on <a href="https://github.com/mtoto/markets_shiny">GitHub</a>.</p>
 </div>
 <div id="testable-shiny-apps" class="section level2">
 <h2>Testable shiny apps</h2>
