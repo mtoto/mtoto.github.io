@@ -85,7 +85,7 @@ usable_policies_list &amp;lt;- synchronise(
 &lt;div id=&#34;data-prep&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Data prep&lt;/h2&gt;
 &lt;p&gt;First we have to convert policy texts to numbers. A common approach is constructing a document-term matrix where each row is a document and each word is a column. The cells in the matrix contain a statistic about each word in their respective document, such as &lt;a href=&#34;https://en.wikipedia.org/wiki/Tf%E2%80%93idf&#34;&gt;tf-idf score&lt;/a&gt;. It is a simple and powerful way to identify important words in each document. We simply count the number of words per policy and use the number of times it appears in other policies as a weighing factor.&lt;/p&gt;
-&lt;p&gt;The dimensions of the resulting document-term matrix depend on how many words we include in our vocabulary. Either way, the number of variables will quickly run up to thousands depending on our vocabulary size and because most words only appear in a subset of documents, the result will be a sparse matrix. Before anything, let’s split the dataset for modeling.&lt;/p&gt;
+&lt;p&gt;The dimensions of the resulting document-term matrix depend on how many words we include in our vocabulary. Either way, the number of variables will quickly run up to thousands and because most words only appear in a subset of documents, the result will be a sparse matrix. Before anything, let’s split the dataset for modeling.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(321)
 # sample row indices for split
 smp_size &amp;lt;- floor(0.75 * nrow(data))
@@ -808,9 +808,9 @@ bigram_graph &amp;lt;- df %&amp;gt;%
 &lt;pre&gt;&lt;code&gt;## Warning in graph_from_data_frame(.): In `d&amp;#39; `NA&amp;#39; elements were replaced
 ## with string &amp;quot;NA&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;print(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## IGRAPH 674eda1 DN-- 311 283 -- 
+&lt;pre&gt;&lt;code&gt;## IGRAPH 97baa5c DN-- 311 283 -- 
 ## + attr: name (v/c), season (e/c), n (e/n)
-## + edges from 674eda1 (vertex names):
+## + edges from 97baa5c (vertex names):
 ## [1] NA      -&amp;gt;NA      NA      -&amp;gt;NA      NA      -&amp;gt;NA      tiny    -&amp;gt;rick   
 ## [5] yeah    -&amp;gt;yeah   
 ##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 21 entries ]
@@ -1015,10 +1015,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      75  149     11  178
-##   mid      70  151     28   96
-##   bright   19   53      0   12
-##   zero     56   90     26 4458&lt;/code&gt;&lt;/pre&gt;
+##   dim     103  196     29  392
+##   mid      62  101      6   68
+##   bright   20   49      0    6
+##   zero     35   97     30 4278&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;./blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;

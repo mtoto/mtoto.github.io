@@ -84,7 +84,7 @@ usable_policies_list &amp;lt;- synchronise(
 &lt;div id=&#34;data-prep&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Data prep&lt;/h2&gt;
 &lt;p&gt;First we have to convert policy texts to numbers. A common approach is constructing a document-term matrix where each row is a document and each word is a column. The cells in the matrix contain a statistic about each word in their respective document, such as &lt;a href=&#34;https://en.wikipedia.org/wiki/Tf%E2%80%93idf&#34;&gt;tf-idf score&lt;/a&gt;. It is a simple and powerful way to identify important words in each document. We simply count the number of words per policy and use the number of times it appears in other policies as a weighing factor.&lt;/p&gt;
-&lt;p&gt;The dimensions of the resulting document-term matrix depend on how many words we include in our vocabulary. Either way, the number of variables will quickly run up to thousands depending on our vocabulary size and because most words only appear in a subset of documents, the result will be a sparse matrix. Before anything, let’s split the dataset for modeling.&lt;/p&gt;
+&lt;p&gt;The dimensions of the resulting document-term matrix depend on how many words we include in our vocabulary. Either way, the number of variables will quickly run up to thousands and because most words only appear in a subset of documents, the result will be a sparse matrix. Before anything, let’s split the dataset for modeling.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(321)
 # sample row indices for split
 smp_size &amp;lt;- floor(0.75 * nrow(data))
