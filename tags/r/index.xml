@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R on Coding with Data</title>
-    <link>/tags/r/index.xml</link>
+    <link>http://tamaszilagyi.com/tags/r/index.xml</link>
     <description>Recent content in R on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="/tags/r/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tamaszilagyi.com/tags/r/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Interpretable GDPR Classifiers</title>
-      <link>/blog/interpretable-gdpr-classifiers/</link>
+      <link>http://tamaszilagyi.com/blog/interpretable-gdpr-classifiers/</link>
       <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/interpretable-gdpr-classifiers/</guid>
+      <guid>http://tamaszilagyi.com/blog/interpretable-gdpr-classifiers/</guid>
       <description>&lt;script src=&#34;../../rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
 
 
@@ -66,7 +66,7 @@ usable_policies_list &amp;lt;- synchronise(
                 http_content)
 )&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;On about 4.500 url’s this completes in less than 10 minutes. I wanted to benchmark the performance on the same data with &lt;code&gt;lapply()&lt;/code&gt; and regular get requests, but I ran out of patience after running it overnight to no end.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;add%20github%20link&#34;&gt;After all the scraping, cleaning and parsing&lt;/a&gt;, I ended up with a final dataset containing 1196 policies and an indicator whether it mentions “&lt;em&gt;GDPR&lt;/em&gt;” or not. I took the conservative approach of classifying the scraped policies as GDPR compliant only if the document contains the term, giving me 188 policies. It’s not a whole lot - because most url’s were either invalid or guarded against scraping; but hopefully just enough to get us going.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/blob/master/data/2018-06-19-gdpr/data_prep.R&#34;&gt;After all the scraping, cleaning and parsing&lt;/a&gt;, I ended up with a final dataset containing 1196 policies and an indicator whether it mentions “&lt;em&gt;GDPR&lt;/em&gt;” or not. I took the conservative approach of classifying the scraped policies as GDPR compliant only if the document contains the term, giving me 188 policies. It’s not a whole lot - because most url’s were either invalid or guarded against scraping; but hopefully just enough to get us going.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;model-first-answer-questions-last&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Model first, answer questions last&lt;/h1&gt;
@@ -143,7 +143,7 @@ gbm_fit &amp;lt;- train(x = x_train, y = y_train,
                  method=&amp;quot;gbm&amp;quot;, trControl = ctrl)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Generating predictions for the validation set, the confusion matrices look as follow.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;../../Users/tamas/Documents/my_site/public/data/2018-06-19-gdpr/confs2.png&#34; /&gt;
+&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/data/2018-06-19-gdpr/confs2.png&#34; /&gt;
 
 &lt;/div&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2018/2018-07-19_gdpr_files/figure-html/accuracy%20n%20sensitity-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
@@ -223,10 +223,10 @@ plot(pdp_glm, pdp_svm, pdp_gbm)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Dockerized Shiny App development</title>
-      <link>/blog/dockerized-shiny-app-development/</link>
+      <link>http://tamaszilagyi.com/blog/dockerized-shiny-app-development/</link>
       <pubDate>Tue, 16 Jan 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/dockerized-shiny-app-development/</guid>
+      <guid>http://tamaszilagyi.com/blog/dockerized-shiny-app-development/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -417,10 +417,10 @@ after_success:
     
     <item>
       <title>A tidy text analysis of Rick and Morty</title>
-      <link>/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
+      <link>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
+      <guid>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
       <description>&lt;div class=&#34;figure&#34;&gt;
 &lt;img src=&#34;http://i.imgur.com/a841k9g.gif&#34; /&gt;
 
@@ -504,9 +504,9 @@ bigram_graph &amp;lt;- df %&amp;gt;%
 &lt;pre&gt;&lt;code&gt;## Warning in graph_from_data_frame(.): In `d&amp;#39; `NA&amp;#39; elements were replaced
 ## with string &amp;quot;NA&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;print(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## IGRAPH 8ff785d DN-- 311 283 -- 
+&lt;pre&gt;&lt;code&gt;## IGRAPH 72a84d6 DN-- 311 283 -- 
 ## + attr: name (v/c), season (e/c), n (e/n)
-## + edges from 8ff785d (vertex names):
+## + edges from 72a84d6 (vertex names):
 ## [1] NA      -&amp;gt;NA      NA      -&amp;gt;NA      NA      -&amp;gt;NA      tiny    -&amp;gt;rick   
 ## [5] yeah    -&amp;gt;yeah   
 ##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 21 entries ]
@@ -578,10 +578,10 @@ episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;
     
     <item>
       <title>Self-learning Hue Lights</title>
-      <link>/blog/self-learning-hue-lights/</link>
+      <link>http://tamaszilagyi.com/blog/self-learning-hue-lights/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>/blog/self-learning-hue-lights/</guid>
+      <guid>http://tamaszilagyi.com/blog/self-learning-hue-lights/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -711,10 +711,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      97  189     29  451
-##   mid      67  105      6  112
-##   bright   37   56      0   30
-##   zero     19   93     30 4151&lt;/code&gt;&lt;/pre&gt;
+##   dim      80  183     33  342
+##   mid      74  120      6  102
+##   bright   30   53      0   13
+##   zero     36   87     26 4287&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
@@ -762,10 +762,10 @@ jug() %&amp;gt;% post(&amp;quot;/predict-hue&amp;quot;, decorate(predict_hue)) %
     
     <item>
       <title>Starting a blog(down)</title>
-      <link>/blog/starting-a-blogdown/</link>
+      <link>http://tamaszilagyi.com/blog/starting-a-blogdown/</link>
       <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
       
-      <guid>/blog/starting-a-blogdown/</guid>
+      <guid>http://tamaszilagyi.com/blog/starting-a-blogdown/</guid>
       <description>&lt;div id=&#34;starting-an-analytics-blog&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Starting an analytics blog&lt;/h1&gt;
 &lt;p&gt;Having learned lots from the open source community over the past years - from blogs and videos to attending meetups and awesome conferences - I have decided to start a blog myself, and share some of the things I find interesting. I expect most of the posts to be &lt;code&gt;R&lt;/code&gt; specific, because that’s what I am most comfortable with. However I do enjoy fiddling with other technologies such as &lt;code&gt;Python&lt;/code&gt; or &lt;code&gt;Spark&lt;/code&gt;, so watch out! In a nuthsell though, this blog will be about using open source tools to build all sorts of cool things with &lt;strong&gt;data&lt;/strong&gt;.&lt;/p&gt;

@@ -17,11 +17,11 @@
      Interpretable GDPR Classifiers 
 
 </title>
-<link rel="canonical" href="../../blog/interpretable-gdpr-classifiers/">
+<link rel="canonical" href="http://tamaszilagyi.com/blog/interpretable-gdpr-classifiers/">
 
 
 <script type="text/javascript">
-    var baseURL = '\/';
+    var baseURL = 'http:\/\/tamaszilagyi.com\/';
     var host = baseURL.substring(0, baseURL.length - 1).replace(/\//g, '');
     if ((host === window.location.host) && (window.location.protocol !== 'https:')) {
         window.location.protocol = 'https:';
@@ -31,8 +31,8 @@
 
 
 
-    <link rel="stylesheet" href="../../css/vs.css">
-    <script src="../../js/highlight.pack.js"></script>
+    <link rel="stylesheet" href="http://tamaszilagyi.com/css/vs.css">
+    <script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
     <script>
   hljs.initHighlightingOnLoad();
     </script>
@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1529435282">
-    <link rel="stylesheet" href="../../css/main.css?t=1529435282">
+    <link rel="stylesheet" href="../../css/reset.css?t=1529436298">
+    <link rel="stylesheet" href="../../css/main.css?t=1529436298">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1529435282">
+        <link rel="stylesheet" href="../../css/override.css?t=1529436298">
     
 
 
@@ -140,7 +140,7 @@
 
 </div>
 
-                    <div class="initials"><a href="../../"></a></div>
+                    <div class="initials"><a href="http://tamaszilagyi.com/"></a></div>
                 </div>
                 <div class="meta">
                     <div class="date" title="Tue Jun 19 2018 22:13:14 -0500">Jun 19, 2018</div>
@@ -200,7 +200,7 @@ usable_policies_list &lt;- synchronise(
                 http_content)
 )</code></pre>
 <p>On about 4.500 url’s this completes in less than 10 minutes. I wanted to benchmark the performance on the same data with <code>lapply()</code> and regular get requests, but I ran out of patience after running it overnight to no end.</p>
-<p><a href="add%20github%20link">After all the scraping, cleaning and parsing</a>, I ended up with a final dataset containing 1196 policies and an indicator whether it mentions “<em>GDPR</em>” or not. I took the conservative approach of classifying the scraped policies as GDPR compliant only if the document contains the term, giving me 188 policies. It’s not a whole lot - because most url’s were either invalid or guarded against scraping; but hopefully just enough to get us going.</p>
+<p><a href="https://github.com/mtoto/mtoto.github.io/blob/master/data/2018-06-19-gdpr/data_prep.R">After all the scraping, cleaning and parsing</a>, I ended up with a final dataset containing 1196 policies and an indicator whether it mentions “<em>GDPR</em>” or not. I took the conservative approach of classifying the scraped policies as GDPR compliant only if the document contains the term, giving me 188 policies. It’s not a whole lot - because most url’s were either invalid or guarded against scraping; but hopefully just enough to get us going.</p>
 </div>
 <div id="model-first-answer-questions-last" class="section level1">
 <h1>Model first, answer questions last</h1>
@@ -277,7 +277,7 @@ gbm_fit &lt;- train(x = x_train, y = y_train,
                  method=&quot;gbm&quot;, trControl = ctrl)</code></pre>
 <p>Generating predictions for the validation set, the confusion matrices look as follow.</p>
 <div class="figure">
-<img src="../../Users/tamas/Documents/my_site/public/data/2018-06-19-gdpr/confs2.png" />
+<img src="https://github.com/mtoto/mtoto.github.io/raw/master/data/2018-06-19-gdpr/confs2.png" />
 
 </div>
 <p><img src="../../blog/2018/2018-07-19_gdpr_files/figure-html/accuracy%20n%20sensitity-1.png" width="672" /></p>
@@ -361,9 +361,9 @@ plot(pdp_glm, pdp_svm, pdp_gbm)</code></pre>
                 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'tamas-blog';
-    var disqus_identifier = '\/blog\/interpretable-gdpr-classifiers\/';
+    var disqus_identifier = 'http:\/\/tamaszilagyi.com\/blog\/interpretable-gdpr-classifiers\/';
     var disqus_title = 'Interpretable GDPR Classifiers';
-    var disqus_url = '\/blog\/interpretable-gdpr-classifiers\/';
+    var disqus_url = 'http:\/\/tamaszilagyi.com\/blog\/interpretable-gdpr-classifiers\/';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -414,8 +414,8 @@ ga('send', 'pageview');
 
 
 
-<link rel="stylesheet" href="//css/vs.css">
-<script src="../../js/highlight.pack.js"></script>
+<link rel="stylesheet" href="http://tamaszilagyi.com//css/vs.css">
+<script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
 <script>
   hljs.initHighlightingOnLoad();
 </script>

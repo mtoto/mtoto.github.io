@@ -74,7 +74,7 @@ usable_policies_list <- synchronise(
 
 On about 4.500 url's this completes in less than 10 minutes. I wanted to benchmark the performance on the same data with `lapply()` and regular get requests, but I ran out of patience after running it overnight to no end. 
 
-[After all the scraping, cleaning and parsing](add github link), I ended up with a final dataset containing 1196 policies and an indicator whether it mentions "*GDPR*" or not. I took the conservative approach of classifying the scraped policies as GDPR compliant only if the document contains the term, giving me 188 policies. It's not a whole lot - because most url's were either invalid or guarded against scraping; but hopefully just enough to get us going.
+[After all the scraping, cleaning and parsing](https://github.com/mtoto/mtoto.github.io/blob/master/data/2018-06-19-gdpr/data_prep.R), I ended up with a final dataset containing 1196 policies and an indicator whether it mentions "*GDPR*" or not. I took the conservative approach of classifying the scraped policies as GDPR compliant only if the document contains the term, giving me 188 policies. It's not a whole lot - because most url's were either invalid or guarded against scraping; but hopefully just enough to get us going.
 
 # Model first, answer questions last
 
@@ -182,7 +182,7 @@ confusion_kable(conf_glm, "Logistic regression")
 confusion_kable(conf_gbm, "Gradient boosting")
 confusion_kable(conf_svm, "Support vector machine")
 ```
-![](~/Documents/my_site/public/data/2018-06-19-gdpr/confs2.png)
+![](https://github.com/mtoto/mtoto.github.io/raw/master/data/2018-06-19-gdpr/confs2.png)
 
 ```{r accuracy n sensitity, echo = FALSE, message = FALSE, warning = FALSE}
 met_glm <- get_metrics(preds_glm, y_test) * 100

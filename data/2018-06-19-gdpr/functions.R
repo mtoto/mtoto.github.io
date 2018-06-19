@@ -44,7 +44,7 @@ filter_gdpr_policies <- function(list_of_policies) {
                                       grep("GDPR", usable_policies_final),
                                       grep("gdpr", usable_policies_final)))
         usable_gdpr_pols <- unlist(usable_policies_final[is_gdpr])
-        # get rid of special characters
+        
         return(usable_gdpr_pols)
         
 }
@@ -64,6 +64,7 @@ read_policy <- function(file) {
 get_policy_line <- function(file) {
         policy <- readLines(file)
         policy <- policy[grep("POLICY", policy)]
+        
         return(policy)
 }
 

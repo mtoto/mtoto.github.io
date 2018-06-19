@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Async on Coding with Data</title>
-    <link>/tags/async/index.xml</link>
+    <link>http://tamaszilagyi.com/tags/async/index.xml</link>
     <description>Recent content in Async on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="/tags/async/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tamaszilagyi.com/tags/async/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Interpretable GDPR Classifiers</title>
-      <link>/blog/interpretable-gdpr-classifiers/</link>
+      <link>http://tamaszilagyi.com/blog/interpretable-gdpr-classifiers/</link>
       <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/interpretable-gdpr-classifiers/</guid>
+      <guid>http://tamaszilagyi.com/blog/interpretable-gdpr-classifiers/</guid>
       <description>&lt;script src=&#34;../../rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
 
 
@@ -66,7 +66,7 @@ usable_policies_list &amp;lt;- synchronise(
                 http_content)
 )&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;On about 4.500 url’s this completes in less than 10 minutes. I wanted to benchmark the performance on the same data with &lt;code&gt;lapply()&lt;/code&gt; and regular get requests, but I ran out of patience after running it overnight to no end.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;add%20github%20link&#34;&gt;After all the scraping, cleaning and parsing&lt;/a&gt;, I ended up with a final dataset containing 1196 policies and an indicator whether it mentions “&lt;em&gt;GDPR&lt;/em&gt;” or not. I took the conservative approach of classifying the scraped policies as GDPR compliant only if the document contains the term, giving me 188 policies. It’s not a whole lot - because most url’s were either invalid or guarded against scraping; but hopefully just enough to get us going.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/blob/master/data/2018-06-19-gdpr/data_prep.R&#34;&gt;After all the scraping, cleaning and parsing&lt;/a&gt;, I ended up with a final dataset containing 1196 policies and an indicator whether it mentions “&lt;em&gt;GDPR&lt;/em&gt;” or not. I took the conservative approach of classifying the scraped policies as GDPR compliant only if the document contains the term, giving me 188 policies. It’s not a whole lot - because most url’s were either invalid or guarded against scraping; but hopefully just enough to get us going.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;model-first-answer-questions-last&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Model first, answer questions last&lt;/h1&gt;
@@ -143,7 +143,7 @@ gbm_fit &amp;lt;- train(x = x_train, y = y_train,
                  method=&amp;quot;gbm&amp;quot;, trControl = ctrl)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Generating predictions for the validation set, the confusion matrices look as follow.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;../../Users/tamas/Documents/my_site/public/data/2018-06-19-gdpr/confs2.png&#34; /&gt;
+&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/data/2018-06-19-gdpr/confs2.png&#34; /&gt;
 
 &lt;/div&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2018/2018-07-19_gdpr_files/figure-html/accuracy%20n%20sensitity-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
