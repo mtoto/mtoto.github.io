@@ -97,10 +97,10 @@ strip_url <- function(urls) {
 confusion_kable <- function(conf_table, caption = "") {
         conf_table %>% mutate(
                 preds = row.names(.),
-                nee = ifelse(row.names(.) == "nee",
+                nee = ifelse(row.names(.) == "no",
                              cell_spec(nee, background = "green", color = "white"),
                              cell_spec(nee, background = "red", color = "white")),
-                ja = ifelse(row.names(.) == "ja",
+                ja = ifelse(row.names(.) == "yes",
                             cell_spec(ja, background = "green", color = "white"),
                             cell_spec(ja, background = "red", color = "white"))) %>%
                  select(c(3,1,2)) %>% 
