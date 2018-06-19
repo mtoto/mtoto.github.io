@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Embedding on Coding with Data</title>
+    <link>/tags/embedding/index.xml</link>
+    <description>Recent content in Embedding on Coding with Data</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="/tags/embedding/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>TouR of word embeddings</title>
+      <link>/blog/tour-of-word-embeddings/</link>
+      <pubDate>Fri, 01 Jun 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/blog/tour-of-word-embeddings/</guid>
+      <description>&lt;style type=&#34;text/css&#34;&gt;
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+&lt;/style&gt;
+&lt;div id=&#34;word-representations&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Word representations&lt;/h2&gt;
+&lt;p&gt;Text is perhaps the most common form of data structure there is. Natural Language Processing or NLP, like many other fields, is being revolutionized by deep learning and the things we are able to do with text is borderline magic. I will not so much focus on the modeling aspect here however, but instead explore three different ways of converting textual data into word vectors that we can feed into the latest and greatest of these deep learning algorithms.&lt;/p&gt;
+&lt;p&gt;Any text is essentially a sequence of words, like: &lt;span class=&#34;math inline&#34;&gt;\(w_{1} , w_{2} , w_{3}, ... w_{T}\)&lt;/span&gt;. As such, it is &lt;em&gt;sequential&lt;/em&gt; data, where the next token heavily depends on what came before and comes after; alas its immediate context. The naive approach is to use one-hot-encoding to create a sparse binary matrix according to our vocabulary size. Say we have a 10,000 word dictionary, then each word is going to be represented as a binary vector of length 10,000 with all 0’s except at the position that corresponds to the word’s location in our vocabulary. We can intuitevly feel that this approach is not going to be the most memory efficient one. But there’s another, perhaps more important issue: We are treating each word as a thing unto itself and not as a product of its context.&lt;/p&gt;
+&lt;p&gt;The simple mathematical reality we are dealing with is that an inner product between any two OHE vectors is equal to 0. Similarly, the distance between any of these sparse vectors will be exactly same. And so representing words this way will be devoid of any information on semantic relationships that would otherwise supercharge downstream modeling capabilities. Fortunately, there is a better way.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;word-vectors-ftw&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Word vectors FTW&lt;/h2&gt;
+&lt;p&gt;As it turns out, it is possible to replace our large sparse one-hot representations with much smaller &lt;em&gt;dense vectors&lt;/em&gt;, that capture relationship between words. Consider the difference between the following representations &lt;a href=&#34;#fn1&#34; class=&#34;footnoteRef&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;table class=&#34;kable_wrapper&#34;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+king
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+queen
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+apple
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+orange
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+king
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+queen
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+apple
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+orange
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+gender
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.95
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.97
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.00
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.10
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+royal
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.93
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.95
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.01
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.00
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+age
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.70
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.69
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.03
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.02
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+food
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.02
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.01
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.95
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.97
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The table on the left is a the result of one-hot encoding, the one on the right is an imaginary vector representation. In theory, each row could capture a different property, and “score” the words accordingly. So it is possible that one row would caputure the “gender”, and another would say something about to which degree the word is a “food”. Based on these scores we can see that king and queen are at the opposite ends of the gender spectrum but equally low on the category food, unlike apples and oranges.&lt;/p&gt;
+&lt;p&gt;Of course the algorithms don’t socre&lt;/p&gt;
+&lt;p&gt;These methods preserve semantic relationships between words and they supercharge the learning capabilities of state-of-the-art NLP models. The cool kids on the block for this type of modeling are variations of Recurrent Neural Networks such as GRU or LSTM&lt;/p&gt;
+&lt;p&gt;After the dust settled in, I began wondering how hard can it be to recreate the crypto currency expert. There are algorithms capable of generating text if trained on a large enough corpus. The bleeding edge algorithm today for such a task is Recurrent Neural Networks (or RNN in short) and its relatives. It has been trained to write Shaekspeare-like sonnets, cooking recipes or even movie scripts (add links). It is suprisingly good at imitating the style of the text it has been trained on, but usually fails at creating anything consistent. This seemed more like an asset to a bot tweeting about bitcoin, however. It would be as incoherent as your everyday crypto expert, perfect.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;This example is from the the Sequence Models course of the Deep Learning Specialization on Coursera.&lt;a href=&#34;#fnref1&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

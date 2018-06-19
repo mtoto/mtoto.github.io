@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lstm on Coding with Data</title>
+    <link>/tags/lstm/index.xml</link>
+    <description>Recent content in Lstm on Coding with Data</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="/tags/lstm/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Interpretable GDPR Classifiers</title>
+      <link>/blog/interpretable-gdpr-classifiers/</link>
+      <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/blog/interpretable-gdpr-classifiers/</guid>
+      <description>&lt;script src=&#34;../../rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;style type=&#34;text/css&#34;&gt;
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+&lt;/style&gt;
+&lt;div id=&#34;we-have-updated-our-privacy-policies&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;em&gt;We have updated our privacy policies…&lt;/em&gt;&lt;/h1&gt;
+&lt;p&gt;Whether internet companies are now compliant with GDPR is hard to say, but they sure left updating their privacy policies to the last minute. What happened in the last days of May was the greatest corporate email tsunami since Y2K. I hardly read the updated policies, or remember what the old ones looked like. Wouldn’t it be great if we could model where GDPR inspired policies are different from the old ones instead of reading them?&lt;/p&gt;
+&lt;p&gt;Looking for data, I came upon the &lt;a href=&#34;https://usableprivacy.org/data&#34;&gt;Usable Privacy Project&lt;/a&gt;, that has a few datasets available consisting of privacy policies. I downloaded the ACL/COLING 2014 Dataset &lt;a href=&#34;#fn1&#34; class=&#34;footnoteRef&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;, which contains roughly 1000 documents in .xml files. Collected pre GDPR, this is a great starting point. But I still need a respectable amount of policies inspired by recent European regulation.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;async-web-scraping-ftw&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Async web scraping FTW&lt;/h1&gt;
+&lt;p&gt;The researchers behind the Usable Privacy Project paid mechanical turks to collect policies; I opted for the second best thing: asynchronous web scraping. There is a very promising package on GitHub called &lt;a href=&#34;https://github.com/r-lib/async&#34;&gt;&lt;strong&gt;async&lt;/strong&gt;&lt;/a&gt; for asynchronous HTTP requests in R. The advantage of asynchronous over synchronous code for network operations is that in case of a response delay, an asynchronous client will issue another request instead of staying idle. Because time is not being wasted on waiting for responses, asynchronous HTTP requests are orders of magnitude faster than their sequential cousins.&lt;/p&gt;
+&lt;p&gt;Extending the example from the package’s &lt;a href=&#34;https://github.com/r-lib/async/blob/master/README.md#deferred-chains&#34;&gt;README.md&lt;/a&gt; with some help from &lt;a href=&#34;https://github.com/hadley/rvest&#34;&gt;rvest&lt;/a&gt;, we can easily create an asynchronous scraping function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(async)
+library(rvest)
+
+http_content &amp;lt;- function(url) {
+        def &amp;lt;- http_get(url)$
+                then(function(response) {
+                        if(response$status_code == 200) {
+                                rawToChar(response$content) %&amp;gt;%
+                                        read_xml(as_html = TRUE)  %&amp;gt;%
+                                        html_nodes(&amp;quot;p&amp;quot;) %&amp;gt;%
+                                        html_text()
+                        } 
+                }
+                )$
+                catch(error = function(...) setNames(&amp;quot;error&amp;quot;, url))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We are essentially creating a deferred value &lt;code&gt;def&lt;/code&gt; which is only operated on - what follows after &lt;code&gt;then(function(response)&lt;/code&gt; - when this value becomes known.&lt;/p&gt;
+&lt;p&gt;Now, I need &lt;em&gt;possible&lt;/em&gt; url’s of online privacy policies to plug in, and I need a lot of them. I went ahead and retrieved the most popular sites from the US, Canada, UK, South Africa and Australia using the &lt;a href=&#34;https://aws.amazon.com/alexa-top-sites/getting-started/&#34;&gt;Alexa Topsites API&lt;/a&gt;. All you need is an AWS account and the service is free up to top 500 sites per country. To figure out what suffix I need for the url’s, I looked at a few online privacy policy online and concluded that most of them would have the same pattern. I generated all combinations of the url’s and suffixes and plugged the result into async’s native asynchronous iterator &lt;code&gt;async_map()&lt;/code&gt; along with the async scraping function. Finally wrapping the script with &lt;code&gt;synchronise()&lt;/code&gt; that&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;… creates an event loop, which manages the computation of the deferred values in this particular async phase.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create all possible combinations of urls &amp;amp; suffixes
+suffix &amp;lt;- c(&amp;quot;/privacy_policy&amp;quot;,&amp;quot;/privacy-policy&amp;quot;,&amp;quot;/privacy&amp;quot;)
+all_urls &amp;lt;- as.vector(outer(urls, suffix, paste, sep=&amp;quot;&amp;quot;))
+
+# call async iterator and initate event loop
+usable_policies_list &amp;lt;- synchronise(
+        async_map(
+                all_urls, 
+                http_content)
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;On about 4.500 url’s this completes in less than 10 minutes. I wanted to benchmark the performance on the same data with &lt;code&gt;lapply()&lt;/code&gt; and regular get requests, but I ran out of patience after running it overnight to no end.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;add%20github%20link&#34;&gt;After all the scraping, cleaning and parsing&lt;/a&gt;, I ended up with a final dataset containing 1196 policies and an indicator whether it mentions “&lt;em&gt;GDPR&lt;/em&gt;” or not. I took the conservative approach of classifying the scraped policies as GDPR compliant only if the document contains the term, giving me 188 policies. It’s not a whole lot - because most url’s were either invalid or guarded against scraping; but hopefully just enough to get us going.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;model-first-answer-questions-last&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Model first, answer questions last&lt;/h1&gt;
+&lt;p&gt;I am going to skip exploratory data analysis altogether and jump straight into modeling the difference between policies. If you want to see an example of the former, I encourage you to check out my previous post &lt;a href=&#34;http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/&#34;&gt;on Rick and Morty&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;With an imbalanced class distribution,&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;table(data$is_gdpr)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  nee   ja 
+## 1008  188&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and the average policy about 15.000 characters long,&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary(nchar(data$policy))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##       0    7936   14114   15944   20194  141715&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;this is going to be an interesting task.&lt;/p&gt;
+&lt;div id=&#34;data-prep&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data prep&lt;/h2&gt;
+&lt;p&gt;First we have to convert policy texts to numbers. A common approach is constructing a document-term matrix where each row is a document and each word is a column. The cells in the matrix contain a statistic about each word in their respective document, such as &lt;a href=&#34;https://en.wikipedia.org/wiki/Tf%E2%80%93idf&#34;&gt;tf-idf score&lt;/a&gt;. It is a simple and powerful way to identify important words in each document. We simply count the number of words per policy and use the number of times it appears in other policies as a weighing factor.&lt;/p&gt;
+&lt;p&gt;The dimensions of the resulting document-term matrix depend on how many words we include in our vocabulary. Either way, the number of variables will quickly run up to thousands depending on our vocabulary size and because most words only appear in a subset of documents, the result will be a sparse matrix. Before anything, let’s split the dataset for modeling.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(321)
+# sample row indices for split
+smp_size &amp;lt;- floor(0.75 * nrow(data))
+train_ind &amp;lt;- sample(seq_len(nrow(data)), size = smp_size)
+# create train and test sets
+train &amp;lt;- data[train_ind,]
+test &amp;lt;- data[-train_ind,]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To tokenize our text and apply the tf-idf transformations I’ll use the &lt;code&gt;text2vec&lt;/code&gt; package. We calculate the tf-idf scores based on the train set, and only map the same values onto the validation set to prevent leakage.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(text2vec)
+library(magrittr)
+# exclude stopwords &amp;amp; anything referring to EU
+stopwords_gdpr = c(stopwords::stopwords(&amp;quot;en&amp;quot;),
+                   &amp;quot;gdpr&amp;quot;,&amp;quot;eu&amp;quot;, &amp;quot;eea&amp;quot;, 
+                   &amp;quot;european&amp;quot;, &amp;quot;europe&amp;quot;)
+
+# iterators for word level tokenization
+it_train &amp;lt;- itoken(train$policy, preprocessor = tolower,
+                   tokenizer = word_tokenizer, progressbar = FALSE)
+it_test &amp;lt;- itoken(test$policy, preprocessor = tolower,
+                  tokenizer = word_tokenizer, progressbar = FALSE)
+
+# create vectorizer function based on iterator and vocab size
+vectorizer &amp;lt;- create_vocabulary(it_train, stopwords = stopwords_gdpr) %&amp;gt;%
+        prune_vocabulary(doc_count_min = 10, vocab_term_max = 1000) %&amp;gt;%
+        vocab_vectorizer()
+
+train_dtm &amp;lt;- create_dtm(it_train, vectorizer)
+
+# tf-idf transformation
+tfidf = TfIdf$new()
+dtm_train_tfidf = fit_transform(train_dtm, tfidf) # tfidf modified in place!
+
+test_dtm &amp;lt;- create_dtm(it_test, vectorizer)
+dtm_test_tfidf = transform(test_dtm, tfidf)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;modeling&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Modeling&lt;/h2&gt;
+&lt;p&gt;Now I’ll train three different models: Regularized logistic regression (glm), support vector machines (svm) and a gradient boosted machines (gbm). The first two are simple linear models remarkably apt at dealing with wide data - remember we have a 1,000 variables; while gbm is a tree-based method considered to be the top of the hill for classifiers. I won’t discuss the internals of these algorithms, and I will only explicitly tune the L1 regularization parameter for the glm (it performs both variable selection as well as coefficient shrinkage, thereby reducing model variance). Hopefully we get respectable performance at first attempt and can jump straight into some explainable machine learning stuffs.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(caret)
+y_train &amp;lt;- factor(train$is_gdpr, levels = c(&amp;quot;ja&amp;quot;,&amp;quot;nee&amp;quot;))
+y_test &amp;lt;- factor(test$is_gdpr, levels = c(&amp;quot;ja&amp;quot;,&amp;quot;nee&amp;quot;))
+x_train &amp;lt;- as.data.frame(as.matrix(dtm_train_tfidf))
+x_test &amp;lt;- as.data.frame(as.matrix(dtm_test_tfidf))
+
+# boosted trees, glm, svm
+# Using caret to perform CV
+set.seed(123)
+ctrl &amp;lt;- trainControl(method=&amp;quot;cv&amp;quot;, number=3,classProbs=TRUE)
+
+glm_fit &amp;lt;- train(x = x_train, y = y_train,
+                 method=&amp;quot;glmnet&amp;quot;, trControl = ctrl,
+                 tuneGrid = expand.grid(alpha = 1,lambda = seq(0.001,0.1,by = 0.001)))
+svm_fit &amp;lt;- train(x = x_train, y = y_train, 
+                 method=&amp;quot;svmLinear&amp;quot;, trControl = ctrl)
+gbm_fit &amp;lt;- train(x = x_train, y = y_train, 
+                 method=&amp;quot;gbm&amp;quot;, trControl = ctrl)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Generating predictions for the validation set, the confusion matrices look as follow.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;../../Users/tamas/Documents/my_site/public/data/2018-06-19-gdpr/confs2.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2018/2018-07-19_gdpr_files/figure-html/accuracy%20n%20sensitity-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Gbm has the highest accuracy by a inch with around 96%, while svm slightly outperforms the rest with 82% for sensitivity, meaning that 82% of GDPR policies are classified correctly. We are of course most interested what words are differentiating the two classes of policies. We can retrieve measures for variable importance for both the glm as well the gbm models out of the box. For glm we can use &lt;code&gt;varImp(glm_fit)&lt;/code&gt; that returns an &lt;strong&gt;importance percentage&lt;/strong&gt; for each variable that’s based on the size of the models &lt;strong&gt;coefficients&lt;/strong&gt;. For gbm we can access the &lt;strong&gt;relative influence&lt;/strong&gt; of each variable using &lt;code&gt;summary(gbm_fit)&lt;/code&gt;. Relative influence depicts the average empirical improvement of splitting by a variable across all trees generated.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2018/2018-07-19_gdpr_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In both cases the word &lt;strong&gt;regulation&lt;/strong&gt; comes out as most important word (I wonder if it has anything to do with GDP&lt;strong&gt;Regulation&lt;/strong&gt;). Other than that, the words &lt;strong&gt;data&lt;/strong&gt;, &lt;strong&gt;shield&lt;/strong&gt; and &lt;strong&gt;legitimate&lt;/strong&gt; appear in both plots for the two models. The problem is of course that we are looking at two different measures for two different models. It would be better to compare the models using the same tools on the same scale using the same metrics.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;descriptive-machine-learning-explanations&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Descriptive mAchine Learning EXplanations&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://ico.org.uk/for-organisations/guide-to-the-general-data-protection-regulation-gdpr/individual-rights/rights-related-to-automated-decision-making-including-profiling/&#34;&gt;Article 22 of GDPR&lt;/a&gt; states user’s rights to receive information why automated decisions were made and underlying data processing. Thanks to GDPR, there is a growing interest in developing methods and tools to investigate how predictions are generated by black box models. Enter the world of explainable machine learning frameworks.&lt;/p&gt;
+&lt;p&gt;One of the newer packages in the field is &lt;a href=&#34;https://github.com/pbiecek/DALEX&#34;&gt;DALEX&lt;/a&gt;, which I learned about at &lt;a href=&#34;http://2018.erum.io/&#34;&gt;eRum 2018&lt;/a&gt;. It has a set of model agnostic tools to investigate what our model is doing. For calculating variable importance:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“… we simply subtract the loss function calculated for validation dataset with permuted values for a single variable from the loss function calculated for validation dataset. This concept and some extensions are described in (Fisher, Rudin, and Dominici 2018).”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Basically we look at how our loss function changes with the permutation of the values in each column. For this we define a prediction and loss function, create an explainer object using &lt;code&gt;explain()&lt;/code&gt;, plug into &lt;code&gt;variable_importance()&lt;/code&gt; and plot the results.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(DALEX)
+# predict classes
+p_fun &amp;lt;- function(object, newdata){
+        predict(object, newdata=newdata, type=&amp;quot;raw&amp;quot;)
+}
+# accuracy loss, aka error-rate
+accuracy_loss &amp;lt;- function(observed, predicted) {
+        Metrics::ce(observed, predicted)
+}
+# explainer object 1
+explainer_glm &amp;lt;- explain(glm_fit, label = &amp;quot;glm&amp;quot;, data = x_test, 
+                         y = y_test, predict_function = p_fun)
+# explainer object 2
+explainer_svm &amp;lt;- explain(svm_fit, label = &amp;quot;svm&amp;quot;, data = x_test, 
+                         y = y_test, predict_function = p_fun)
+# explainer object 3
+explainer_gbm &amp;lt;- explain(gbm_fit, label = &amp;quot;gbm&amp;quot;, data = x_test, 
+                         y = y_test, predict_function = p_fun)
+set.seed(321)
+vi_glm &amp;lt;- variable_importance(explainer_glm, loss_function = accuracy_loss, n_sample = -1)
+vi_gbm &amp;lt;- variable_importance(explainer_gbm, loss_function = accuracy_loss, n_sample = -1)
+vi_svm &amp;lt;- variable_importance(explainer_svm, loss_function = accuracy_loss, n_sample = -1)
+
+plot(vi_glm, vi_svm, vi_gbm)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2018/2018-07-19_gdpr_files/figure-html/imp-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;I used error rate (1-accuracy) as the loss function, hence the interpretation of the model is as follows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The left edges on the plot represent the error rate of the full model.&lt;/li&gt;
+&lt;li&gt;Length of the interval means larger loss -&amp;gt; more important variable.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Looking at the above plot, it confirms that gbm has the lowest overall error rate and there are words shared among the three plots such as &lt;strong&gt;shield&lt;/strong&gt;, &lt;strong&gt;controller&lt;/strong&gt; or &lt;strong&gt;regulation&lt;/strong&gt; that appear in all three plots.&lt;/p&gt;
+&lt;p&gt;Knowing which variables are important is only the half the story; we would also like to investigate the nature of relationship between the predictor and the prediction. DALEX implements &lt;a href=&#34;https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf&#34;&gt;Partial Dependence Plots&lt;/a&gt;&lt;a href=&#34;#fn2&#34; class=&#34;footnoteRef&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; that show how different values of a numeric variable affect the prediction in isolation. We only need to change our prediction function to return probabilities,&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p_fun &amp;lt;- function(object, newdata){
+        predict(object, newdata=newdata, type=&amp;quot;prob&amp;quot;)[,1]
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then rerun our &lt;code&gt;explain()&lt;/code&gt; function calls from above, and plug the result into &lt;code&gt;variable_response()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pdp_glm  &amp;lt;- variable_response(explainer_glm, variable = &amp;quot;shield&amp;quot;, type = &amp;quot;pdp&amp;quot;)
+pdp_svm  &amp;lt;- variable_response(explainer_svm, variable = &amp;quot;shield&amp;quot;, type = &amp;quot;pdp&amp;quot;)
+pdp_gbm  &amp;lt;- variable_response(explainer_gbm, variable = &amp;quot;shield&amp;quot;, type = &amp;quot;pdp&amp;quot;)
+
+plot(pdp_glm, pdp_svm, pdp_gbm)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2018/2018-07-19_gdpr_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;For example, at around a tf-idf score of 0.04 for the word &lt;strong&gt;shield&lt;/strong&gt;, the glm will always predict a GDPR policy. For SVM the cure is lower and the gbm flatlines at a tf-idf score 0.005. One explanation is that our glm model is a lot smaller (thanks to L1 regularization) and so assigns greater weight to important variables. Looking at a couple more words, a similar pattern emerges:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../blog/2018/2018-07-19_gdpr_files/figure-html/pdp%202-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note that for the words &lt;strong&gt;regulation&lt;/strong&gt; and &lt;strong&gt;legitimate&lt;/strong&gt;, lower tf-idf scores are sufficient for higher probability of being classified as a GDPR policy.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;gdpr-is-good-for-you&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;GDPR is good for you&lt;/h1&gt;
+&lt;p&gt;It only took fitting some models and creating a few plots and I already feel a lot safer under GDPR. After all, this policy is aimed at protecting your data against the sort of abuse we have been hearing about in the news of late. Not only that, but the coming of GDPR and the need for explainable machine learning has also been a boon for a fast growing collection of model interpretability tools such as &lt;a href=&#34;https://github.com/thomasp85/lime&#34;&gt;lime&lt;/a&gt;, &lt;a href=&#34;https://github.com/redichh/ShapleyR&#34;&gt;ShapleyR&lt;/a&gt;, &lt;a href=&#34;https://mi2datalab.github.io/live/&#34;&gt;live&lt;/a&gt;, &lt;a href=&#34;https://github.com/AppliedDataSciencePartners/xgboostExplainer&#34;&gt;xgboostExplainer&lt;/a&gt;, &lt;a href=&#34;https://pbiecek.github.io/breakDown/&#34;&gt;breakDown&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;While text classification is perhaps an atypical usecase for DALEX, it works just as well and is suprisingly fast even with our large document-term matrix. However, I am curious to see how an actual case of someone asking for model clarification would look like under GDPR and what explanations would suffice to satisfy. Either way, the R community seems to be prepared for now.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Corpus of 1,010 privacy policies from the top websites ranked on Alexa.com, created as part of: F. Liu, R. Ramanath, N. Sadeh, N.A. Smith. A Step Towards Usable Privacy Policy: Automatic Alignment of Privacy Statements. Proceedings of the 25th International Conference on Computational Linguistics (COLING). 2014.&lt;a href=&#34;#fnref1&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;Greenwell, Brandon M. 2017. “Pdp: An R Package for Constructing Partial Dependence Plots.” The R Journal 9 (1):421–36. &lt;a href=&#34;https://journal.r-project.org/archive/2017/RJ-2017-016/index.html&#34; class=&#34;uri&#34;&gt;https://journal.r-project.org/archive/2017/RJ-2017-016/index.html&lt;/a&gt;.)) for a black box&lt;a href=&#34;#fnref2&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
