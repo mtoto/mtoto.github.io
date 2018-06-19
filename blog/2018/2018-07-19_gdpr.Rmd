@@ -166,7 +166,7 @@ gbm_fit <- train(x = x_train, y = y_train,
                  method="gbm", trControl = ctrl)
 ```
 
-Generating predictions for the validation set, the confusion matrices look as follow. 
+Generating predictions for the validation set, let's plot the performance for the three models: 
 
 ```{r generate predictions, include = FALSE}
 library(dplyr)
@@ -182,7 +182,6 @@ confusion_kable(conf_glm, "Logistic regression")
 confusion_kable(conf_gbm, "Gradient boosting")
 confusion_kable(conf_svm, "Support vector machine")
 ```
-![](https://github.com/mtoto/mtoto.github.io/raw/master/data/2018-06-19-gdpr/confs2.png)
 
 ```{r accuracy n sensitity, echo = FALSE, message = FALSE, warning = FALSE}
 met_glm <- get_metrics(preds_glm, y_test) * 100

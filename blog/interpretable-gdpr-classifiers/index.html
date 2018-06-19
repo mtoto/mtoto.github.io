@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1529436298">
-    <link rel="stylesheet" href="../../css/main.css?t=1529436298">
+    <link rel="stylesheet" href="../../css/reset.css?t=1529437304">
+    <link rel="stylesheet" href="../../css/main.css?t=1529437304">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1529436298">
+        <link rel="stylesheet" href="../../css/override.css?t=1529437304">
     
 
 
@@ -275,11 +275,7 @@ svm_fit &lt;- train(x = x_train, y = y_train,
                  method=&quot;svmLinear&quot;, trControl = ctrl)
 gbm_fit &lt;- train(x = x_train, y = y_train, 
                  method=&quot;gbm&quot;, trControl = ctrl)</code></pre>
-<p>Generating predictions for the validation set, the confusion matrices look as follow.</p>
-<div class="figure">
-<img src="https://github.com/mtoto/mtoto.github.io/raw/master/data/2018-06-19-gdpr/confs2.png" />
-
-</div>
+<p>Generating predictions for the validation set, let’s plot the performance for the three models:</p>
 <p><img src="../../blog/2018/2018-07-19_gdpr_files/figure-html/accuracy%20n%20sensitity-1.png" width="672" /></p>
 <p>Gbm has the highest accuracy by a inch with around 96%, while svm slightly outperforms the rest with 82% for sensitivity, meaning that 82% of GDPR policies are classified correctly. We are of course most interested what words are differentiating the two classes of policies. We can retrieve measures for variable importance for both the glm as well the gbm models out of the box. For glm we can use <code>varImp(glm_fit)</code> that returns an <strong>importance percentage</strong> for each variable that’s based on the size of the models <strong>coefficients</strong>. For gbm we can access the <strong>relative influence</strong> of each variable using <code>summary(gbm_fit)</code>. Relative influence depicts the average empirical improvement of splitting by a variable across all trees generated.</p>
 <p><img src="../../blog/2018/2018-07-19_gdpr_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>

@@ -141,11 +141,7 @@ svm_fit &amp;lt;- train(x = x_train, y = y_train,
                  method=&amp;quot;svmLinear&amp;quot;, trControl = ctrl)
 gbm_fit &amp;lt;- train(x = x_train, y = y_train, 
                  method=&amp;quot;gbm&amp;quot;, trControl = ctrl)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Generating predictions for the validation set, the confusion matrices look as follow.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/data/2018-06-19-gdpr/confs2.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;Generating predictions for the validation set, let’s plot the performance for the three models:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2018/2018-07-19_gdpr_files/figure-html/accuracy%20n%20sensitity-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Gbm has the highest accuracy by a inch with around 96%, while svm slightly outperforms the rest with 82% for sensitivity, meaning that 82% of GDPR policies are classified correctly. We are of course most interested what words are differentiating the two classes of policies. We can retrieve measures for variable importance for both the glm as well the gbm models out of the box. For glm we can use &lt;code&gt;varImp(glm_fit)&lt;/code&gt; that returns an &lt;strong&gt;importance percentage&lt;/strong&gt; for each variable that’s based on the size of the models &lt;strong&gt;coefficients&lt;/strong&gt;. For gbm we can access the &lt;strong&gt;relative influence&lt;/strong&gt; of each variable using &lt;code&gt;summary(gbm_fit)&lt;/code&gt;. Relative influence depicts the average empirical improvement of splitting by a variable across all trees generated.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2018/2018-07-19_gdpr_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
