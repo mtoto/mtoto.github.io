@@ -279,7 +279,7 @@ I used error rate (1-accuracy) as the loss function, hence the interpretation of
 
 Looking at the above plot, it confirms that gbm has the lowest overall error rate and there are words shared among the three plots such as  **shield**, **controller**  or **regulation** that appear in all three plots.
 
-Knowing which variables are important is only the half the story; we would also like to investigate the nature of relationship between the predictor and the prediction. DALEX implements [Partial Dependence Plots](https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf)[^2] that show how different values of a numeric variable affect the prediction in isolation. We only need to change our prediction function to return probabilities,  
+Knowing which variables are important is only the half the story; we would also like to investigate the nature of relationship between the predictor and the prediction. DALEX implements [Partial Dependence Plots](https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf) [^2] that show how different values of a numeric variable affect the prediction in isolation. We only need to change our prediction function to return probabilities,  
 
 ```{r pdp}
 p_fun <- function(object, newdata){
@@ -341,6 +341,6 @@ While text classification is perhaps an atypical usecase for DALEX, it works jus
 
 [^1]: Corpus of 1,010 privacy policies from the top websites ranked on Alexa.com, created as part of: F. Liu, R. Ramanath, N. Sadeh, N.A. Smith. A Step Towards Usable Privacy Policy: Automatic Alignment of Privacy Statements. Proceedings of the 25th International Conference on Computational Linguistics (COLING). 2014.
 
-[^2]: Greenwell, Brandon M. 2017. “Pdp: An R Package for Constructing Partial Dependence Plots.” The R Journal 9 (1):421–36. https://journal.r-project.org/archive/2017/RJ-2017-016/index.html.)) for a black box 
+[^2]: Greenwell, Brandon M. 2017. “Pdp: An R Package for Constructing Partial Dependence Plots.” The R Journal 9 (1):421–36. https://journal.r-project.org/archive/2017/RJ-2017-016/index.html.
 
 

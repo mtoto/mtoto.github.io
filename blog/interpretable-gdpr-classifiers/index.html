@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1529439650">
-    <link rel="stylesheet" href="../../css/main.css?t=1529439650">
+    <link rel="stylesheet" href="../../css/reset.css?t=1529489867">
+    <link rel="stylesheet" href="../../css/main.css?t=1529489867">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1529439650">
+        <link rel="stylesheet" href="../../css/override.css?t=1529489867">
     
 
 
@@ -317,7 +317,7 @@ plot(vi_glm, vi_svm, vi_gbm)</code></pre>
 <li>Length of the interval means larger loss -&gt; more important variable.</li>
 </ul>
 <p>Looking at the above plot, it confirms that gbm has the lowest overall error rate and there are words shared among the three plots such as <strong>shield</strong>, <strong>controller</strong> or <strong>regulation</strong> that appear in all three plots.</p>
-<p>Knowing which variables are important is only the half the story; we would also like to investigate the nature of relationship between the predictor and the prediction. DALEX implements <a href="https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf">Partial Dependence Plots</a><a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> that show how different values of a numeric variable affect the prediction in isolation. We only need to change our prediction function to return probabilities,</p>
+<p>Knowing which variables are important is only the half the story; we would also like to investigate the nature of relationship between the predictor and the prediction. DALEX implements <a href="https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf">Partial Dependence Plots</a> <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> that show how different values of a numeric variable affect the prediction in isolation. We only need to change our prediction function to return probabilities,</p>
 <pre class="r"><code>p_fun &lt;- function(object, newdata){
         predict(object, newdata=newdata, type=&quot;prob&quot;)[,1]
 }</code></pre>
@@ -342,7 +342,7 @@ plot(pdp_glm, pdp_svm, pdp_gbm)</code></pre>
 <hr />
 <ol>
 <li id="fn1"><p>Corpus of 1,010 privacy policies from the top websites ranked on Alexa.com, created as part of: F. Liu, R. Ramanath, N. Sadeh, N.A. Smith. A Step Towards Usable Privacy Policy: Automatic Alignment of Privacy Statements. Proceedings of the 25th International Conference on Computational Linguistics (COLING). 2014.<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>Greenwell, Brandon M. 2017. “Pdp: An R Package for Constructing Partial Dependence Plots.” The R Journal 9 (1):421–36. <a href="https://journal.r-project.org/archive/2017/RJ-2017-016/index.html" class="uri">https://journal.r-project.org/archive/2017/RJ-2017-016/index.html</a>.)) for a black box<a href="#fnref2">↩</a></p></li>
+<li id="fn2"><p>Greenwell, Brandon M. 2017. “Pdp: An R Package for Constructing Partial Dependence Plots.” The R Journal 9 (1):421–36. <a href="https://journal.r-project.org/archive/2017/RJ-2017-016/index.html" class="uri">https://journal.r-project.org/archive/2017/RJ-2017-016/index.html</a>.<a href="#fnref2">↩</a></p></li>
 </ol>
 </div>
 

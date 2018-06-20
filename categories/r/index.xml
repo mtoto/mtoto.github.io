@@ -183,7 +183,7 @@ plot(vi_glm, vi_svm, vi_gbm)&lt;/code&gt;&lt;/pre&gt;
 &lt;li&gt;Length of the interval means larger loss -&amp;gt; more important variable.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Looking at the above plot, it confirms that gbm has the lowest overall error rate and there are words shared among the three plots such as &lt;strong&gt;shield&lt;/strong&gt;, &lt;strong&gt;controller&lt;/strong&gt; or &lt;strong&gt;regulation&lt;/strong&gt; that appear in all three plots.&lt;/p&gt;
-&lt;p&gt;Knowing which variables are important is only the half the story; we would also like to investigate the nature of relationship between the predictor and the prediction. DALEX implements &lt;a href=&#34;https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf&#34;&gt;Partial Dependence Plots&lt;/a&gt;&lt;a href=&#34;#fn2&#34; class=&#34;footnoteRef&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; that show how different values of a numeric variable affect the prediction in isolation. We only need to change our prediction function to return probabilities,&lt;/p&gt;
+&lt;p&gt;Knowing which variables are important is only the half the story; we would also like to investigate the nature of relationship between the predictor and the prediction. DALEX implements &lt;a href=&#34;https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf&#34;&gt;Partial Dependence Plots&lt;/a&gt; &lt;a href=&#34;#fn2&#34; class=&#34;footnoteRef&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; that show how different values of a numeric variable affect the prediction in isolation. We only need to change our prediction function to return probabilities,&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p_fun &amp;lt;- function(object, newdata){
         predict(object, newdata=newdata, type=&amp;quot;prob&amp;quot;)[,1]
 }&lt;/code&gt;&lt;/pre&gt;
@@ -208,7 +208,7 @@ plot(pdp_glm, pdp_svm, pdp_gbm)&lt;/code&gt;&lt;/pre&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Corpus of 1,010 privacy policies from the top websites ranked on Alexa.com, created as part of: F. Liu, R. Ramanath, N. Sadeh, N.A. Smith. A Step Towards Usable Privacy Policy: Automatic Alignment of Privacy Statements. Proceedings of the 25th International Conference on Computational Linguistics (COLING). 2014.&lt;a href=&#34;#fnref1&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;Greenwell, Brandon M. 2017. “Pdp: An R Package for Constructing Partial Dependence Plots.” The R Journal 9 (1):421–36. &lt;a href=&#34;https://journal.r-project.org/archive/2017/RJ-2017-016/index.html&#34; class=&#34;uri&#34;&gt;https://journal.r-project.org/archive/2017/RJ-2017-016/index.html&lt;/a&gt;.)) for a black box&lt;a href=&#34;#fnref2&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;Greenwell, Brandon M. 2017. “Pdp: An R Package for Constructing Partial Dependence Plots.” The R Journal 9 (1):421–36. &lt;a href=&#34;https://journal.r-project.org/archive/2017/RJ-2017-016/index.html&#34; class=&#34;uri&#34;&gt;https://journal.r-project.org/archive/2017/RJ-2017-016/index.html&lt;/a&gt;.&lt;a href=&#34;#fnref2&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -804,9 +804,9 @@ bigram_graph &amp;lt;- df %&amp;gt;%
 &lt;pre&gt;&lt;code&gt;## Warning in graph_from_data_frame(.): In `d&amp;#39; `NA&amp;#39; elements were replaced
 ## with string &amp;quot;NA&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;print(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## IGRAPH a51b3dd DN-- 311 283 -- 
+&lt;pre&gt;&lt;code&gt;## IGRAPH 464b606 DN-- 311 283 -- 
 ## + attr: name (v/c), season (e/c), n (e/n)
-## + edges from a51b3dd (vertex names):
+## + edges from 464b606 (vertex names):
 ## [1] NA      -&amp;gt;NA      NA      -&amp;gt;NA      NA      -&amp;gt;NA      tiny    -&amp;gt;rick   
 ## [5] yeah    -&amp;gt;yeah   
 ##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 21 entries ]
@@ -1011,10 +1011,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim     115  220     31  399
-##   mid      44   76      6   51
-##   bright   20   49      0    6
-##   zero     41   98     28 4288&lt;/code&gt;&lt;/pre&gt;
+##   dim     101  204     24  364
+##   mid      44   85     15  199
+##   bright   32   59      0   20
+##   zero     43   95     26 4161&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
