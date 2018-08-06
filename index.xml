@@ -2,19 +2,295 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Coding with Data</title>
-    <link>http://tamaszilagyi.com/index.xml</link>
+    <link>/index.xml</link>
     <description>Recent content on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 19 Jun 2018 22:13:14 -0500</lastBuildDate>
-    <atom:link href="http://tamaszilagyi.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 07 Aug 2018 22:13:14 -0500</lastBuildDate>
+    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Parallelizing R code on kubernetes</title>
+      <link>/blog/parallelizing-r-code-on-kubernetes/</link>
+      <pubDate>Tue, 07 Aug 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/blog/parallelizing-r-code-on-kubernetes/</guid>
+      <description>&lt;style type=&#34;text/css&#34;&gt;
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+&lt;/style&gt;
+&lt;div id=&#34;kubernetes-who&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Kubernetes who?&lt;/h1&gt;
+&lt;p&gt;The hype around kubernetes is real, but likely also justified. Kubernetes is an open-source tool that facilitates deployment of jobs and services onto computer clusters. It provides different patterns for different type of workloads, be it api servers, databases or running batch jobs. Not only makes kubernetes running workloads and services easy, it also &lt;a href=&#34;https://thenewstack.io/kubernetes-credited-saving-spire-service-s3-outage/&#34;&gt;keeps them running&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;At the core of the technology are containers, which kubernetes skillfully manages inside so-called pods. A pod represents a single instance of an application and contains one or sometimes more containers. Pods in turn live on worker nodes - actual servers - and are managed by a controller on the master node. We can interact with pods indirectly via instructions to controller.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;./Users/tamas/Documents/home_iot/kubepar/infra2.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;p&gt;Mark Edmondson has already written a &lt;a href=&#34;http://code.markedmondson.me/r-on-kubernetes-serverless-shiny-r-apis-and-scheduled-scripts/&#34;&gt;fantastic blog post&lt;/a&gt; about different usecases for running R application inside kubernetes. I’ll dive into the one topic he didn’t expand upon: the parallel execution of R code on kubernetes.&lt;/p&gt;
+&lt;p&gt;I will similarly use GCP’s &lt;a href=&#34;https://cloud.google.com/kubernetes-engine/&#34;&gt;kubernetes engine&lt;/a&gt; to deploy my jobs, however all major cloud providers have similar offerings. It’s worth mentioning that Google provides 300$ worth of credit free to spend on any of their cloud products, so you can freely experiment without burning a hole in your pocket.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;single-job-with-static-parameters&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Single job with static parameters&lt;/h1&gt;
+&lt;p&gt;The simplest usecase of parallelization is running the same script over and over again, but in parallel instead of in a sequential order. A classic example is simulation, ie. the random generation of numbers given a fixed set of parameters.&lt;/p&gt;
+&lt;p&gt;I am taking an example from &lt;a href=&#34;https://docs.microsoft.com/en-us/azure/batch/tutorial-r-doazureparallel#run-a-parallel-simulation&#34;&gt;Azure’s tutorial on running R code in parallel&lt;/a&gt;, simulating stock prices after a a year (365 days) given a fixed value for standard deviation and average stock price movement per day.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean_change = 1.001 
+volatility = 0.01 
+opening_price = 100 
+
+getClosingPrice &amp;lt;- function(days) { 
+        movement &amp;lt;- rnorm(days, mean=mean_change, sd=volatility) 
+        path &amp;lt;- cumprod(c(opening_price, movement)) 
+        closingPrice &amp;lt;- path[days] 
+        return(closingPrice) 
+} 
+
+replicate(1000, getClosingPrice(365)) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s save the above script into an exacutable file, in our case &lt;code&gt;monte-carlo.R&lt;/code&gt;, and write a minimal &lt;code&gt;Dockerfile&lt;/code&gt; encapsulating the script. Remember kubernetes works with containers and can access them directly from &lt;a href=&#34;https://hub.docker.com/&#34;&gt;Dockerhub&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;FROM rocker/r-base
+COPY monte-carlo.R ./&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We build the image and upload it to dockerhub using the docker command line tool.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# build image
+docker build -t mtoto/mc-demo:latest .
+# upload to docker hub
+docker push mtoto/mc-demo:latest&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now comes the kubernetes bit in the form of a &lt;code&gt;job.yaml&lt;/code&gt; file, that contains the instructions for the controller. Note that under &lt;code&gt;spec:&lt;/code&gt; we specify the number of pods to run our job on in parallel (distribution over pods over nodes is handled by kubernetes), and the number of completions. Each pod picks up a single run and exists after the script has finished. By the end of this workload 100 pods have been created, run and terminated.&lt;/p&gt;
+&lt;pre class=&#34;yml&#34;&gt;&lt;code&gt;apiVersion: batch/v1
+kind: Job
+metadata:
+  name: static-demo
+spec:
+  parallelism: 10
+  completions: 100
+  template:
+    metadata:
+      name: static-example
+      labels:
+        jobgroup: static-example
+    spec:
+      containers:
+      - name: birthday
+        image: mtoto/mc-demo
+        command: [&amp;quot;Rscript&amp;quot;, &amp;quot;monte-carlo.R&amp;quot;]
+      restartPolicy: Never&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With everything in place (&lt;code&gt;R&lt;/code&gt; script, &lt;code&gt;Dockerfile&lt;/code&gt;, &lt;code&gt;.yaml&lt;/code&gt; file), we are ready to deploy our first job to kubernetes. Assuming you have &lt;a href=&#34;https://support.google.com/cloud/answer/6158841?hl=en&#34;&gt;enabled the relevant services&lt;/a&gt; in the google cloud console, downloaded the &lt;a href=&#34;https://cloud.google.com/sdk/&#34;&gt;google cloud SDK&lt;/a&gt; and have &lt;a href=&#34;https://kubernetes.io/docs/tasks/tools/install-kubectl/&#34;&gt;kubectl&lt;/a&gt; installed, we can create our cluster and deploy our first the workload on GCP in the following way:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# create 3 node cluster &amp;quot;kubepar&amp;quot; on google kubernetes engine
+gcloud container clusters create kubepar --machine-type n1-standard-1 --num-nodes 4
+# get credentials to point kubectl to our cluster
+gcloud container clusters get-credentials kubepar
+# create job
+kubectl create -f job.yaml&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can monitor the progress of our job using the command &lt;code&gt;kubectl get pods&lt;/code&gt;, to see how many pods have succesfully run.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;static-pods-2.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;p&gt;Similarly we can look at the state of the nodes with &lt;code&gt;kubectl get nodes&lt;/code&gt; or the overall status of the job with &lt;code&gt;kubectl get jobs static-demo&lt;/code&gt;. For a more detailed output, substitute &lt;code&gt;get&lt;/code&gt; with &lt;code&gt;describe&lt;/code&gt;, such as &lt;code&gt;kubectl describe pods&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Once the job has finished, we collect the output of our simulation from the logs of each pod and write it to a &lt;code&gt;.txt&lt;/code&gt; file.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;for p in $(kubectl get pods -l jobgroup=static-example -o name)
+do
+  kubectl logs $p &amp;gt;&amp;gt; output.txt
+done&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Reading the output into &lt;code&gt;R&lt;/code&gt; we can plot the results:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;hist(stockprices)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;stockprices.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;common-template-and-multiple-parameters-using-expansion&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Common template and multiple parameters using expansion&lt;/h1&gt;
+&lt;p&gt;Moving on, now we want to parallelize a script with different parameters at each run. Again, I am taking an example from a &lt;a href=&#34;http://blog.revolutionanalytics.com/2018/01/doazureparallel-simulations.html&#34;&gt;doAzureParallel tutorial&lt;/a&gt; where&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;… we calculate for a room of N people the probability that someone in the room shares a birthday with someone else in the room.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Below is the simulation script for 100.000 rooms where we supply the number of people in the room as a command line argument.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#!/usr/bin/env Rscript
+args = commandArgs(trailingOnly=TRUE)
+n &amp;lt;- as.double(args[1])
+
+pbirthdaysim &amp;lt;- function(n) { 
+        ntests &amp;lt;- 100000 
+        pop &amp;lt;- 1:365 
+        anydup &amp;lt;- function(i) 
+                any(duplicated( 
+                    sample(pop, n, replace=TRUE)))
+        sum(sapply(seq(ntests), anydup)) / ntests 
+}
+
+pbirthdaysim(n)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Unlike before, we are not creating a single representation of our Job object in a &lt;code&gt;.yaml&lt;/code&gt; file, but a &lt;em&gt;Job template&lt;/em&gt; with placeholders. The &lt;a href=&#34;https://github.com/mtoto/kubernetes-r-playground/blob/master/expansion/Dockerfile&#34;&gt;Dockerfile&lt;/a&gt; is the same as before, except for the script. Don’t forget to build and upload the image before continuing.&lt;/p&gt;
+&lt;pre class=&#34;yaml&#34;&gt;&lt;code&gt;apiVersion: batch/v1
+kind: Job
+metadata:
+  name: par-demo-$ITEM
+spec:
+  template:
+    metadata:
+      name: par-example
+      labels:
+        jobgroup: par-example
+    spec:
+      containers:
+      - name: birthday
+        image: mtoto/birthday-demo
+        command: [&amp;quot;Rscript&amp;quot;, &amp;quot;birthday.R $ITEM&amp;quot;]
+      restartPolicy: Never&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice that we didn’t specify parallelization parameters nor the number of completions. It’s because we are going to &lt;strong&gt;expand&lt;/strong&gt; the above template into 100 different &lt;code&gt;job.yaml&lt;/code&gt; files, one for each run with a different &lt;code&gt;n&lt;/code&gt; parameter for the birthday simulation.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# create folder for jobs
+mkdir jobs
+# create job.yaml files
+for i in {1..100}
+do
+  cat job.yaml | sed &amp;quot;s/\$ITEM/$i/&amp;quot; &amp;gt; ./jobs/job-$i.yaml
+done&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With the same command as before, we create all the jobs at once: &lt;code&gt;kubectl create -f ./jobs&lt;/code&gt;. Kubernetes will automatically create, distribute and run our jobs in parallel accross pods on the nodes of our cluster.&lt;/p&gt;
+&lt;p&gt;Using the same &lt;code&gt;bash&lt;/code&gt; script as before, we can retrieve the output from each run and after read it into &lt;code&gt;R&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Plotting the results, the probabilty that 2 or more people will have the same birthday is 99% after 60 people in the room.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(probabiliy, xlab=&amp;quot;People in room&amp;quot;, 
+     ylab=&amp;quot;Probability of shared birthday&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;birthdays.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;fine-parallel-processing-using-a-work-queue&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Fine parallel processing using a work queue&lt;/h1&gt;
+&lt;p&gt;In the previous example, we created all the jobs at once which can overload the scheduler if the number of jobs is very large. A smarter approach is to create a work queue and let the pods pick them off one by one as they go along. Unlike before, each pod will work on multiple items until the queue is empty instead of creating a pod for each task.&lt;/p&gt;
+&lt;p&gt;To illustrate the last approache, we will parallelize different regression models for the boston housing dataset, a pretty common usecase for parallelization in &lt;code&gt;R&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The function below takes the name of an algorithm, loads the dataset, creates a training set, runs a model using the caret package and finally uploads the result to google cloud storage as an &lt;code&gt;.rds&lt;/code&gt; file. This way the work queue only needs to contain the names of the models to run.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# modeling function
+run_save_model &amp;lt;- function(method) {
+        library(mlbench)
+        library(caret)
+        data(&amp;quot;BostonHousing&amp;quot;)
+        # split data
+        set.seed(123)
+        train_index &amp;lt;- createDataPartition(BostonHousing$medv,1, p = .7)
+        train &amp;lt;- BostonHousing[train_index[[1]],]
+        # train model
+        model &amp;lt;- train(medv ~., 
+                       data = train, 
+                       method = method)
+        
+        # upload to storage bucket
+        file &amp;lt;- sprintf(&amp;quot;%s_model.rds&amp;quot;, method)
+        saveRDS(model, file)
+        googleCloudStorageR::gcs_upload(file, 
+                   name = file,
+                   bucket = &amp;quot;bostonmodels&amp;quot;)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;setting-up-redis-on-kubernetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Setting up Redis on kubernetes&lt;/h2&gt;
+&lt;p&gt;We’ll be using Redis for the work queue, so we need an additional pod running Redis and a service so other pods can retrieve the items from the work queue. The recipes for both are within &lt;a href=&#34;https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-pod.yaml&#34;&gt;redis-master.yaml&lt;/a&gt; and &lt;a href=&#34;https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-service.yaml&#34;&gt;redis-service.yaml&lt;/a&gt;. Similarly to jobs, we can use &lt;code&gt;kubectl create&lt;/code&gt; command to start the instances and then use the Redis command line tool to add the work items.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# create redis pod and redis service
+kubectl create -f ./redis-pod.yaml
+kubectl create -f ./redis-service.yaml
+# create temporary interactive pod
+kubectl run temp -i --rm --tty  --image redis --command &amp;quot;/bin/sh&amp;quot;
+# initiate redis cli
+redis-cli -h redis
+# push items into queue named &amp;quot;test&amp;quot;
+rpush test &amp;quot;lm&amp;quot; &amp;quot;rf&amp;quot; &amp;quot;gbm&amp;quot; &amp;quot;enet&amp;quot; &amp;quot;brnn&amp;quot; &amp;quot;bridge&amp;quot;
+# doublecheck queue
+lrange test 0 -1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;On the consumer side, I re-implemented the &lt;a href=&#34;https://kubernetes.io/examples/application/job/redis/rediswq.py&#34;&gt;Redis client from the official docs&lt;/a&gt; in R using the &lt;a href=&#34;https://cran.r-project.org/web/packages/redux/vignettes/redux.html&#34;&gt;redux package&lt;/a&gt;. The file &lt;a href=&#34;https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/rediswq.R&#34;&gt;rediswq.R&lt;/a&gt; contains all the building blocks.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;giving-access-to-google-cloud-storage-from-kubernetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Giving access to google cloud storage from kubernetes&lt;/h2&gt;
+&lt;p&gt;Before we could extract the output from the logs, now we will save the models as &lt;code&gt;.rds&lt;/code&gt; files on cloud storage. For this, the containers running on our cluster need write access to our storage bucket.&lt;/p&gt;
+&lt;p&gt;Using Google Cloud, we create a new &lt;a href=&#34;https://cloud.google.com/compute/docs/access/service-accounts&#34;&gt;service account&lt;/a&gt; inside our project and under &lt;strong&gt;Roles&lt;/strong&gt; give it full access to cloud storage by selecting &lt;strong&gt;Storage Object Admin&lt;/strong&gt;. Make sure to check the box for &lt;strong&gt;Furnish a new private key&lt;/strong&gt; and click SAVE.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;service.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;p&gt;Back to the terminal, we can save our credentials as a Secret that will be directly accessible to the kubernetes engine.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# create secret named &amp;quot;gcs-key&amp;quot;
+kubectl create secret generic gcs-key --from-file=key.json=PATH-TO-KEY-FILE.json&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We’ll see how to use this secret in the &lt;code&gt;job.yaml&lt;/code&gt; file shortly.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;worker-program&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Worker program&lt;/h2&gt;
+&lt;p&gt;Finally, we write a worker program that takes the work items from the Redis work queue and executes &lt;code&gt;run_save_model()&lt;/code&gt;. While the pods have no knowledge of the number of work items in the queue, they notice when the queue is empty and will automatically terminate.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;source(&amp;quot;rediswq.R&amp;quot;)
+source(&amp;quot;functions.R&amp;quot;)
+
+# connect to redis host
+host &amp;lt;- Sys.getenv(&amp;quot;REDIS_SERVICE_HOST&amp;quot;)
+db &amp;lt;- redis_init(host = host)
+vars_init(&amp;quot;test&amp;quot;)
+
+# authenticate gcs
+library(googleCloudStorageR)
+
+print(paste0(&amp;quot;Worker with sessionID: &amp;quot;, session))
+print(paste0(&amp;quot;Initial queue state: empty=&amp;quot;, as.character(empty())))
+
+while (!empty()) {
+        item &amp;lt;- lease(lease_secs=10,
+                        block = TRUE,
+                        timeout = 2)
+        if (!is.null(item)) {
+                print(paste0(&amp;quot;working on: &amp;quot;, item))
+                # actual work
+                run_save_model(item)
+                complete(item)
+        } else {
+          print(&amp;quot;waiting for work&amp;quot;)       
+        }
+}
+print(&amp;quot;queue emtpy, finished&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now that we have all the scripts in place, let’s not forget to build a Docker image and upload it to Dockerhub. The &lt;a href=&#34;https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/Dockerfile&#34;&gt;Dockerfie&lt;/a&gt; is going to be a bit longer this time given the numerous dependencies our program needs.&lt;/p&gt;
+&lt;p&gt;As for the &lt;code&gt;.yaml&lt;/code&gt; file, it is very similar to what we have written before with the addition of mounting our Secret &lt;code&gt;gcs-key&lt;/code&gt; as a volume so that the containers have access. We name this variable &lt;code&gt;GCS_AUTH_FILE&lt;/code&gt;, which the &lt;a href=&#34;https://github.com/cloudyr/googleCloudStorageR&#34;&gt;googlegoogleCloudStorageR package&lt;/a&gt; looks for when loading the library to authenticate the client.&lt;/p&gt;
+&lt;pre class=&#34;yaml&#34;&gt;&lt;code&gt;apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fine-demo
+spec:
+  parallelism: 4
+  template:
+    metadata:
+      name: fine-example
+      labels:
+        jobgroup: fine-example
+    spec:
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: gcs-key
+      containers:
+      - name: c
+        image: mtoto/ml-demo
+        volumeMounts:
+        - name: google-cloud-key
+          mountPath: /var/secrets/google
+        env:
+        - name: GCS_AUTH_FILE
+          value: /var/secrets/google/key.json
+        command: [&amp;quot;Rscript&amp;quot;, &amp;quot;worker.R&amp;quot;]
+      restartPolicy: OnFailure&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Just like before, we hit &lt;code&gt;kubectl create -f job.yaml&lt;/code&gt; to start the job and monitor the status of the 4 pods with &lt;code&gt;kubectl get pods&lt;/code&gt;. You will notice that the pods don’t exit until the queue is finished. Once they are done working on one item they pick up the next one, saving additional overhead compared to the previous two approaches.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;trade-offs-to-keep-in-mind&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Trade-offs to keep in mind&lt;/h1&gt;
+&lt;p&gt;Going from static workloads to setting up work queues that feed into the workers, we are introducing additional complexity. It’s not always a good thing, especially not if modifying existing applications is costly. We could’ve done parallel machine learning just as well using parameter expansion (the second approach).&lt;/p&gt;
+&lt;p&gt;On the other hand, having one Job object for each work item creates some overhead that a single Job object for all work items does not. Again, the difference will become more apparent the more work we have.&lt;/p&gt;
+&lt;p&gt;Lastly, the first two approaches create as many pods as work items, requiring less modification to existing code. With the last approach however each pod can process multiple items, which is a gain in efficiency.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Interpretable GDPR Classifiers</title>
-      <link>http://tamaszilagyi.com/blog/interpretable-gdpr-classifiers/</link>
+      <link>/blog/interpretable-gdpr-classifiers/</link>
       <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/interpretable-gdpr-classifiers/</guid>
+      <guid>/blog/interpretable-gdpr-classifiers/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -217,10 +493,10 @@ plot(pdp_glm, pdp_svm, pdp_gbm)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Dockerized Shiny App development</title>
-      <link>http://tamaszilagyi.com/blog/dockerized-shiny-app-development/</link>
+      <link>/blog/dockerized-shiny-app-development/</link>
       <pubDate>Tue, 16 Jan 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/dockerized-shiny-app-development/</guid>
+      <guid>/blog/dockerized-shiny-app-development/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -411,10 +687,10 @@ after_success:
     
     <item>
       <title>An animated neuRal net implementation</title>
-      <link>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</link>
+      <link>/blog/an-animated-neural-net-implementation/</link>
       <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</guid>
+      <guid>/blog/an-animated-neural-net-implementation/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -718,10 +994,10 @@ nn_model &amp;lt;- function(X, Y, n_h, num_iterations = 1000) {
     
     <item>
       <title>A tidy text analysis of Rick and Morty</title>
-      <link>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
+      <link>/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
+      <guid>/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
       <description>&lt;div class=&#34;figure&#34;&gt;
 &lt;img src=&#34;http://i.imgur.com/a841k9g.gif&#34; /&gt;
 
@@ -805,9 +1081,9 @@ bigram_graph &amp;lt;- df %&amp;gt;%
 &lt;pre&gt;&lt;code&gt;## Warning in graph_from_data_frame(.): In `d&amp;#39; `NA&amp;#39; elements were replaced
 ## with string &amp;quot;NA&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;print(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## IGRAPH 464b606 DN-- 311 283 -- 
+&lt;pre&gt;&lt;code&gt;## IGRAPH 296bf3d DN-- 311 283 -- 
 ## + attr: name (v/c), season (e/c), n (e/n)
-## + edges from 464b606 (vertex names):
+## + edges from 296bf3d (vertex names):
 ## [1] NA      -&amp;gt;NA      NA      -&amp;gt;NA      NA      -&amp;gt;NA      tiny    -&amp;gt;rick   
 ## [5] yeah    -&amp;gt;yeah   
 ##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 21 entries ]
@@ -879,10 +1155,10 @@ episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;
     
     <item>
       <title>Self-learning Hue Lights</title>
-      <link>http://tamaszilagyi.com/blog/self-learning-hue-lights/</link>
+      <link>/blog/self-learning-hue-lights/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/self-learning-hue-lights/</guid>
+      <guid>/blog/self-learning-hue-lights/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -1012,10 +1288,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim     101  204     24  364
-##   mid      44   85     15  199
-##   bright   32   59      0   20
-##   zero     43   95     26 4161&lt;/code&gt;&lt;/pre&gt;
+##   dim     114  228     32  344
+##   mid      43   64      6   81
+##   bright   20   47      0    5
+##   zero     43  104     27 4314&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;./blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
@@ -1063,10 +1339,10 @@ jug() %&amp;gt;% post(&amp;quot;/predict-hue&amp;quot;, decorate(predict_hue)) %
     
     <item>
       <title>Creating a Spotify Playlist using Luigi</title>
-      <link>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</link>
+      <link>/blog/creating-a-spotify-playlist-using-luigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</guid>
+      <guid>/blog/creating-a-spotify-playlist-using-luigi/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -1328,10 +1604,10 @@ class spotify_morning_playlist(luigi.Task):
     
     <item>
       <title>Analyzing My Spotify Listening History</title>
-      <link>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</link>
+      <link>/blog/analyzing-my-spotify-listening-history/</link>
       <pubDate>Sun, 02 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</guid>
+      <guid>/blog/analyzing-my-spotify-listening-history/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -1577,10 +1853,10 @@ gganimate(gg_life)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Starting a blog(down)</title>
-      <link>http://tamaszilagyi.com/blog/starting-a-blogdown/</link>
+      <link>/blog/starting-a-blogdown/</link>
       <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/starting-a-blogdown/</guid>
+      <guid>/blog/starting-a-blogdown/</guid>
       <description>&lt;div id=&#34;starting-an-analytics-blog&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Starting an analytics blog&lt;/h1&gt;
 &lt;p&gt;Having learned lots from the open source community over the past years - from blogs and videos to attending meetups and awesome conferences - I have decided to start a blog myself, and share some of the things I find interesting. I expect most of the posts to be &lt;code&gt;R&lt;/code&gt; specific, because that’s what I am most comfortable with. However I do enjoy fiddling with other technologies such as &lt;code&gt;Python&lt;/code&gt; or &lt;code&gt;Spark&lt;/code&gt;, so watch out! In a nuthsell though, this blog will be about using open source tools to build all sorts of cool things with &lt;strong&gt;data&lt;/strong&gt;.&lt;/p&gt;
@@ -1638,10 +1914,10 @@ avatar       = &amp;quot;img/profile_pic.png&amp;quot;
     
     <item>
       <title>About</title>
-      <link>http://tamaszilagyi.com/about/</link>
+      <link>/about/</link>
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
       
-      <guid>http://tamaszilagyi.com/about/</guid>
+      <guid>/about/</guid>
       <description>
 
 &lt;p&gt;I am a Senior Data Analyst at &lt;a href=&#34;https://www.ing.com/en.htm&#34;&gt;ING&lt;/a&gt;. I received my Bachelor&amp;rsquo;s degree from &lt;a href=&#34;http://www.kuleuven.be/english/&#34;&gt;KULeuven&lt;/a&gt; and my Master&amp;rsquo;s from the &lt;a href=&#34;https://www.st-andrews.ac.uk/&#34;&gt;University of St. Andrews&lt;/a&gt;. My main area of expertise is digital analytics, however I have worked in a variety of industries such as Advertising, Aviation and most recently Banking. I love solving problems with data, discovering new insights and building scalable solutions.&lt;/p&gt;
