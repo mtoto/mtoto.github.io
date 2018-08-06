@@ -35,7 +35,7 @@ I will similarly use GCP's [kubernetes engine](https://cloud.google.com/kubernet
 
 The simplest use case of parallelization is running the same script over and over again, but in parallel instead of in a sequential order. A classic example is simulation, i.e. the random generation of numbers given a fixed set of parameters. 
 
-I am taking an example from [Azure's tutorial on running R code in parallel](https://docs.microsoft.com/en-us/azure/batch/tutorial-r-doazureparallel#run-a-parallel-simulation), simulating stock prices after a a year (365 days) given a fixed value for standard deviation and average stock price movement per day.
+I am taking an example from [Azure's tutorial on running R code in parallel](https://docs.microsoft.com/en-us/azure/batch/tutorial-r-doazureparallel#run-a-parallel-simulation), simulating stock prices after a year (365 days) given a fixed value for standard deviation and average stock price movement per day.
 
 ```{r monte carlo script, eval = FALSE}
 mean_change = 1.001 

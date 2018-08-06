@@ -36,7 +36,7 @@ pre code, pre, code {
 &lt;div id=&#34;single-job-with-static-parameters&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Single job with static parameters&lt;/h1&gt;
 &lt;p&gt;The simplest use case of parallelization is running the same script over and over again, but in parallel instead of in a sequential order. A classic example is simulation, i.e. the random generation of numbers given a fixed set of parameters.&lt;/p&gt;
-&lt;p&gt;I am taking an example from &lt;a href=&#34;https://docs.microsoft.com/en-us/azure/batch/tutorial-r-doazureparallel#run-a-parallel-simulation&#34;&gt;Azure’s tutorial on running R code in parallel&lt;/a&gt;, simulating stock prices after a a year (365 days) given a fixed value for standard deviation and average stock price movement per day.&lt;/p&gt;
+&lt;p&gt;I am taking an example from &lt;a href=&#34;https://docs.microsoft.com/en-us/azure/batch/tutorial-r-doazureparallel#run-a-parallel-simulation&#34;&gt;Azure’s tutorial on running R code in parallel&lt;/a&gt;, simulating stock prices after a year (365 days) given a fixed value for standard deviation and average stock price movement per day.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean_change = 1.001 
 volatility = 0.01 
 opening_price = 100 
