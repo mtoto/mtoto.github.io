@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R on Coding with Data</title>
-    <link>/tags/r/index.xml</link>
+    <link>http://tamaszilagyi.com/tags/r/index.xml</link>
     <description>Recent content in R on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="/tags/r/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tamaszilagyi.com/tags/r/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Parallelizing R code on kubernetes</title>
-      <link>/blog/parallelizing-r-code-on-kubernetes/</link>
+      <link>http://tamaszilagyi.com/blog/parallelizing-r-code-on-kubernetes/</link>
       <pubDate>Tue, 07 Aug 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/parallelizing-r-code-on-kubernetes/</guid>
+      <guid>http://tamaszilagyi.com/blog/parallelizing-r-code-on-kubernetes/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -286,10 +286,10 @@ spec:
     
     <item>
       <title>Interpretable GDPR Classifiers</title>
-      <link>/blog/interpretable-gdpr-classifiers/</link>
+      <link>http://tamaszilagyi.com/blog/interpretable-gdpr-classifiers/</link>
       <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/interpretable-gdpr-classifiers/</guid>
+      <guid>http://tamaszilagyi.com/blog/interpretable-gdpr-classifiers/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -492,10 +492,10 @@ plot(pdp_glm, pdp_svm, pdp_gbm)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Dockerized Shiny App development</title>
-      <link>/blog/dockerized-shiny-app-development/</link>
+      <link>http://tamaszilagyi.com/blog/dockerized-shiny-app-development/</link>
       <pubDate>Tue, 16 Jan 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/dockerized-shiny-app-development/</guid>
+      <guid>http://tamaszilagyi.com/blog/dockerized-shiny-app-development/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -686,10 +686,10 @@ after_success:
     
     <item>
       <title>A tidy text analysis of Rick and Morty</title>
-      <link>/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
+      <link>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
+      <guid>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
       <description>&lt;div class=&#34;figure&#34;&gt;
 &lt;img src=&#34;http://i.imgur.com/a841k9g.gif&#34; /&gt;
 
@@ -773,9 +773,9 @@ bigram_graph &amp;lt;- df %&amp;gt;%
 &lt;pre&gt;&lt;code&gt;## Warning in graph_from_data_frame(.): In `d&amp;#39; `NA&amp;#39; elements were replaced
 ## with string &amp;quot;NA&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;print(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## IGRAPH ec21a3c DN-- 311 283 -- 
+&lt;pre&gt;&lt;code&gt;## IGRAPH 000ce0a DN-- 311 283 -- 
 ## + attr: name (v/c), season (e/c), n (e/n)
-## + edges from ec21a3c (vertex names):
+## + edges from 000ce0a (vertex names):
 ## [1] NA      -&amp;gt;NA      NA      -&amp;gt;NA      NA      -&amp;gt;NA      tiny    -&amp;gt;rick   
 ## [5] yeah    -&amp;gt;yeah   
 ##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 21 entries ]
@@ -847,10 +847,10 @@ episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;
     
     <item>
       <title>Self-learning Hue Lights</title>
-      <link>/blog/self-learning-hue-lights/</link>
+      <link>http://tamaszilagyi.com/blog/self-learning-hue-lights/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>/blog/self-learning-hue-lights/</guid>
+      <guid>http://tamaszilagyi.com/blog/self-learning-hue-lights/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -980,10 +980,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim     105  205     31  366
-##   mid      58  102      6   61
-##   bright   14   34      0    3
-##   zero     43  102     28 4314&lt;/code&gt;&lt;/pre&gt;
+##   dim      83  171     18  203
+##   mid      64  135     21  101
+##   bright   19   49      0    7
+##   zero     54   88     26 4433&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
@@ -1031,10 +1031,10 @@ jug() %&amp;gt;% post(&amp;quot;/predict-hue&amp;quot;, decorate(predict_hue)) %
     
     <item>
       <title>Starting a blog(down)</title>
-      <link>/blog/starting-a-blogdown/</link>
+      <link>http://tamaszilagyi.com/blog/starting-a-blogdown/</link>
       <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
       
-      <guid>/blog/starting-a-blogdown/</guid>
+      <guid>http://tamaszilagyi.com/blog/starting-a-blogdown/</guid>
       <description>&lt;div id=&#34;starting-an-analytics-blog&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Starting an analytics blog&lt;/h1&gt;
 &lt;p&gt;Having learned lots from the open source community over the past years - from blogs and videos to attending meetups and awesome conferences - I have decided to start a blog myself, and share some of the things I find interesting. I expect most of the posts to be &lt;code&gt;R&lt;/code&gt; specific, because that’s what I am most comfortable with. However I do enjoy fiddling with other technologies such as &lt;code&gt;Python&lt;/code&gt; or &lt;code&gt;Spark&lt;/code&gt;, so watch out! In a nuthsell though, this blog will be about using open source tools to build all sorts of cool things with &lt;strong&gt;data&lt;/strong&gt;.&lt;/p&gt;
