@@ -68,7 +68,7 @@ docker build -t mtoto/mc-demo:latest .
 docker push mtoto/mc-demo:latest
 ```
 
-Now comes the kubernetes bit in the form of a `job.yaml` file, that contains the instructions for the controller. Note that under `spec:` we specify the number of pods to run our job on in parallel (distribution over pods over nodes is handled by kubernetes), and the number of completions. Each pod picks up a single run and exists after the script has finished. By the end of this workload 100 pods have been created, run and terminated.
+Now comes the kubernetes bit in the form of a `job.yaml` file, that contains the instructions for the controller. Note that under `spec:` we specify the number of pods to run our job on in parallel (distribution of pods over nodes is handled by kubernetes), and the number of completions. Each pod picks up a single run and exists after the script has finished. By the end of this workload 100 pods have been created, run and terminated.
 
 ```{yml static}
 apiVersion: batch/v1
@@ -94,7 +94,7 @@ spec:
 With everything in place (`R` script, `Dockerfile`, `.yaml` file), we are ready to deploy our first job to kubernetes. Assuming you have [enabled the relevant services](https://support.google.com/cloud/answer/6158841?hl=en) in the google cloud console, downloaded the [google cloud SDK](https://cloud.google.com/sdk/) and have [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) installed, we can create our cluster and deploy our first the workload on GCP in the following way:
 
 ```{bash create job}
-# create 3 node cluster "kubepar" on google kubernetes engine
+# create 4 node cluster "kubepar" on google kubernetes engine
 gcloud container clusters create kubepar --machine-type n1-standard-1 --num-nodes 4
 # get credentials to point kubectl to our cluster
 gcloud container clusters get-credentials kubepar
@@ -128,7 +128,7 @@ hist(stockprices)
 
 # Common template and multiple parameters using expansion
 
-Moving on, now we want to parallelize a script with different parameters at each run. Again, I am taking an example from a [doAzureParallel tutorial](http://blog.revolutionanalytics.com/2018/01/doazureparallel-simulations.html) where
+Moving on, we want to parallelize a script with different parameters at each run. Again, I am taking an example from a [doAzureParallel tutorial](http://blog.revolutionanalytics.com/2018/01/doazureparallel-simulations.html) where
 
 > ... we calculate for a room of N people the probability that someone in the room shares a birthday with someone else in the room.
 
@@ -172,7 +172,7 @@ spec:
       restartPolicy: Never
 ```
 
-Notice that we didn't specify parallelization parameters nor the number of completions. It's because we are going to **expand** the above template into 100 different `job.yaml` files, one for each run with a different `n` parameter for the birthday simulation. 
+Notice that we didn't specify parallelization parameters nor the number of completions. It's because we are going to **expand** the above template into 100 different `job.yaml` files, one for each run with a different `n` parameter (`$ITEM` in the `.yaml` fie) for the birthday simulation. 
 
 ```{bash}
 # create folder for jobs
@@ -188,7 +188,7 @@ With the same command as before, we create all the jobs at once: `kubectl create
 
 Using the same `bash` script as before, we can retrieve the output from each run and after read it into  `R`. 
 
-Plotting the results, the probability that 2 or more people will have the same birthday is 99% after 60 people in the room.
+Plotting the results, the probability that 2 or more people will have the same birthday is 99% after 60 people are in the room.
 
 ```{r birthday}
 plot(probabiliy, xlab="People in room", 
@@ -201,13 +201,14 @@ plot(probabiliy, xlab="People in room",
 
 In the previous example, we created all the jobs at once, which can overload the scheduler if the number of jobs is very large. A smarter approach is to create a work queue and let the pods pick them off one by one as they go along. Unlike before, each pod will work on multiple items until the queue is empty instead of creating a pod for each task. 
 
-To illustrate the last approach, we will parallelize different regression models for the Boston housing dataset, a pretty common use case for parallelization in `R`.
+To illustrate the last approach, we will parallelize the training of different regression models, a common use case for parallelization in `R`.
 
 The function below takes the name of an algorithm, loads the dataset, creates a training set, runs a model using the caret package and finally uploads the result to google cloud storage as an `.rds` file. This way the work queue only needs to contain the names of the models to run. 
 
 ```{r}
 # modeling function
 run_save_model <- function(method) {
+        # load pkgs and data
         library(mlbench)
         library(caret)
         data("BostonHousing")
@@ -231,7 +232,7 @@ run_save_model <- function(method) {
 
 ## Setting up Redis on kubernetes   
 
-We'll be using Redis for the work queue, so we need an additional pod running Redis and a service so other pods can retrieve the items from the work queue. The recipes for both are within [redis-master.yaml](https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-pod.yaml) and [redis-service.yaml](https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-service.yaml). Similarly to jobs, we can use `kubectl create` command to start the instances and then use the Redis command line tool to add the work items.
+We'll be using Redis for the work queue, so we need an additional pod running Redis and a service so other pods can find it. The recipes for both are within [redis-master.yaml](https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-pod.yaml) and [redis-service.yaml](https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-service.yaml). Similarly to jobs, we can use `kubectl create` command to start the instances and then use the Redis command line tool to add the work items to the queue.
 
 ```{bash redis}
 # create redis pod and redis service
@@ -253,7 +254,7 @@ On the consumer side, I re-implemented the [Redis client from the official docs]
 
 Before we could extract the output from the logs, now we will save the models as `.rds` files on cloud storage. For this, the containers running on our cluster need write access to our storage bucket.
 
-Using Google Cloud, we create a new [service account](https://cloud.google.com/compute/docs/access/service-accounts) inside our project and under **Roles** give it full access to cloud storage by selecting **Storage Object Admin**. Make sure to check the box for **Furnish a new private key** and click SAVE. 
+Using GCP, we need to create a new [service account](https://cloud.google.com/compute/docs/access/service-accounts) inside our project and under **Roles** give it full access to cloud storage by selecting **Storage Object Admin**. Make sure to check the box for **Furnish a new private key** and click SAVE. 
 
 ![](https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/service.png)
 

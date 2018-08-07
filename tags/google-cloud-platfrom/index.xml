@@ -57,7 +57,7 @@ COPY monte-carlo.R ./&lt;/code&gt;&lt;/pre&gt;
 docker build -t mtoto/mc-demo:latest .
 # upload to docker hub
 docker push mtoto/mc-demo:latest&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Now comes the kubernetes bit in the form of a &lt;code&gt;job.yaml&lt;/code&gt; file, that contains the instructions for the controller. Note that under &lt;code&gt;spec:&lt;/code&gt; we specify the number of pods to run our job on in parallel (distribution over pods over nodes is handled by kubernetes), and the number of completions. Each pod picks up a single run and exists after the script has finished. By the end of this workload 100 pods have been created, run and terminated.&lt;/p&gt;
+&lt;p&gt;Now comes the kubernetes bit in the form of a &lt;code&gt;job.yaml&lt;/code&gt; file, that contains the instructions for the controller. Note that under &lt;code&gt;spec:&lt;/code&gt; we specify the number of pods to run our job on in parallel (distribution of pods over nodes is handled by kubernetes), and the number of completions. Each pod picks up a single run and exists after the script has finished. By the end of this workload 100 pods have been created, run and terminated.&lt;/p&gt;
 &lt;pre class=&#34;yml&#34;&gt;&lt;code&gt;apiVersion: batch/v1
 kind: Job
 metadata:
@@ -77,7 +77,7 @@ spec:
         command: [&amp;quot;Rscript&amp;quot;, &amp;quot;monte-carlo.R&amp;quot;]
       restartPolicy: Never&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;With everything in place (&lt;code&gt;R&lt;/code&gt; script, &lt;code&gt;Dockerfile&lt;/code&gt;, &lt;code&gt;.yaml&lt;/code&gt; file), we are ready to deploy our first job to kubernetes. Assuming you have &lt;a href=&#34;https://support.google.com/cloud/answer/6158841?hl=en&#34;&gt;enabled the relevant services&lt;/a&gt; in the google cloud console, downloaded the &lt;a href=&#34;https://cloud.google.com/sdk/&#34;&gt;google cloud SDK&lt;/a&gt; and have &lt;a href=&#34;https://kubernetes.io/docs/tasks/tools/install-kubectl/&#34;&gt;kubectl&lt;/a&gt; installed, we can create our cluster and deploy our first the workload on GCP in the following way:&lt;/p&gt;
-&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# create 3 node cluster &amp;quot;kubepar&amp;quot; on google kubernetes engine
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# create 4 node cluster &amp;quot;kubepar&amp;quot; on google kubernetes engine
 gcloud container clusters create kubepar --machine-type n1-standard-1 --num-nodes 4
 # get credentials to point kubectl to our cluster
 gcloud container clusters get-credentials kubepar
@@ -103,7 +103,7 @@ done&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;common-template-and-multiple-parameters-using-expansion&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Common template and multiple parameters using expansion&lt;/h1&gt;
-&lt;p&gt;Moving on, now we want to parallelize a script with different parameters at each run. Again, I am taking an example from a &lt;a href=&#34;http://blog.revolutionanalytics.com/2018/01/doazureparallel-simulations.html&#34;&gt;doAzureParallel tutorial&lt;/a&gt; where&lt;/p&gt;
+&lt;p&gt;Moving on, we want to parallelize a script with different parameters at each run. Again, I am taking an example from a &lt;a href=&#34;http://blog.revolutionanalytics.com/2018/01/doazureparallel-simulations.html&#34;&gt;doAzureParallel tutorial&lt;/a&gt; where&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;… we calculate for a room of N people the probability that someone in the room shares a birthday with someone else in the room.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -139,7 +139,7 @@ spec:
         image: mtoto/birthday-demo
         command: [&amp;quot;Rscript&amp;quot;, &amp;quot;birthday.R $ITEM&amp;quot;]
       restartPolicy: Never&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Notice that we didn’t specify parallelization parameters nor the number of completions. It’s because we are going to &lt;strong&gt;expand&lt;/strong&gt; the above template into 100 different &lt;code&gt;job.yaml&lt;/code&gt; files, one for each run with a different &lt;code&gt;n&lt;/code&gt; parameter for the birthday simulation.&lt;/p&gt;
+&lt;p&gt;Notice that we didn’t specify parallelization parameters nor the number of completions. It’s because we are going to &lt;strong&gt;expand&lt;/strong&gt; the above template into 100 different &lt;code&gt;job.yaml&lt;/code&gt; files, one for each run with a different &lt;code&gt;n&lt;/code&gt; parameter (&lt;code&gt;$ITEM&lt;/code&gt; in the &lt;code&gt;.yaml&lt;/code&gt; fie) for the birthday simulation.&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# create folder for jobs
 mkdir jobs
 # create job.yaml files
@@ -149,7 +149,7 @@ do
 done&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;With the same command as before, we create all the jobs at once: &lt;code&gt;kubectl create -f ./jobs&lt;/code&gt;. Kubernetes will automatically create, distribute and run our jobs in parallel across pods on the nodes of our cluster.&lt;/p&gt;
 &lt;p&gt;Using the same &lt;code&gt;bash&lt;/code&gt; script as before, we can retrieve the output from each run and after read it into &lt;code&gt;R&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;Plotting the results, the probability that 2 or more people will have the same birthday is 99% after 60 people in the room.&lt;/p&gt;
+&lt;p&gt;Plotting the results, the probability that 2 or more people will have the same birthday is 99% after 60 people are in the room.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(probabiliy, xlab=&amp;quot;People in room&amp;quot;, 
      ylab=&amp;quot;Probability of shared birthday&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;figure&#34;&gt;
@@ -160,10 +160,11 @@ done&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;fine-parallel-processing-using-a-work-queue&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Fine parallel processing using a work queue&lt;/h1&gt;
 &lt;p&gt;In the previous example, we created all the jobs at once, which can overload the scheduler if the number of jobs is very large. A smarter approach is to create a work queue and let the pods pick them off one by one as they go along. Unlike before, each pod will work on multiple items until the queue is empty instead of creating a pod for each task.&lt;/p&gt;
-&lt;p&gt;To illustrate the last approach, we will parallelize different regression models for the Boston housing dataset, a pretty common use case for parallelization in &lt;code&gt;R&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;To illustrate the last approach, we will parallelize the training of different regression models, a common use case for parallelization in &lt;code&gt;R&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;The function below takes the name of an algorithm, loads the dataset, creates a training set, runs a model using the caret package and finally uploads the result to google cloud storage as an &lt;code&gt;.rds&lt;/code&gt; file. This way the work queue only needs to contain the names of the models to run.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# modeling function
 run_save_model &amp;lt;- function(method) {
+        # load pkgs and data
         library(mlbench)
         library(caret)
         data(&amp;quot;BostonHousing&amp;quot;)
@@ -185,7 +186,7 @@ run_save_model &amp;lt;- function(method) {
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;setting-up-redis-on-kubernetes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Setting up Redis on kubernetes&lt;/h2&gt;
-&lt;p&gt;We’ll be using Redis for the work queue, so we need an additional pod running Redis and a service so other pods can retrieve the items from the work queue. The recipes for both are within &lt;a href=&#34;https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-pod.yaml&#34;&gt;redis-master.yaml&lt;/a&gt; and &lt;a href=&#34;https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-service.yaml&#34;&gt;redis-service.yaml&lt;/a&gt;. Similarly to jobs, we can use &lt;code&gt;kubectl create&lt;/code&gt; command to start the instances and then use the Redis command line tool to add the work items.&lt;/p&gt;
+&lt;p&gt;We’ll be using Redis for the work queue, so we need an additional pod running Redis and a service so other pods can find it. The recipes for both are within &lt;a href=&#34;https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-pod.yaml&#34;&gt;redis-master.yaml&lt;/a&gt; and &lt;a href=&#34;https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-service.yaml&#34;&gt;redis-service.yaml&lt;/a&gt;. Similarly to jobs, we can use &lt;code&gt;kubectl create&lt;/code&gt; command to start the instances and then use the Redis command line tool to add the work items to the queue.&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# create redis pod and redis service
 kubectl create -f ./redis-pod.yaml
 kubectl create -f ./redis-service.yaml
@@ -202,7 +203,7 @@ lrange test 0 -1&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;giving-access-to-google-cloud-storage-from-kubernetes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Giving access to google cloud storage from kubernetes&lt;/h2&gt;
 &lt;p&gt;Before we could extract the output from the logs, now we will save the models as &lt;code&gt;.rds&lt;/code&gt; files on cloud storage. For this, the containers running on our cluster need write access to our storage bucket.&lt;/p&gt;
-&lt;p&gt;Using Google Cloud, we create a new &lt;a href=&#34;https://cloud.google.com/compute/docs/access/service-accounts&#34;&gt;service account&lt;/a&gt; inside our project and under &lt;strong&gt;Roles&lt;/strong&gt; give it full access to cloud storage by selecting &lt;strong&gt;Storage Object Admin&lt;/strong&gt;. Make sure to check the box for &lt;strong&gt;Furnish a new private key&lt;/strong&gt; and click SAVE.&lt;/p&gt;
+&lt;p&gt;Using GCP, we need to create a new &lt;a href=&#34;https://cloud.google.com/compute/docs/access/service-accounts&#34;&gt;service account&lt;/a&gt; inside our project and under &lt;strong&gt;Roles&lt;/strong&gt; give it full access to cloud storage by selecting &lt;strong&gt;Storage Object Admin&lt;/strong&gt;. Make sure to check the box for &lt;strong&gt;Furnish a new private key&lt;/strong&gt; and click SAVE.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
 &lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/service.png&#34; /&gt;
 

@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1533588859">
-    <link rel="stylesheet" href="../../css/main.css?t=1533588859">
+    <link rel="stylesheet" href="../../css/reset.css?t=1533623029">
+    <link rel="stylesheet" href="../../css/main.css?t=1533623029">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1533588859">
+        <link rel="stylesheet" href="../../css/override.css?t=1533623029">
     
 
 
@@ -191,7 +191,7 @@ COPY monte-carlo.R ./</code></pre>
 docker build -t mtoto/mc-demo:latest .
 # upload to docker hub
 docker push mtoto/mc-demo:latest</code></pre>
-<p>Now comes the kubernetes bit in the form of a <code>job.yaml</code> file, that contains the instructions for the controller. Note that under <code>spec:</code> we specify the number of pods to run our job on in parallel (distribution over pods over nodes is handled by kubernetes), and the number of completions. Each pod picks up a single run and exists after the script has finished. By the end of this workload 100 pods have been created, run and terminated.</p>
+<p>Now comes the kubernetes bit in the form of a <code>job.yaml</code> file, that contains the instructions for the controller. Note that under <code>spec:</code> we specify the number of pods to run our job on in parallel (distribution of pods over nodes is handled by kubernetes), and the number of completions. Each pod picks up a single run and exists after the script has finished. By the end of this workload 100 pods have been created, run and terminated.</p>
 <pre class="yml"><code>apiVersion: batch/v1
 kind: Job
 metadata:
@@ -211,7 +211,7 @@ spec:
         command: [&quot;Rscript&quot;, &quot;monte-carlo.R&quot;]
       restartPolicy: Never</code></pre>
 <p>With everything in place (<code>R</code> script, <code>Dockerfile</code>, <code>.yaml</code> file), we are ready to deploy our first job to kubernetes. Assuming you have <a href="https://support.google.com/cloud/answer/6158841?hl=en">enabled the relevant services</a> in the google cloud console, downloaded the <a href="https://cloud.google.com/sdk/">google cloud SDK</a> and have <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/">kubectl</a> installed, we can create our cluster and deploy our first the workload on GCP in the following way:</p>
-<pre class="bash"><code># create 3 node cluster &quot;kubepar&quot; on google kubernetes engine
+<pre class="bash"><code># create 4 node cluster &quot;kubepar&quot; on google kubernetes engine
 gcloud container clusters create kubepar --machine-type n1-standard-1 --num-nodes 4
 # get credentials to point kubectl to our cluster
 gcloud container clusters get-credentials kubepar
@@ -237,7 +237,7 @@ done</code></pre>
 </div>
 <div id="common-template-and-multiple-parameters-using-expansion" class="section level1">
 <h1>Common template and multiple parameters using expansion</h1>
-<p>Moving on, now we want to parallelize a script with different parameters at each run. Again, I am taking an example from a <a href="http://blog.revolutionanalytics.com/2018/01/doazureparallel-simulations.html">doAzureParallel tutorial</a> where</p>
+<p>Moving on, we want to parallelize a script with different parameters at each run. Again, I am taking an example from a <a href="http://blog.revolutionanalytics.com/2018/01/doazureparallel-simulations.html">doAzureParallel tutorial</a> where</p>
 <blockquote>
 <p>… we calculate for a room of N people the probability that someone in the room shares a birthday with someone else in the room.</p>
 </blockquote>
@@ -273,7 +273,7 @@ spec:
         image: mtoto/birthday-demo
         command: [&quot;Rscript&quot;, &quot;birthday.R $ITEM&quot;]
       restartPolicy: Never</code></pre>
-<p>Notice that we didn’t specify parallelization parameters nor the number of completions. It’s because we are going to <strong>expand</strong> the above template into 100 different <code>job.yaml</code> files, one for each run with a different <code>n</code> parameter for the birthday simulation.</p>
+<p>Notice that we didn’t specify parallelization parameters nor the number of completions. It’s because we are going to <strong>expand</strong> the above template into 100 different <code>job.yaml</code> files, one for each run with a different <code>n</code> parameter (<code>$ITEM</code> in the <code>.yaml</code> fie) for the birthday simulation.</p>
 <pre class="bash"><code># create folder for jobs
 mkdir jobs
 # create job.yaml files
@@ -283,7 +283,7 @@ do
 done</code></pre>
 <p>With the same command as before, we create all the jobs at once: <code>kubectl create -f ./jobs</code>. Kubernetes will automatically create, distribute and run our jobs in parallel across pods on the nodes of our cluster.</p>
 <p>Using the same <code>bash</code> script as before, we can retrieve the output from each run and after read it into <code>R</code>.</p>
-<p>Plotting the results, the probability that 2 or more people will have the same birthday is 99% after 60 people in the room.</p>
+<p>Plotting the results, the probability that 2 or more people will have the same birthday is 99% after 60 people are in the room.</p>
 <pre class="r"><code>plot(probabiliy, xlab=&quot;People in room&quot;, 
      ylab=&quot;Probability of shared birthday&quot;)</code></pre>
 <div class="figure">
@@ -294,10 +294,11 @@ done</code></pre>
 <div id="fine-parallel-processing-using-a-work-queue" class="section level1">
 <h1>Fine parallel processing using a work queue</h1>
 <p>In the previous example, we created all the jobs at once, which can overload the scheduler if the number of jobs is very large. A smarter approach is to create a work queue and let the pods pick them off one by one as they go along. Unlike before, each pod will work on multiple items until the queue is empty instead of creating a pod for each task.</p>
-<p>To illustrate the last approach, we will parallelize different regression models for the Boston housing dataset, a pretty common use case for parallelization in <code>R</code>.</p>
+<p>To illustrate the last approach, we will parallelize the training of different regression models, a common use case for parallelization in <code>R</code>.</p>
 <p>The function below takes the name of an algorithm, loads the dataset, creates a training set, runs a model using the caret package and finally uploads the result to google cloud storage as an <code>.rds</code> file. This way the work queue only needs to contain the names of the models to run.</p>
 <pre class="r"><code># modeling function
 run_save_model &lt;- function(method) {
+        # load pkgs and data
         library(mlbench)
         library(caret)
         data(&quot;BostonHousing&quot;)
@@ -319,7 +320,7 @@ run_save_model &lt;- function(method) {
 }</code></pre>
 <div id="setting-up-redis-on-kubernetes" class="section level2">
 <h2>Setting up Redis on kubernetes</h2>
-<p>We’ll be using Redis for the work queue, so we need an additional pod running Redis and a service so other pods can retrieve the items from the work queue. The recipes for both are within <a href="https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-pod.yaml">redis-master.yaml</a> and <a href="https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-service.yaml">redis-service.yaml</a>. Similarly to jobs, we can use <code>kubectl create</code> command to start the instances and then use the Redis command line tool to add the work items.</p>
+<p>We’ll be using Redis for the work queue, so we need an additional pod running Redis and a service so other pods can find it. The recipes for both are within <a href="https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-pod.yaml">redis-master.yaml</a> and <a href="https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-service.yaml">redis-service.yaml</a>. Similarly to jobs, we can use <code>kubectl create</code> command to start the instances and then use the Redis command line tool to add the work items to the queue.</p>
 <pre class="bash"><code># create redis pod and redis service
 kubectl create -f ./redis-pod.yaml
 kubectl create -f ./redis-service.yaml
@@ -336,7 +337,7 @@ lrange test 0 -1</code></pre>
 <div id="giving-access-to-google-cloud-storage-from-kubernetes" class="section level2">
 <h2>Giving access to google cloud storage from kubernetes</h2>
 <p>Before we could extract the output from the logs, now we will save the models as <code>.rds</code> files on cloud storage. For this, the containers running on our cluster need write access to our storage bucket.</p>
-<p>Using Google Cloud, we create a new <a href="https://cloud.google.com/compute/docs/access/service-accounts">service account</a> inside our project and under <strong>Roles</strong> give it full access to cloud storage by selecting <strong>Storage Object Admin</strong>. Make sure to check the box for <strong>Furnish a new private key</strong> and click SAVE.</p>
+<p>Using GCP, we need to create a new <a href="https://cloud.google.com/compute/docs/access/service-accounts">service account</a> inside our project and under <strong>Roles</strong> give it full access to cloud storage by selecting <strong>Storage Object Admin</strong>. Make sure to check the box for <strong>Furnish a new private key</strong> and click SAVE.</p>
 <div class="figure">
 <img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/service.png" />
 
