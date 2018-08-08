@@ -1,5 +1,5 @@
 ---
-title: "Parallelizing R code on kubernetes"
+title: "Parallelizing R code on Kubernetes"
 author: "Tamas Szilagyi"
 date: 2018-08-07T22:13:14-05:00
 categories: ["R"]
@@ -59,7 +59,7 @@ FROM rocker/r-base
 COPY monte-carlo.R ./
 ```
 
-We build the image and upload it to dockerhub using the docker command line tool.
+We build the image and upload it to Dockerhub using the docker command line tool.
 
 ```{bash}
 # build image

@@ -9,7 +9,7 @@
     <atom:link href="http://tamaszilagyi.com/tags/docker/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Parallelizing R code on kubernetes</title>
+      <title>Parallelizing R code on Kubernetes</title>
       <link>http://tamaszilagyi.com/blog/parallelizing-r-code-on-kubernetes/</link>
       <pubDate>Tue, 07 Aug 2018 22:13:14 -0500</pubDate>
       
@@ -52,7 +52,7 @@ replicate(1000, getClosingPrice(365)) &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Let’s save the above script into an executable file, in our case &lt;code&gt;monte-carlo.R&lt;/code&gt;, and write a minimal &lt;code&gt;Dockerfile&lt;/code&gt; encapsulating the script. Remember kubernetes works with containers and can access them directly from &lt;a href=&#34;https://hub.docker.com/&#34;&gt;Dockerhub&lt;/a&gt;.&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;FROM rocker/r-base
 COPY monte-carlo.R ./&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We build the image and upload it to dockerhub using the docker command line tool.&lt;/p&gt;
+&lt;p&gt;We build the image and upload it to Dockerhub using the docker command line tool.&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# build image
 docker build -t mtoto/mc-demo:latest .
 # upload to docker hub

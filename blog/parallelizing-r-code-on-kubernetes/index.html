@@ -14,7 +14,7 @@
 <title>
 
 
-     Parallelizing R code on kubernetes 
+     Parallelizing R code on Kubernetes 
 
 </title>
 <link rel="canonical" href="http://tamaszilagyi.com/blog/parallelizing-r-code-on-kubernetes/">
@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1533623029">
-    <link rel="stylesheet" href="../../css/main.css?t=1533623029">
+    <link rel="stylesheet" href="../../css/reset.css?t=1533745789">
+    <link rel="stylesheet" href="../../css/main.css?t=1533745789">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1533623029">
+        <link rel="stylesheet" href="../../css/override.css?t=1533745789">
     
 
 
@@ -136,7 +136,7 @@
                 <div class="title-container">
                     <div class="page-heading">
 
-    Parallelizing R code on kubernetes
+    Parallelizing R code on Kubernetes
 
 </div>
 
@@ -186,7 +186,7 @@ replicate(1000, getClosingPrice(365)) </code></pre>
 <p>Let’s save the above script into an executable file, in our case <code>monte-carlo.R</code>, and write a minimal <code>Dockerfile</code> encapsulating the script. Remember kubernetes works with containers and can access them directly from <a href="https://hub.docker.com/">Dockerhub</a>.</p>
 <pre class="bash"><code>FROM rocker/r-base
 COPY monte-carlo.R ./</code></pre>
-<p>We build the image and upload it to dockerhub using the docker command line tool.</p>
+<p>We build the image and upload it to Dockerhub using the docker command line tool.</p>
 <pre class="bash"><code># build image
 docker build -t mtoto/mc-demo:latest .
 # upload to docker hub
@@ -426,7 +426,7 @@ spec:
 <script type="text/javascript">
     var disqus_shortname = 'tamas-blog';
     var disqus_identifier = 'http:\/\/tamaszilagyi.com\/blog\/parallelizing-r-code-on-kubernetes\/';
-    var disqus_title = 'Parallelizing R code on kubernetes';
+    var disqus_title = 'Parallelizing R code on Kubernetes';
     var disqus_url = 'http:\/\/tamaszilagyi.com\/blog\/parallelizing-r-code-on-kubernetes\/';
 
     (function() {
