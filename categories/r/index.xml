@@ -11,7 +11,7 @@
     <item>
       <title>Lightweight streaming analytics with NATS</title>
       <link>/blog/lightweight-streaming-analytics-with-nats/</link>
-      <pubDate>Tue, 18 Sep 2018 22:13:14 -0500</pubDate>
+      <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
       
       <guid>/blog/lightweight-streaming-analytics-with-nats/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
@@ -53,11 +53,11 @@ knitr::knit_engines$set(go=eng_go)
 &lt;blockquote&gt;
 &lt;p&gt;“…NATS Streaming is an extremely performant, lightweight reliable streaming platform built on NATS.”&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;I have been wanting to experiment with Go for some time, so building a toy service on top NATS Streaming seemed like a interesting project to start with. To get familiar with the basics, I worked through about two thirds of the &lt;a href=&#34;https://github.com/nats-io/go-nats-streaming&#34;&gt;Tour of Go&lt;/a&gt; - a dope interactive introduction to the fundamentals of the langugae. At this point, I figured I know enough for the fifty or so lines of Go code I was about to write and headed for the IDE. What I had in mind was the classic streaming analytics demo: The real-time Twitter dashboard. After some initial research I was able to break down the task at hand into 4 subtasks:&lt;/p&gt;
+&lt;p&gt;I have been wanting to experiment with Go for some time, so building a toy service on top NATS Streaming seemed like a interesting project to start with. To get familiar with the basics, I worked through about two thirds of the &lt;a href=&#34;https://github.com/nats-io/go-nats-streaming&#34;&gt;Tour of Go&lt;/a&gt; - a dope interactive introduction to the fundamentals of the language. At this point, I figured I know enough for the fifty or so lines of Go code I was about to write and headed for the IDE. What I had in mind was the classic streaming analytics demo: The real-time Twitter dashboard. After some initial research I was able to break down the task at hand into 4 subtasks:&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;Communicate with the &lt;a href=&#34;https://developer.twitter.com/en/docs/tutorials/consuming-streaming-data.html&#34;&gt;Twitter Streaming API&lt;/a&gt;.&lt;/li&gt;
 &lt;li&gt;Ingest tweets into &lt;a href=&#34;https://github.com/nats-io/go-nats-streaming&#34;&gt;NATS Streaming&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;Provisiton a MySQL database where the tweets will be written to.&lt;/li&gt;
+&lt;li&gt;Provision a MySQL database where the tweets will be written to.&lt;/li&gt;
 &lt;li&gt;Create a Shiny App as a (near) real-time NLP dashboard.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;To ensure everything is working as expected I’ll use Docker containers in conjunction with &lt;a href=&#34;https://docs.docker.com/compose/overview/&#34;&gt;Docker Compose&lt;/a&gt; as the orchestration tool.&lt;/p&gt;
@@ -66,7 +66,7 @@ knitr::knit_engines$set(go=eng_go)
 &lt;h2&gt;About NATS Streaming&lt;/h2&gt;
 &lt;p&gt;Undeniably, Kafka is the most widely used streaming solution right now. But is it the only option out there? Is it even the best option? It depends, of course. But if you prefer a lightweight footprint and simplicity without sacrificing performance, NATS is very, very hard to beat. NATS Streaming is a service layer on top the original NATS framework. The latter was originally conceived as a distributed messaging system with few guarantees, but blazing fast performance. NATS Streaming extends the original framework through the introduction of at-least-once delivery, durable storage, message replay and a couple other enhanced quality of service features.&lt;/p&gt;
 &lt;p&gt;The central piece is the NATS (Streaming) Server. It manages subscriptions on specific subjects and handles communications between clients. Once the server is up and running, we can create and publish messages unto subjects, and on the receiving end subscribe to them.&lt;/p&gt;
-&lt;p&gt;[]!(&lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/nats.png&#34; class=&#34;uri&#34;&gt;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/nats.png&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/nats.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/nats-io/nats-streaming-server#getting-started&#34;&gt;Installing the package&lt;/a&gt; creates an executable &lt;code&gt;nats-streaming-server.go&lt;/code&gt; that we can run to start the server.&lt;/p&gt;
 &lt;pre class=&#34;text&#34;&gt;&lt;code&gt;[12505] 2018/10/01 11:53:13.037897 [INF] STREAM: Starting nats-streaming-server[test-cluster] version 0.11.0
 [12505] 2018/10/01 11:53:13.038015 [INF] STREAM: ServerID: iDV733mTgjWieVayqCLiG2
@@ -88,7 +88,7 @@ knitr::knit_engines$set(go=eng_go)
 [12505] 2018/10/01 11:53:13.320349 [INF] STREAM:   Inactivity   :     unlimited *
 [12505] 2018/10/01 11:53:13.320356 [INF] STREAM: ----------------------------------&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;By default, NATS Streaming persists the messages as files. It suffices to start publishing messages to a subject, and they will be saved to memory. The other option is a MySQL database. Using the flags &lt;code&gt;--store&lt;/code&gt;, &lt;code&gt;--sql_driver&lt;/code&gt; and &lt;code&gt;--sql_source&lt;/code&gt; when starting the &lt;code&gt;nats-streaming-server&lt;/code&gt;, we can configure access to the database, or alternatively supply a &lt;code&gt;.conf&lt;/code&gt; file.&lt;/p&gt;
-&lt;p&gt;Once the server is up and running, we can create subjects and publish messages. So time for a simple worker program that ingests data from the Twitter Streaming API and funnels it into the database using NATS Streaming. The whole thing is barely ~50 lines of code using NATS’ Go client library.&lt;/p&gt;
+&lt;p&gt;Once the server is up and running, we can create subjects and publish messages. A simple worker program written in Go that ingests data from the Twitter Streaming API, and funnels it into the database using NATS Streaming, is barely ~50 lines of code.&lt;/p&gt;
 &lt;pre class=&#34;go&#34;&gt;&lt;code&gt;package main
 
 import (
@@ -145,13 +145,13 @@ func main() {
 &lt;div id=&#34;meet-the-architect-docker-compose&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Meet the architect: Docker Compose&lt;/h2&gt;
 &lt;p&gt;Instead of creating the remaining services one by one and linking them up, it is better to deploy this mini infrastructure in its entirety. With Docker containers, we can package each piece with all its dependencies. Using Docker Compose, we can configure how the containers should work in tandem and communicate with each other if needed.&lt;/p&gt;
-&lt;p&gt;With a Docker image for everything nowadays, our Dockerfiles won’t be long. Adding a couple of &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/db/Dockerfile&#34;&gt;enviromnent variables here&lt;/a&gt; or &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/shiny/Dockerfile&#34;&gt;install additional package there&lt;/a&gt;, most configurations will already be taken care of by the read-only layers of the base images.&lt;/p&gt;
+&lt;p&gt;With a Docker image for everything nowadays, our Dockerfiles won’t be long. Adding a couple of &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/db/Dockerfile&#34;&gt;environment variables here&lt;/a&gt; or &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/shiny/Dockerfile&#34;&gt;installing additional package there&lt;/a&gt;, most configurations will already be taken care of by the read-only layers of the base images.&lt;/p&gt;
 &lt;p&gt;Our infra consists of 4 containers: One for the MySQL database, the NATS streaming server, the NATS worker that will publish the messages and finally the Shiny app. A couple of pointers with regards to the &lt;code&gt;docker-compose.yml&lt;/code&gt; file below:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;build: context:&lt;/code&gt; parameter is the location of the Dockerfile.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;restart: always&lt;/code&gt; is set because services aren’t booted in sequence despite dependencies.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;ports:&lt;/code&gt; will be shared among services, and also exposed to the outside world.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;environment: - TWITTER=${TWITTER}&lt;/code&gt; ensures that the &lt;code&gt;$TWITTER&lt;/code&gt; enviromnent variable (as defined in the &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/.env&#34;&gt;.env file&lt;/a&gt;) is available for all.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;environment: - TWITTER=${TWITTER}&lt;/code&gt; ensures that the &lt;code&gt;$TWITTER&lt;/code&gt; environment variable (as defined in the &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/.env&#34;&gt;.env file&lt;/a&gt;) is available for all.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Without further ado, this is what the final &lt;code&gt;docker-compose.yml&lt;/code&gt; file looks like:&lt;/p&gt;
 &lt;pre class=&#34;text&#34;&gt;&lt;code&gt;version: &amp;quot;3&amp;quot;
@@ -163,7 +163,7 @@ services:
     restart: always
     command: --default-authentication-plugin=mysql_native_password
     ports:
-      - &amp;quot;3306:3306&amp;quot;
+      - &amp;quot;3306&amp;quot;
   nats:
     image: nats-streaming:latest
     restart: always
@@ -171,7 +171,7 @@ services:
       - db
     command: -m 8222 --store SQL --sql_driver mysql --sql_source &amp;quot;root:pwd@tcp(db:3306)/nss_db&amp;quot;
     ports:
-      - &amp;quot;4222:4222&amp;quot;
+      - &amp;quot;4222&amp;quot;
       - &amp;quot;8222:8222&amp;quot;
   nats-worker:
     build:
@@ -193,9 +193,9 @@ services:
       - db&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To build all the images we can use &lt;code&gt;docker-compose build&lt;/code&gt;; the command to spin up the services is &lt;code&gt;docker-compose -f docker-compose.yml up&lt;/code&gt;. Similarly to stop the containers we have &lt;code&gt;docker-compose stop&lt;/code&gt; and &lt;code&gt;docker-compose rm -fv&lt;/code&gt; to get rid of the stopped containers.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;shiny-apps-for-streaming-data&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Shiny Apps for streaming data&lt;/h2&gt;
-&lt;p&gt;I have written about &lt;a href=&#34;http://tamaszilagyi.com/blog/dockerized-shiny-app-development/&#34;&gt;Shiny Apps and how to containerize them before&lt;/a&gt;, so I will only briefly touch upon dealing with real-time data in shiny apps. As we have seen before, NATS Streaming is continously dumping new data into our MySQL database according to a &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/db/dump/schema.sql&#34;&gt;predefined schema&lt;/a&gt;. On the R side it turns out we have pretty sweet tools for dealing with databases, such as &lt;a href=&#34;https://shiny.rstudio.com/articles/pool-basics.html&#34;&gt;pool and DBI&lt;/a&gt;. Specifically for shiny apps, there is also a function called &lt;code&gt;shiny::reactivePoll()&lt;/code&gt; that:&lt;/p&gt;
+&lt;div id=&#34;shiny-apps-and-streaming-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Shiny Apps and streaming data&lt;/h2&gt;
+&lt;p&gt;I have written about &lt;a href=&#34;http://tamaszilagyi.com/blog/dockerized-shiny-app-development/&#34;&gt;Shiny Apps and how to containerize them before&lt;/a&gt;, so I will only briefly touch upon dealing with real-time data here. As we have seen before, NATS Streaming is continuously dumping new data into our MySQL database according to a &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/db/dump/schema.sql&#34;&gt;predefined schema&lt;/a&gt;. On the R side it turns out we have pretty sweet tools for dealing with databases, such as &lt;a href=&#34;https://shiny.rstudio.com/articles/pool-basics.html&#34;&gt;pool and DBI&lt;/a&gt;. Specifically for shiny apps, there is also a function called &lt;code&gt;shiny::reactivePoll()&lt;/code&gt; that:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;“..create a reactive data source, which works by periodically polling a non-reactive data source.”&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -240,12 +240,12 @@ data &amp;lt;- reactivePoll(1000, session,
                    
              }
         )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;After estabilishing the pool connection, it is used to check whether the latest timestamp is different from the previous one. If that’s the case, we pull the last 20.000 tweets from the database, collect it as an R &lt;code&gt;data.frame&lt;/code&gt; and transform it using the &lt;a href=&#34;https://cran.r-project.org/web/packages/tidytext/vignettes/tidytext.html&#34;&gt;tidytext&lt;/a&gt; package.&lt;/p&gt;
+&lt;p&gt;After establishing the pool connection, it is used to check whether the latest timestamp is different from the previous one. If that’s the case, we pull the last 20.000 tweets from the database, collect it as an R &lt;code&gt;data.frame&lt;/code&gt; and transform it using the &lt;a href=&#34;https://cran.r-project.org/web/packages/tidytext/vignettes/tidytext.html&#34;&gt;tidytext&lt;/a&gt; package.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;postscript&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Postscript&lt;/h2&gt;
 &lt;p&gt;The app I have outlined in this post is currently live on &lt;a href=&#34;http://stream.tamaszilagyi.com/&#34;&gt;stream.tamaszilagyi.com&lt;/a&gt; plotting a few metrics for tweets containing the word “trump”, for demonstration purposes. It is running on a small Linux VM on Azure so don’t be intimidated by slow load times. I only have so much free Azure credit.&lt;/p&gt;
-&lt;p&gt;With minor modifications though (and a more money to burn), we could deploy our containers onto a cluster of computers and scale the crap out of this little streaming service. Such is the beauty of cloud resources and using cloud-native technologies like Docker and NATS.&lt;/p&gt;
+&lt;p&gt;With minor modifications though, we could deploy our containers onto a cluster of computers and scale the crap out of this little streaming service. Such is the beauty of cloud resources and using cloud-native technologies like Docker and NATS.&lt;/p&gt;
 &lt;p&gt;As always, all the code is on my &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny&#34;&gt;GitHub&lt;/a&gt;, including instructions on how to try it for yourself.&lt;/p&gt;
 &lt;/div&gt;
 </description>
@@ -1287,9 +1287,9 @@ bigram_graph &amp;lt;- df %&amp;gt;%
 &lt;pre&gt;&lt;code&gt;## Warning in graph_from_data_frame(.): In `d&amp;#39; `NA&amp;#39; elements were replaced
 ## with string &amp;quot;NA&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;print(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## IGRAPH bddc2ef DN-- 311 283 -- 
+&lt;pre&gt;&lt;code&gt;## IGRAPH 42d5fd6 DN-- 311 283 -- 
 ## + attr: name (v/c), season (e/c), n (e/n)
-## + edges from bddc2ef (vertex names):
+## + edges from 42d5fd6 (vertex names):
 ## [1] NA      -&amp;gt;NA      NA      -&amp;gt;NA      NA      -&amp;gt;NA      tiny    -&amp;gt;rick   
 ## [5] yeah    -&amp;gt;yeah   
 ##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 21 entries ]
@@ -1488,10 +1488,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      87  186     30  325
-##   mid      43   80      6  189
-##   bright   44   74      0   20
-##   zero     46  103     29 4210&lt;/code&gt;&lt;/pre&gt;
+##   dim     101  230     34  309
+##   mid      45   71      6  102
+##   bright   34   50      0   27
+##   zero     40   92     25 4306&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
