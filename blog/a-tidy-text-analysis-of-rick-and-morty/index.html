@@ -17,11 +17,11 @@
      A tidy text analysis of Rick and Morty 
 
 </title>
-<link rel="canonical" href="http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/">
+<link rel="canonical" href="../../blog/a-tidy-text-analysis-of-rick-and-morty/">
 
 
 <script type="text/javascript">
-    var baseURL = 'http:\/\/tamaszilagyi.com\/';
+    var baseURL = '\/';
     var host = baseURL.substring(0, baseURL.length - 1).replace(/\//g, '');
     if ((host === window.location.host) && (window.location.protocol !== 'https:')) {
         window.location.protocol = 'https:';
@@ -31,8 +31,8 @@
 
 
 
-    <link rel="stylesheet" href="http://tamaszilagyi.com/css/vs.css">
-    <script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+    <link rel="stylesheet" href="../../css/vs.css">
+    <script src="../../js/highlight.pack.js"></script>
     <script>
   hljs.initHighlightingOnLoad();
     </script>
@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1534997916">
-    <link rel="stylesheet" href="../../css/main.css?t=1534997916">
+    <link rel="stylesheet" href="../../css/reset.css?t=1538495985">
+    <link rel="stylesheet" href="../../css/main.css?t=1538495985">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1534997916">
+        <link rel="stylesheet" href="../../css/override.css?t=1538495985">
     
 
 
@@ -140,7 +140,7 @@
 
 </div>
 
-                    <div class="initials"><a href="http://tamaszilagyi.com/"></a></div>
+                    <div class="initials"><a href="../../"></a></div>
                 </div>
                 <div class="meta">
                     <div class="date" title="Sat Oct 7 2017 23:15:14 -0500">Oct 7, 2017</div>
@@ -148,10 +148,7 @@
                 </div>
             </div>
             <div class="markdown">
-                <div class="figure">
-<img src="http://i.imgur.com/a841k9g.gif" />
-
-</div>
+                <p><img src="http://i.imgur.com/a841k9g.gif" /></p>
 <style type="text/css">
 pre code, pre, code {
   white-space: pre !important;
@@ -206,10 +203,7 @@ tidy_df %&gt;% group_by(season) %&gt;%
         labs(x = NULL) +
         guides(fill = FALSE) +
         scale_fill_brewer(palette = &quot;Set1&quot;)</code></pre>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-6-1.png" />
-
-</div>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-6-1.png" /></p>
 <p>Both seasons are dominated by, well, Rick and Morty. The main characters are tirelessly addressing each other, talking one another either into or out of the mess they find themselves in. What stands out most is the absence of Rick’s daughter, Beth from the top 10 in all seasons. She’s perhaps the only sane person of the family, but then again, sanity doesn’t get too much airtime on this show.</p>
 </div>
 <div id="network-analysis-on-bi-grams" class="section level2">
@@ -231,24 +225,18 @@ bigram_graph &lt;- df %&gt;%
 <pre><code>## Warning in graph_from_data_frame(.): In `d&#39; `NA&#39; elements were replaced
 ## with string &quot;NA&quot;</code></pre>
 <pre class="r"><code>print(bigram_graph)</code></pre>
-<pre><code>## IGRAPH ad72c57 DN-- 311 283 -- 
+<pre><code>## IGRAPH bddc2ef DN-- 311 283 -- 
 ## + attr: name (v/c), season (e/c), n (e/n)
-## + edges from ad72c57 (vertex names):
+## + edges from bddc2ef (vertex names):
 ## [1] NA      -&gt;NA      NA      -&gt;NA      NA      -&gt;NA      tiny    -&gt;rick   
 ## [5] yeah    -&gt;yeah   
 ##  [ reached getOption(&quot;max.print&quot;) -- omitted 21 entries ]
 ## + ... omitted several edges</code></pre>
 <p>This igraph object contains a directed network, where the vertices are the words and an edge exists between each that appear after one another more than twice. Representing the text as a graph, we can calculate things such as <a href="https://en.wikipedia.org/wiki/Centrality#Degree_centrality">degree centrality</a>, and plot the results.</p>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-9-1.png" />
-
-</div>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-9-1.png" /></p>
 <p>Looking at the largest connected network, we arrive at the same conclusion as with term frequencies. Rick and Morty are the most important words. They are at the center of the network and so have the highest degree centrality scores.</p>
 <p>Besides visualising the importance of words in our network, we can similarly differentiate between words that precede either Rick or Morty. These are all the 1st degree connections (words) that have an edge pointing towards the main characters, but aren’t shared among the them.</p>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-10-1.png" />
-
-</div>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-10-1.png" /></p>
 <p>Looking at the red nodes, we recognize many of the things Rick throws at Morty: <em>“Relax Morty!…It’s science Morty!…Run Morty!”</em>. There is also a handful of words that precede both characters like <em>“Geez”, “Boy”</em> or <em>“God”</em>. All other words that are more than one degree away, are colored blue as out of range.</p>
 </div>
 <div id="tf-idf" class="section level2">
@@ -257,13 +245,16 @@ bigram_graph &lt;- df %&gt;%
 <pre class="r"><code>tf_idf_df &lt;- tidy_df %&gt;% 
         count(season, word, sort = TRUE) %&gt;%
         bind_tf_idf(word, season, n)</code></pre>
-<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-12-1.png" /> What we get back are the most important elements, characters, motives or places across episodes. I’m somewhat surprised that Mr. Meeseeks didn’t come in first though. I was sure as hell annoyed out of my mind after hearing it uttered for the 100th time during the episode <a href="https://en.wikipedia.org/wiki/Meeseeks_and_Destroy">Meeseeks and Destroy</a>. But then again, Mr Meeseeks does make a cameo in two other seasons, so that kind of torpedoes his chances for the first spot.</p>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-12-1.png" />
+What we get back are the most important elements, characters, motives or places across episodes. I’m somewhat surprised that Mr. Meeseeks didn’t come in first though. I was sure as hell annoyed out of my mind after hearing it uttered for the 100th time during the episode <a href="https://en.wikipedia.org/wiki/Meeseeks_and_Destroy">Meeseeks and Destroy</a>. But then again, Mr Meeseeks does make a cameo in two other seasons, so that kind of torpedoes his chances for the first spot.</p>
 </div>
 <div id="topic-models" class="section level2">
 <h2>Topic models</h2>
 <p>Having seen the most unique words of the script by seasons, we will take our analysis one last step further and try to capture the gist of a the show using topic modeling. Broadly speaking, it’s an unsupervised classification method that tries to represent a document as a collection of topics. Here, I will take the classic <a href="https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation">Latent Dirichlet Allocation or shortly LDA</a> algorithm for a spin. The basic idea is that</p>
 <blockquote>
-<p>“…a topic is defined as a mixture over words where each word has a probability of belonging to a topic. And a document is a mixture over topics, meaning that a single document can be composed of multiple topics.”&quot;</p>
+<p>“…a topic is defined as a mixture over words where each word has a probability
+of belonging to a topic. And a document is a mixture over topics, meaning that a single
+document can be composed of multiple topics.”&quot;</p>
 </blockquote>
 <p>We could for example take season two, and tell <code>LDA()</code> that we want to compress 10 episodes into just 6 topics. To compensate for the omnipresence of the top words across episodes, I will exclude them for the purpose of clearer separation of topics.</p>
 <pre class="r"><code>library(topicmodels)
@@ -273,14 +264,14 @@ popular_words &lt;- c(&quot;rick&quot;,&quot;morty&quot;, &quot;yeah&quot;,&quot
 episodes_dtm &lt;- tidy_df %&gt;% filter(season_num == 2 &amp; !word %in% popular_words) %&gt;%
         group_by(episode_num) %&gt;%
         count(word, sort = TRUE) %&gt;%
-        cast_dtm(episode_num, word, n) 
-
-episodes_lda &lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))</code></pre>
+        cast_dtm(episode_num, word, n) </code></pre>
+<pre><code>## Warning: Trying to compute distinct() for variables not found in the data:
+## - `row_col`, `column_col`
+## This is an error, but only a warning is raised for compatibility reasons.
+## The operation will return the input unchanged.</code></pre>
+<pre class="r"><code>episodes_lda &lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))</code></pre>
 <p>After <code>tidy()</code>ing the results, we can plot the top 10 words that contribute (<em>beta</em>) to most to each topic.</p>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-14-1.png" />
-
-</div>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-14-1.png" /></p>
 <p>There’s definitely a few topics that contain multiple elements of a particular episode. Take for example <strong>topic 1</strong>. It includes “<em>Roy</em>”, the name of the videogame Morty plays in the same episode “<em>Fart</em>” appears, a gaseous creature kept under locks by aliens. Or <strong>topic 5</strong>, which probably relates to the episode where Rick visits his old lover “<em>Unity</em>”. It further contains words as “<em>remember</em>” and “<em>memories</em>”. The episode ends with Unity repeating “I want it <em>real</em>”.</p>
 <p>Not only can we examine the <strong>word per topic probabilities</strong>, we can also plot <strong>the topic per document probabilities</strong>, or <em>gamma</em> values. This lets us see what topic belongs to what episode.</p>
 <pre class="r"><code>tidy(episodes_lda, matrix = &quot;gamma&quot;) %&gt;%
@@ -289,10 +280,7 @@ episodes_lda &lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))</code><
         geom_boxplot() +
         facet_wrap(~ title) +
         ggtitle(&quot;Dominant Topics per Episode&quot;)</code></pre>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-16-1.png" />
-
-</div>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-16-1.png" /></p>
 <p>Our previous assumptions are confirmed, the first topic does belong to the episode <em>Mortynight Run</em> as does the fifth topic to <em>Auto-Erotic Assimilation</em>. It is important to note that the results strongly depend on the number of topics supplied to <code>LDA()</code>, so inevitably, some experimentation is required to arrive at meaningful results.</p>
 </div>
 <div id="final-thoughts" class="section level2">
@@ -309,9 +297,9 @@ episodes_lda &lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))</code><
                 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'tamas-blog';
-    var disqus_identifier = 'http:\/\/tamaszilagyi.com\/blog\/a-tidy-text-analysis-of-rick-and-morty\/';
+    var disqus_identifier = '\/blog\/a-tidy-text-analysis-of-rick-and-morty\/';
     var disqus_title = 'A tidy text analysis of Rick and Morty';
-    var disqus_url = 'http:\/\/tamaszilagyi.com\/blog\/a-tidy-text-analysis-of-rick-and-morty\/';
+    var disqus_url = '\/blog\/a-tidy-text-analysis-of-rick-and-morty\/';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -362,8 +350,8 @@ ga('send', 'pageview');
 
 
 
-<link rel="stylesheet" href="http://tamaszilagyi.com//css/vs.css">
-<script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+<link rel="stylesheet" href="//css/vs.css">
+<script src="../../js/highlight.pack.js"></script>
 <script>
   hljs.initHighlightingOnLoad();
 </script>

@@ -28,8 +28,8 @@ library(zoo)
 library(purrr)
 theme_set(theme_bw())
 
-df_arts <- fromJSON("/Users/tamas/Documents/home_iot/spotify/downloads/spotify_artist_2017-06-30.json")
-df_tracks <- fromJSON("/Users/tamas/Documents/home_iot/spotify/downloads/spotify_full_2017-06-30.json")
+df_arts <- fromJSON("/Users/tamas/Dropbox/home_iot/spotify/downloads/spotify_artist_2017-06-30.json")
+df_tracks <- fromJSON("/Users/tamas/Dropbox/home_iot/spotify/downloads/spotify_full_2017-06-30.json")
 df_tracks <- df_tracks[,c("played_at", "artist_name", 
                      "artist_id", "track_name", 
                      "explicit", "uri", "duration_ms","type")]

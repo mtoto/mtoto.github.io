@@ -17,11 +17,11 @@
      Interpretable GDPR Classifiers 
 
 </title>
-<link rel="canonical" href="http://tamaszilagyi.com/blog/interpretable-gdpr-classifiers/">
+<link rel="canonical" href="../../blog/interpretable-gdpr-classifiers/">
 
 
 <script type="text/javascript">
-    var baseURL = 'http:\/\/tamaszilagyi.com\/';
+    var baseURL = '\/';
     var host = baseURL.substring(0, baseURL.length - 1).replace(/\//g, '');
     if ((host === window.location.host) && (window.location.protocol !== 'https:')) {
         window.location.protocol = 'https:';
@@ -31,8 +31,8 @@
 
 
 
-    <link rel="stylesheet" href="http://tamaszilagyi.com/css/vs.css">
-    <script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+    <link rel="stylesheet" href="../../css/vs.css">
+    <script src="../../js/highlight.pack.js"></script>
     <script>
   hljs.initHighlightingOnLoad();
     </script>
@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1534997916">
-    <link rel="stylesheet" href="../../css/main.css?t=1534997916">
+    <link rel="stylesheet" href="../../css/reset.css?t=1538495985">
+    <link rel="stylesheet" href="../../css/main.css?t=1538495985">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1534997916">
+        <link rel="stylesheet" href="../../css/override.css?t=1538495985">
     
 
 
@@ -140,7 +140,7 @@
 
 </div>
 
-                    <div class="initials"><a href="http://tamaszilagyi.com/"></a></div>
+                    <div class="initials"><a href="../../"></a></div>
                 </div>
                 <div class="meta">
                     <div class="date" title="Tue Jun 19 2018 22:13:14 -0500">Jun 19, 2018</div>
@@ -159,7 +159,7 @@ pre code, pre, code {
 <div id="we-have-updated-our-privacy-policies" class="section level1">
 <h1><em>We have updated our privacy policies…</em></h1>
 <p>Whether internet companies are now compliant with GDPR is hard to say, but they sure left updating their privacy policies to the last minute. What happened in the last days of May was the greatest corporate email tsunami since Y2K. I hardly read the updated policies, or remember what the old ones looked like. Wouldn’t it be great if we could model where GDPR inspired policies are different from the old ones instead of reading them?</p>
-<p>Looking for data, I came upon the <a href="https://usableprivacy.org/data">Usable Privacy Project</a>, that has a few datasets available consisting of privacy policies. I downloaded the ACL/COLING 2014 Dataset <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, which contains roughly 1000 documents in .xml files. Collected pre GDPR, this is a great starting point. But I still need a respectable amount of policies inspired by recent European regulation.</p>
+<p>Looking for data, I came upon the <a href="https://usableprivacy.org/data">Usable Privacy Project</a>, that has a few datasets available consisting of privacy policies. I downloaded the ACL/COLING 2014 Dataset <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, which contains roughly 1000 documents in .xml files. Collected pre GDPR, this is a great starting point. But I still need a respectable amount of policies inspired by recent European regulation.</p>
 </div>
 <div id="async-web-scraping-ftw" class="section level1">
 <h1>Async web scraping FTW</h1>
@@ -317,7 +317,7 @@ plot(vi_glm, vi_svm, vi_gbm)</code></pre>
 <li>Length of the interval means larger loss -&gt; more important variable.</li>
 </ul>
 <p>Looking at the above plot, it confirms that gbm has the lowest overall error rate and there are words shared among the three plots such as <strong>shield</strong>, <strong>controller</strong> or <strong>regulation</strong> that appear in all three plots.</p>
-<p>Knowing which variables are important is only the half the story; we would also like to investigate the nature of relationship between the predictor and the prediction. DALEX implements <a href="https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf">Partial Dependence Plots</a> <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> that show how different values of a numeric variable affect the prediction in isolation. We only need to change our prediction function to return probabilities,</p>
+<p>Knowing which variables are important is only the half the story; we would also like to investigate the nature of relationship between the predictor and the prediction. DALEX implements <a href="https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf">Partial Dependence Plots</a> <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> that show how different values of a numeric variable affect the prediction in isolation. We only need to change our prediction function to return probabilities,</p>
 <pre class="r"><code>p_fun &lt;- function(object, newdata){
         predict(object, newdata=newdata, type=&quot;prob&quot;)[,1]
 }</code></pre>
@@ -341,8 +341,8 @@ plot(pdp_glm, pdp_svm, pdp_gbm)</code></pre>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>Corpus of 1,010 privacy policies from the top websites ranked on Alexa.com, created as part of: F. Liu, R. Ramanath, N. Sadeh, N.A. Smith. A Step Towards Usable Privacy Policy: Automatic Alignment of Privacy Statements. Proceedings of the 25th International Conference on Computational Linguistics (COLING). 2014.<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>Greenwell, Brandon M. 2017. “Pdp: An R Package for Constructing Partial Dependence Plots.” The R Journal 9 (1):421–36. <a href="https://journal.r-project.org/archive/2017/RJ-2017-016/index.html" class="uri">https://journal.r-project.org/archive/2017/RJ-2017-016/index.html</a>.<a href="#fnref2">↩</a></p></li>
+<li id="fn1"><p>Corpus of 1,010 privacy policies from the top websites ranked on Alexa.com, created as part of: F. Liu, R. Ramanath, N. Sadeh, N.A. Smith. A Step Towards Usable Privacy Policy: Automatic Alignment of Privacy Statements. Proceedings of the 25th International Conference on Computational Linguistics (COLING). 2014.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>Greenwell, Brandon M. 2017. “Pdp: An R Package for Constructing Partial Dependence Plots.” The R Journal 9 (1):421–36. <a href="https://journal.r-project.org/archive/2017/RJ-2017-016/index.html" class="uri">https://journal.r-project.org/archive/2017/RJ-2017-016/index.html</a>.<a href="#fnref2" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 
@@ -354,9 +354,9 @@ plot(pdp_glm, pdp_svm, pdp_gbm)</code></pre>
                 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'tamas-blog';
-    var disqus_identifier = 'http:\/\/tamaszilagyi.com\/blog\/interpretable-gdpr-classifiers\/';
+    var disqus_identifier = '\/blog\/interpretable-gdpr-classifiers\/';
     var disqus_title = 'Interpretable GDPR Classifiers';
-    var disqus_url = 'http:\/\/tamaszilagyi.com\/blog\/interpretable-gdpr-classifiers\/';
+    var disqus_url = '\/blog\/interpretable-gdpr-classifiers\/';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -407,8 +407,8 @@ ga('send', 'pageview');
 
 
 
-<link rel="stylesheet" href="http://tamaszilagyi.com//css/vs.css">
-<script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+<link rel="stylesheet" href="//css/vs.css">
+<script src="../../js/highlight.pack.js"></script>
 <script>
   hljs.initHighlightingOnLoad();
 </script>

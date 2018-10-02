@@ -17,8 +17,8 @@ pre code, pre, code {
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source("~/Documents/my_site/public/data/2018-06-19-gdpr/functions.R")
-data <- readRDS("~/Documents/my_site/data/data.rds")
+source("~/Dropbox/my_site/public/data/2018-06-19-gdpr/functions.R")
+data <- readRDS("~/Dropbox/my_site/data/data.rds")
 data$is_gdpr <- ifelse(data$is_gdpr == "ja", "yes", "no")
 ```
 

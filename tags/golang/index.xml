@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Golang on Coding with Data</title>
+    <link>/tags/golang/index.xml</link>
+    <description>Recent content in Golang on Coding with Data</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Lightweight streaming analytics with NATS</title>
+      <link>/blog/lightweight-streaming-analytics-with-nats/</link>
+      <pubDate>Tue, 18 Sep 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/blog/lightweight-streaming-analytics-with-nats/</guid>
+      <description>&lt;style type=&#34;text/css&#34;&gt;
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+
+library(knitr)
+
+eng_go &lt;- function(options) {
+
+  # create a temporary file
+
+  f &lt;- basename(tempfile(&#34;go&#34;, &#39;.&#39;, paste(&#39;.&#39;, &#34;go&#34;, sep = &#39;&#39;)))
+  on.exit(unlink(f)) # cleanup temp file on function exit
+  writeLines(options$code, f)
+
+  out &lt;- &#39;&#39;
+
+  # if eval != FALSE compile/run the code, preserving output
+
+  if (options$eval) {
+    out &lt;- system(sprintf(&#39;go run %s&#39;, paste(f, options$engine.opts)), intern=TRUE)
+  }
+
+  # spit back stuff to the user
+
+  engine_output(options, options$code, out)
+}
+
+knitr::knit_engines$set(go=eng_go)
+&lt;/style&gt;
+&lt;div id=&#34;go-in-the-fast-lane&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Go in the fast lane&lt;/h2&gt;
+&lt;p&gt;Fast data is the new big data. But how difficult is it really to set up a complete streaming analytics solution from the ground up? It turns out not that hard, not if you are using &lt;a href=&#34;https://github.com/nats-io/go-nats-streaming&#34;&gt;NATS Streaming&lt;/a&gt;. Developed in Go&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“…NATS Streaming is an extremely performant, lightweight reliable streaming platform built on NATS.”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I have been wanting to experiment with Go for some time, so building a toy service on top NATS Streaming seemed like a interesting project to start with. To get familiar with the basics, I worked through about two thirds of the &lt;a href=&#34;https://github.com/nats-io/go-nats-streaming&#34;&gt;Tour of Go&lt;/a&gt; - a dope interactive introduction to the fundamentals of the langugae. At this point, I figured I know enough for the fifty or so lines of Go code I was about to write and headed for the IDE. What I had in mind was the classic streaming analytics demo: The real-time Twitter dashboard. After some initial research I was able to break down the task at hand into 4 subtasks:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Communicate with the &lt;a href=&#34;https://developer.twitter.com/en/docs/tutorials/consuming-streaming-data.html&#34;&gt;Twitter Streaming API&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Ingest tweets into &lt;a href=&#34;https://github.com/nats-io/go-nats-streaming&#34;&gt;NATS Streaming&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Provisiton a MySQL database where the tweets will be written to.&lt;/li&gt;
+&lt;li&gt;Create a Shiny App as a (near) real-time NLP dashboard.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;To ensure everything is working as expected I’ll use Docker containers in conjunction with &lt;a href=&#34;https://docs.docker.com/compose/overview/&#34;&gt;Docker Compose&lt;/a&gt; as the orchestration tool.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;about-nats-streaming&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;About NATS Streaming&lt;/h2&gt;
+&lt;p&gt;Undeniably, Kafka is the most widely used streaming solution right now. But is it the only option out there? Is it even the best option? It depends, of course. But if you prefer a lightweight footprint and simplicity without sacrificing performance, NATS is very, very hard to beat. NATS Streaming is a service layer on top the original NATS framework. The latter was originally conceived as a distributed messaging system with few guarantees, but blazing fast performance. NATS Streaming extends the original framework through the introduction of at-least-once delivery, durable storage, message replay and a couple other enhanced quality of service features.&lt;/p&gt;
+&lt;p&gt;The central piece is the NATS (Streaming) Server. It manages subscriptions on specific subjects and handles communications between clients. Once the server is up and running, we can create and publish messages unto subjects, and on the receiving end subscribe to them.&lt;/p&gt;
+&lt;p&gt;[]!(&lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/nats.png&#34; class=&#34;uri&#34;&gt;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/nats.png&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/nats-io/nats-streaming-server#getting-started&#34;&gt;Installing the package&lt;/a&gt; creates an executable &lt;code&gt;nats-streaming-server.go&lt;/code&gt; that we can run to start the server.&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;[12505] 2018/10/01 11:53:13.037897 [INF] STREAM: Starting nats-streaming-server[test-cluster] version 0.11.0
+[12505] 2018/10/01 11:53:13.038015 [INF] STREAM: ServerID: iDV733mTgjWieVayqCLiG2
+[12505] 2018/10/01 11:53:13.038022 [INF] STREAM: Go version: go1.11
+[12505] 2018/10/01 11:53:13.038880 [INF] Starting nats-server version 1.3.0
+[12505] 2018/10/01 11:53:13.038894 [INF] Git commit [not set]
+[12505] 2018/10/01 11:53:13.039199 [INF] Listening for client connections on 0.0.0.0:4222
+[12505] 2018/10/01 11:53:13.039208 [INF] Server is ready
+[12505] 2018/10/01 11:53:13.068118 [INF] STREAM: Recovering the state...
+[12505] 2018/10/01 11:53:13.068165 [INF] STREAM: No recovered state
+[12505] 2018/10/01 11:53:13.320178 [INF] STREAM: Message store is MEMORY
+[12505] 2018/10/01 11:53:13.320295 [INF] STREAM: ---------- Store Limits ----------
+[12505] 2018/10/01 11:53:13.320305 [INF] STREAM: Channels:                  100 *
+[12505] 2018/10/01 11:53:13.320312 [INF] STREAM: --------- Channels Limits --------
+[12505] 2018/10/01 11:53:13.320320 [INF] STREAM:   Subscriptions:          1000 *
+[12505] 2018/10/01 11:53:13.320329 [INF] STREAM:   Messages     :       1000000 *
+[12505] 2018/10/01 11:53:13.320337 [INF] STREAM:   Bytes        :     976.56 MB *
+[12505] 2018/10/01 11:53:13.320343 [INF] STREAM:   Age          :     unlimited *
+[12505] 2018/10/01 11:53:13.320349 [INF] STREAM:   Inactivity   :     unlimited *
+[12505] 2018/10/01 11:53:13.320356 [INF] STREAM: ----------------------------------&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;By default, NATS Streaming persists the messages as files. It suffices to start publishing messages to a subject, and they will be saved to memory. The other option is a MySQL database. Using the flags &lt;code&gt;--store&lt;/code&gt;, &lt;code&gt;--sql_driver&lt;/code&gt; and &lt;code&gt;--sql_source&lt;/code&gt; when starting the &lt;code&gt;nats-streaming-server&lt;/code&gt;, we can configure access to the database, or alternatively supply a &lt;code&gt;.conf&lt;/code&gt; file.&lt;/p&gt;
+&lt;p&gt;Once the server is up and running, we can create subjects and publish messages. So time for a simple worker program that ingests data from the Twitter Streaming API and funnels it into the database using NATS Streaming. The whole thing is barely ~50 lines of code using NATS’ Go client library.&lt;/p&gt;
+&lt;pre class=&#34;go&#34;&gt;&lt;code&gt;package main
+
+import (
+    &amp;quot;log&amp;quot;
+    &amp;quot;os&amp;quot;
+    &amp;quot;stream/keys&amp;quot;
+
+    &amp;quot;github.com/dghubble/go-twitter/twitter&amp;quot;
+    &amp;quot;github.com/dghubble/oauth1&amp;quot;
+    stan &amp;quot;github.com/nats-io/go-nats-streaming&amp;quot;
+)
+
+func main() {
+    var err error
+    word := os.Getenv(&amp;quot;TWITTER&amp;quot;)  // Get word to filter Twitter stream on 
+
+    config := oauth1.NewConfig(keys.Key, keys.Secret)
+    token := oauth1.NewToken(keys.Token, keys.TokenSecret)
+    httpClient := config.Client(oauth1.NoContext, token)
+
+    // Twitter client
+    twitterClient := twitter.NewClient(httpClient)
+    // Nats client
+    natsClient, err := stan.Connect(&amp;quot;test-cluster&amp;quot;, &amp;quot;test&amp;quot;,
+        stan.NatsURL(&amp;quot;nats://nats:4222&amp;quot;))
+    if err != nil {
+        log.Fatal(err)
+    }
+    
+    // Convenience Demux demultiplexed stream messages
+    demux := twitter.NewSwitchDemux()
+    demux.Tweet = func(tweet *twitter.Tweet) {
+        natsClient.Publish(word, []byte(tweet.Text))
+    }
+
+    // Filter parameters for Twitter stream
+    filterParams := &amp;amp;twitter.StreamFilterParams{
+        Track:         []string{word},
+        StallWarnings: twitter.Bool(true),
+        Language:      []string{&amp;quot;en&amp;quot;},
+    }
+    
+    stream, err := twitterClient.Streams.Filter(filterParams)
+    if err != nil {
+        log.Fatal(err)
+    }
+    for message := range stream.Messages {
+        demux.Handle(message)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That’s it. Of course this is only two pieces of the puzzle. We still need to provision a SQL database for the message store and build a Shiny App to munge and visualize the data.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;meet-the-architect-docker-compose&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Meet the architect: Docker Compose&lt;/h2&gt;
+&lt;p&gt;Instead of creating the remaining services one by one and linking them up, it is better to deploy this mini infrastructure in its entirety. With Docker containers, we can package each piece with all its dependencies. Using Docker Compose, we can configure how the containers should work in tandem and communicate with each other if needed.&lt;/p&gt;
+&lt;p&gt;With a Docker image for everything nowadays, our Dockerfiles won’t be long. Adding a couple of &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/db/Dockerfile&#34;&gt;enviromnent variables here&lt;/a&gt; or &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/shiny/Dockerfile&#34;&gt;install additional package there&lt;/a&gt;, most configurations will already be taken care of by the read-only layers of the base images.&lt;/p&gt;
+&lt;p&gt;Our infra consists of 4 containers: One for the MySQL database, the NATS streaming server, the NATS worker that will publish the messages and finally the Shiny app. A couple of pointers with regards to the &lt;code&gt;docker-compose.yml&lt;/code&gt; file below:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;build: context:&lt;/code&gt; parameter is the location of the Dockerfile.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;restart: always&lt;/code&gt; is set because services aren’t booted in sequence despite dependencies.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ports:&lt;/code&gt; will be shared among services, and also exposed to the outside world.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;environment: - TWITTER=${TWITTER}&lt;/code&gt; ensures that the &lt;code&gt;$TWITTER&lt;/code&gt; enviromnent variable (as defined in the &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/.env&#34;&gt;.env file&lt;/a&gt;) is available for all.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Without further ado, this is what the final &lt;code&gt;docker-compose.yml&lt;/code&gt; file looks like:&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;version: &amp;quot;3&amp;quot;
+
+services:
+  db:
+    build:
+      context: &amp;quot;./db&amp;quot;
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - &amp;quot;3306:3306&amp;quot;
+  nats:
+    image: nats-streaming:latest
+    restart: always
+    depends_on:
+      - db
+    command: -m 8222 --store SQL --sql_driver mysql --sql_source &amp;quot;root:pwd@tcp(db:3306)/nss_db&amp;quot;
+    ports:
+      - &amp;quot;4222:4222&amp;quot;
+      - &amp;quot;8222:8222&amp;quot;
+  nats-worker:
+    build:
+      context: &amp;quot;./nats&amp;quot;
+    environment:
+    - TWITTER=${TWITTER}
+    restart: always
+    entrypoint: /go/main
+    depends_on:
+      - nats
+  shiny:
+    build:
+      context: &amp;quot;./shiny&amp;quot;
+    environment:
+    - TWITTER=${TWITTER}
+    ports:
+      - &amp;quot;80:3838&amp;quot;
+    depends_on:
+      - db&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To build all the images we can use &lt;code&gt;docker-compose build&lt;/code&gt;; the command to spin up the services is &lt;code&gt;docker-compose -f docker-compose.yml up&lt;/code&gt;. Similarly to stop the containers we have &lt;code&gt;docker-compose stop&lt;/code&gt; and &lt;code&gt;docker-compose rm -fv&lt;/code&gt; to get rid of the stopped containers.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;shiny-apps-for-streaming-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Shiny Apps for streaming data&lt;/h2&gt;
+&lt;p&gt;I have written about &lt;a href=&#34;http://tamaszilagyi.com/blog/dockerized-shiny-app-development/&#34;&gt;Shiny Apps and how to containerize them before&lt;/a&gt;, so I will only briefly touch upon dealing with real-time data in shiny apps. As we have seen before, NATS Streaming is continously dumping new data into our MySQL database according to a &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/db/dump/schema.sql&#34;&gt;predefined schema&lt;/a&gt;. On the R side it turns out we have pretty sweet tools for dealing with databases, such as &lt;a href=&#34;https://shiny.rstudio.com/articles/pool-basics.html&#34;&gt;pool and DBI&lt;/a&gt;. Specifically for shiny apps, there is also a function called &lt;code&gt;shiny::reactivePoll()&lt;/code&gt; that:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“..create a reactive data source, which works by periodically polling a non-reactive data source.”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Two of the required arguments are functions. One to check whether some value in our database has been updated, and if so, one to pull the updated data from the database. The other two required arguments are the number of milliseconds to wait between checks, and the user session.&lt;/p&gt;
+&lt;p&gt;This is the relevant bit from the shiny app:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(pool)
+library(DBI)
+library(shiny)
+library(anytime)
+library(tidytext)
+
+pool &amp;lt;- dbPool(
+        drv = RMySQL::MySQL(),
+        dbname = &amp;quot;nss_db&amp;quot;,
+        host = &amp;quot;db&amp;quot;, 
+        port = 3306,
+        username = &amp;quot;nss&amp;quot;,
+        password = &amp;quot;password&amp;quot; 
+)
+
+data &amp;lt;- reactivePoll(1000, session,
+             # This function returns the latest timestamp from the DB
+             checkFunc = function() {
+                     pool %&amp;gt;% tbl(&amp;quot;Messages&amp;quot;) %&amp;gt;%
+                             summarise(max_time = max(timestamp, na.rm = TRUE)) %&amp;gt;%
+                             collect() %&amp;gt;%
+                             unlist()
+                     
+             },
+             # This function returns a data.frame ready for text mining
+             valueFunc = function() {
+                     pool %&amp;gt;% tbl(&amp;quot;Messages&amp;quot;) %&amp;gt;%
+                             filter(!data %like% &amp;quot;%http%&amp;quot;) %&amp;gt;% 
+                             arrange(-timestamp) %&amp;gt;%
+                             head(20000) %&amp;gt;%
+                             collect() %&amp;gt;%
+                             mutate(data = gsub(&amp;quot;[^[:alnum:][:space:]]&amp;quot;,&amp;quot;&amp;quot;,data)) %&amp;gt;%
+                             unnest_tokens(word, data) %&amp;gt;%
+                             anti_join(stop_words) %&amp;gt;% 
+                             mutate(timestamp = anytime(timestamp/1e+9)) %&amp;gt;%
+                             inner_join(get_sentiments(&amp;quot;bing&amp;quot;)) 
+                   
+             }
+        )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After estabilishing the pool connection, it is used to check whether the latest timestamp is different from the previous one. If that’s the case, we pull the last 20.000 tweets from the database, collect it as an R &lt;code&gt;data.frame&lt;/code&gt; and transform it using the &lt;a href=&#34;https://cran.r-project.org/web/packages/tidytext/vignettes/tidytext.html&#34;&gt;tidytext&lt;/a&gt; package.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;postscript&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Postscript&lt;/h2&gt;
+&lt;p&gt;The app I have outlined in this post is currently live on &lt;a href=&#34;http://stream.tamaszilagyi.com/&#34;&gt;stream.tamaszilagyi.com&lt;/a&gt; plotting a few metrics for tweets containing the word “trump”, for demonstration purposes. It is running on a small Linux VM on Azure so don’t be intimidated by slow load times. I only have so much free Azure credit.&lt;/p&gt;
+&lt;p&gt;With minor modifications though (and a more money to burn), we could deploy our containers onto a cluster of computers and scale the crap out of this little streaming service. Such is the beauty of cloud resources and using cloud-native technologies like Docker and NATS.&lt;/p&gt;
+&lt;p&gt;As always, all the code is on my &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny&#34;&gt;GitHub&lt;/a&gt;, including instructions on how to try it for yourself.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

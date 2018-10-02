@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Testthat on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/testthat/index.xml</link>
+    <link>/tags/testthat/index.xml</link>
     <description>Recent content in Testthat on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://tamaszilagyi.com/tags/testthat/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/testthat/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Dockerized Shiny App development</title>
-      <link>http://tamaszilagyi.com/blog/dockerized-shiny-app-development/</link>
+      <link>/blog/dockerized-shiny-app-development/</link>
       <pubDate>Tue, 16 Jan 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/dockerized-shiny-app-development/</guid>
+      <guid>/blog/dockerized-shiny-app-development/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -41,10 +41,7 @@ library(shinytest)
 
 recordTest(&amp;quot;path/to/app&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This launches an iframe consisting of your dashboard and controls over what to test. Each interaction with the dashboard is recorded, and when you hit &lt;strong&gt;take snapshot&lt;/strong&gt;, the state of your dashboard is saved, along with raw scripts to reproduce the interactions.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://i.imgur.com/t3xcuCX.gif&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/t3xcuCX.gif&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Upon exiting the test event recorder, a new folder &lt;code&gt;test/&lt;/code&gt; is created inside the app’s directory, containing both the test script - &lt;code&gt;dates.R&lt;/code&gt;, as well as the application’s state as a .json and a .png files in &lt;code&gt;test/dates-expected&lt;/code&gt;. The latter serve as expected output, based on which consequent runs of tests shall be evaluated. Using my example app, &lt;code&gt;dates.R&lt;/code&gt; looks like this:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;options(shiny.testmode=TRUE)
 
@@ -139,7 +136,8 @@ docker run -d -p 80:3838 --name site mtoto/shiny:latest&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Integration with Travis CI&lt;/h2&gt;
 &lt;p&gt;If you are a seasoned R package developer, you are no stranger to Travis CI. It is a &lt;strong&gt;Continuous Integration&lt;/strong&gt; tool that automatically performs checks and runs tests on your code every time you push a commit to GitHub. The broad idea behind continuous integration is to encourage test-driven development, thereby allowing for frequent commits to the codebase without having to worry about integration problems.&lt;/p&gt;
 &lt;p&gt;Travis supports many languages - including R, and can also build from Docker images. After creating an account on the &lt;a href=&#34;https://travis-ci.org&#34;&gt;Travis website&lt;/a&gt;, connect with GitHub and pick the repository for which you’d like to use it.&lt;/p&gt;
-&lt;p&gt;The repo needs to contain a &lt;code&gt;.travis.yml&lt;/code&gt; file, encapsulating the instructions for Travis. You’d tempted to write &lt;code&gt;language: R&lt;/code&gt; as the first line, but if we do that Travis will implicitly assume we are developing an R package and will start looking for the &lt;code&gt;DESCRIPTION&lt;/code&gt; file we do not have. Instead, I went with the undocumented option &lt;code&gt;language: generic&lt;/code&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnoteRef&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;, as we’ll be only running Docker commands anyway.&lt;/p&gt;
+&lt;p&gt;The repo needs to contain a &lt;code&gt;.travis.yml&lt;/code&gt; file, encapsulating the instructions for Travis.
+You’d tempted to write &lt;code&gt;language: R&lt;/code&gt; as the first line, but if we do that Travis will implicitly assume we are developing an R package and will start looking for the &lt;code&gt;DESCRIPTION&lt;/code&gt; file we do not have. Instead, I went with the undocumented option &lt;code&gt;language: generic&lt;/code&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;, as we’ll be only running Docker commands anyway.&lt;/p&gt;
 &lt;p&gt;The naive approach would be to build our Docker image on every single run, instantiate a test container, run tests inside and upon success get rid of the container. Such a &lt;code&gt;.travis.yml&lt;/code&gt; would look like this:&lt;/p&gt;
 &lt;pre class=&#34;text&#34;&gt;&lt;code&gt;language: generic
 sudo: required
@@ -158,10 +156,7 @@ after_script:
 - docker rm -f test&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we’d only rebuild the changed layers after downloading the latest image from the registry.&lt;/p&gt;
 &lt;p&gt;To make sure everything is nice and up to date, we will push the changes back to Dockerhub after every successful run. We need credentials to do so, but Travis conveniently allows for defining environment variables inside the repository settings (or via the CLI):&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://i.imgur.com/gdTnLjd.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/gdTnLjd.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Now we can go wild and revamp &lt;code&gt;.travis.yml&lt;/code&gt; accordingly:&lt;/p&gt;
 &lt;pre class=&#34;text&#34;&gt;&lt;code&gt;language: generic
 sudo: required
@@ -183,10 +178,7 @@ after_success:
 - docker tag mtoto/shiny:latest mtoto/shiny:$TRAVIS_BUILD_NUMBER
 - docker push mtoto/shiny&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;After the second run (once the latest image is on Dockerhub), the build time is reduced by a factor of 10. Sweet. When we use the flag &lt;code&gt;--cache-from&lt;/code&gt;, Docker only rebuilds changed layers, ie. modifications to our shiny app. We can see this in the Travis log as &lt;code&gt;---&amp;gt; Using cache&lt;/code&gt;:&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://i.imgur.com/hTNuQhY.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/hTNuQhY.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Keep in mind when making significant changes to your dashboard, it is important to update the tests that create fresh expected outputs reflecting these changes. If you don’t trust the outputs will align, remember to use &lt;code&gt;exportTestValues()&lt;/code&gt; and fill it up with the new objects.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;was-it-all-worth-it&#34; class=&#34;section level2&#34;&gt;
@@ -196,7 +188,7 @@ after_success:
 &lt;div class=&#34;footnotes&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;In reality this points to &lt;code&gt;language: bash&lt;/code&gt;, &lt;code&gt;language: sh&lt;/code&gt; and &lt;code&gt;language: shell&lt;/code&gt;.&lt;a href=&#34;#fnref1&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;In reality this points to &lt;code&gt;language: bash&lt;/code&gt;, &lt;code&gt;language: sh&lt;/code&gt; and &lt;code&gt;language: shell&lt;/code&gt;.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>

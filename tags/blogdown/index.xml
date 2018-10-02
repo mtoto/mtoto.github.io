@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blogdown on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/blogdown/index.xml</link>
+    <link>/tags/blogdown/index.xml</link>
     <description>Recent content in Blogdown on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://tamaszilagyi.com/tags/blogdown/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/blogdown/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Starting a blog(down)</title>
-      <link>http://tamaszilagyi.com/blog/starting-a-blogdown/</link>
+      <link>/blog/starting-a-blogdown/</link>
       <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/starting-a-blogdown/</guid>
+      <guid>/blog/starting-a-blogdown/</guid>
       <description>&lt;div id=&#34;starting-an-analytics-blog&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Starting an analytics blog&lt;/h1&gt;
 &lt;p&gt;Having learned lots from the open source community over the past years - from blogs and videos to attending meetups and awesome conferences - I have decided to start a blog myself, and share some of the things I find interesting. I expect most of the posts to be &lt;code&gt;R&lt;/code&gt; specific, because that’s what I am most comfortable with. However I do enjoy fiddling with other technologies such as &lt;code&gt;Python&lt;/code&gt; or &lt;code&gt;Spark&lt;/code&gt;, so watch out! In a nuthsell though, this blog will be about using open source tools to build all sorts of cool things with &lt;strong&gt;data&lt;/strong&gt;.&lt;/p&gt;
@@ -32,10 +32,7 @@ blogdown::install_hugo()
 # 3 create new site
 blogdown::new_site()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;That’s it. You now have a complete folder structure initialized in your working directory:&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/img/folderstruct.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/img/folderstruct.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The local build of your new site is now running on &lt;code&gt;localhost&lt;/code&gt;. You can see it in RStudio’s Viewer, or inside a browser by clicking &lt;em&gt;Show in new window&lt;/em&gt; in the top left corner of the Viewer.&lt;/p&gt;
 &lt;p&gt;You future blog posts will reside in the &lt;code&gt;content/post&lt;/code&gt; folder. Here we find two pre-existing posts as &lt;code&gt;.Rmd&lt;/code&gt; files. We can start editing these straight away and see the results immediately after saving. Because everytime you save changes, your site is instantly rebuilt. If you come back to work on your existing site, you can simply run the function &lt;code&gt;serve_site()&lt;/code&gt; after you are done editing, and see the site regenerated accordingly in the Viewer.&lt;/p&gt;
 &lt;/div&gt;

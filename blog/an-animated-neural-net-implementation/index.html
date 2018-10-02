@@ -17,11 +17,11 @@
      An animated neuRal net implementation 
 
 </title>
-<link rel="canonical" href="http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/">
+<link rel="canonical" href="../../blog/an-animated-neural-net-implementation/">
 
 
 <script type="text/javascript">
-    var baseURL = 'http:\/\/tamaszilagyi.com\/';
+    var baseURL = '\/';
     var host = baseURL.substring(0, baseURL.length - 1).replace(/\//g, '');
     if ((host === window.location.host) && (window.location.protocol !== 'https:')) {
         window.location.protocol = 'https:';
@@ -31,8 +31,8 @@
 
 
 
-    <link rel="stylesheet" href="http://tamaszilagyi.com/css/vs.css">
-    <script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+    <link rel="stylesheet" href="../../css/vs.css">
+    <script src="../../js/highlight.pack.js"></script>
     <script>
   hljs.initHighlightingOnLoad();
     </script>
@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1534997916">
-    <link rel="stylesheet" href="../../css/main.css?t=1534997916">
+    <link rel="stylesheet" href="../../css/reset.css?t=1538495985">
+    <link rel="stylesheet" href="../../css/main.css?t=1538495985">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1534997916">
+        <link rel="stylesheet" href="../../css/override.css?t=1538495985">
     
 
 
@@ -140,7 +140,7 @@
 
 </div>
 
-                    <div class="initials"><a href="http://tamaszilagyi.com/"></a></div>
+                    <div class="initials"><a href="../../"></a></div>
                 </div>
                 <div class="meta">
                     <div class="date" title="Thu Nov 9 2017 21:00:30 -0500">Nov 9, 2017</div>
@@ -183,7 +183,7 @@ pre code, pre, code {
 <p>If we break down each of the two connections into a linear function <span class="math inline">\(Z^{[i]}\)</span> and an activation function <span class="math inline">\(A^{[i]}\)</span>, the architecture becomes <span class="math inline">\(X -&gt;Z^{[1]}-&gt;A^{[1]}-&gt;Z^{[2]}-&gt;A^{[2]}\)</span> with <span class="math inline">\(X\)</span> as the input data.</p>
 <p>The activation function is usually a non-linear function that enables the network to cope with non-linear problems. Examples include the <a href="https://en.wikipedia.org/wiki/Sigmoid_function">sigmoid function</a>, <a href="https://en.wikipedia.org/wiki/Rectifier_neural_networks">relu</a> or <a href="http://mathworld.wolfram.com/HyperbolicTangent.html">tanh</a>.</p>
 <p>Let’s take for example the connections going <strong>from the input layer to one hidden node</strong>. If <span class="math inline">\(X_{m,n}\)</span> is the vertically stacked dataset where <em>m = number of features (2)</em> , <em>n = number of observations</em>, <span class="math inline">\(w\)</span> is a weight vector of length <em>m</em>; the linear function in one hidden node can be formally represented as a matrix vector product:</p>
-<span class="math display">\[\begin{align*}
+<p><span class="math display">\[\begin{align*}
 
 w =
  \begin{pmatrix}
@@ -195,8 +195,8 @@ w =
   x_{1,1} &amp; x_{1,2} &amp; \cdots &amp; x_{1,n} \\
   x_{2,1} &amp; x_{2,2} &amp; \cdots &amp; x_{2,n} \\
  \end{pmatrix}
- \end{align*}\]</span>
-<span class="math display">\[\begin{align*}
+ \end{align*}\]</span></p>
+<p><span class="math display">\[\begin{align*}
   Z = {w^T}X + b= 
   \begin{pmatrix}
   w_{1} &amp; w_{2} \\
@@ -206,8 +206,8 @@ w =
   x_{2,1} &amp; x_{2,2} &amp; \cdots &amp; x_{2,n} \\
  \end{pmatrix} 
   + b
-\end{align*}\]</span>
-<span class="math display">\[\begin{align*}
+\end{align*}\]</span></p>
+<p><span class="math display">\[\begin{align*}
   Z = 
     \begin{pmatrix}
       w_{1}x_{1,1} + 
@@ -218,11 +218,11 @@ w =
       w_{1}x_{1,n} + 
       w_{2}x_{2,n}+b
     \end{pmatrix}
-\end{align*}\]</span>
+\end{align*}\]</span></p>
 <p>The activation function <span class="math inline">\(A^{[1]}\)</span> is the <em>tanh</em> <span class="math inline">\(A^{[1]} = \tanh(Z^{[1]})\)</span>, for the output layer we’ll use the sigmoid instead <span class="math inline">\(A^{[2]} = \sigma(Z^{[2]})\)</span>. The computation can also be visualised as a subgraph of our neural network:</p>
 <p><img src="../../blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-3-1.png" width="412.8" /></p>
 <p>It turns out that this implementation scales to multiple hidden nodes without any formal change to the math. Instead of a <em>weight vector</em> <span class="math inline">\(w\)</span>, we are computing the same functions using a <em>weight matrix</em> <span class="math inline">\(W\)</span>. The matrix-vector product now becomes a dot product between the two matrices. With each node in the hidden layer, we add an extra row in the transposed weight matrix. The dimensionality requirements of matrix multiplication are kept intact: <em>The number of columns of first matrix still equal the number of rows of the second</em>. But the dimensions of the output change accordingly. We go from a transposed vector of length n to an m x n matrix where <em>m = the number of hidden nodes</em>.</p>
-<span class="math display">\[\begin{align*}
+<p><span class="math display">\[\begin{align*}
 Z = {W^T}X + b= 
   \begin{pmatrix}
   w_{1,1} &amp; w_{1,2} \\
@@ -234,8 +234,8 @@ Z = {W^T}X + b=
   x_{2,1} &amp; \cdots &amp; x_{2,n} \\
  \end{pmatrix} 
   + b
-\end{align*}\]</span>
-<span class="math display">\[\begin{align*}
+\end{align*}\]</span></p>
+<p><span class="math display">\[\begin{align*}
   Z = 
     \begin{pmatrix}
       w_{1,1}x_{1,1} + 
@@ -251,7 +251,7 @@ Z = {W^T}X + b=
       w_{n,1}x_{1,n} + 
        w_{n,2}x_{2,n}+b 
     \end{pmatrix}
-  \end{align*}\]</span>
+  \end{align*}\]</span></p>
 <p><img src="../../blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>The last step of going from the hidden layer to the output layer follows the same algebra. I’ll spare you the nitty gritty. Before we propagate forward for the first time, it is important to <strong>randomly initialize the weights</strong>. Otherwise each connection will compute <em>the exact same thing</em>.</p>
 <pre class="r"><code>initialize_parameters &lt;- function(n_x, n_h, n_y) {
@@ -292,10 +292,7 @@ forward_propagation &lt;- function(X, parameters) {
     return(cache)
 }</code></pre>
 <p>Each pass of forward propagation ends with a prediction. Generating a prediction for every pixel of our plot raster, we can simulate decision boundaries. As the algorithm learns, the borders slowly align with the data:</p>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_bounds.gif" />
-
-</div>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_bounds.gif" /></p>
 </div>
 <div id="computing-the-cost" class="section level2">
 <h2>2. Computing the cost</h2>
@@ -310,7 +307,8 @@ forward_propagation &lt;- function(X, parameters) {
         
         return(cost)
 }</code></pre>
-<p>You saw how the algorithm was getting better at predicting the colors with each iteration. This is the result of reducing the cost as the model learns. <img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/costs.gif" /></p>
+<p>You saw how the algorithm was getting better at predicting the colors with each iteration. This is the result of reducing the cost as the model learns.
+<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/costs.gif" /></p>
 </div>
 <div id="backward-propagation" class="section level2">
 <h2>3. Backward propagation</h2>
@@ -318,7 +316,7 @@ forward_propagation &lt;- function(X, parameters) {
 <p>We first calculate the gradient of <span class="math inline">\(Z^{[2]}\)</span> with respect to <span class="math inline">\(A^{[2]}\)</span>, this is equal to <span class="math inline">\(dZ^{[2]} = A^{[2]} - Y\)</span>. Based on <span class="math inline">\(dZ^{[2]}\)</span> we then calculate the gradients of the weights (and bias terms) going from the hidden layer to the output layer. We continue going backwards until we obtain the gradients for all the weights and bias terms.</p>
 <p><span class="math display">\[A^{[2]} -&gt;dZ^{[2]}-&gt;A^{[1]} -&gt; dZ^{[1]} \\ \quad \quad  \downarrow  \quad \quad \quad \quad \quad  \quad  \downarrow \\ \quad \quad \quad dW^{[2]},db^{[2]} \quad  \quad    dW^{[1]},db^{[1]}\]</span></p>
 <p>Below is the list of formulae we will need for the computations. Drilling further into the math is beyond the scope of this post, but there are <a href="http://briandolhansky.com/blog/2013/9/27/artificial-neural-networks-backpropagation-part-4">great blog posts around dedicated to the topic</a>.</p>
-<span class="math display">\[\begin{align*}
+<p><span class="math display">\[\begin{align*}
 
  dZ^{[2]} = A^{[2]} - Y &amp;
  \\ dW^{[2]} = \frac{1}mdZ^{[2]}A^{[1]T} &amp;
@@ -327,7 +325,7 @@ forward_propagation &lt;- function(X, parameters) {
  \\ dW^{[1]} = \frac{1}mdZ^{[1]}X^{T} &amp;
  \\ db^{[1]} = \frac{1}m\sum_{n=1}^{m} dZ^{[1]}
  
-\end{align*}\]</span>
+\end{align*}\]</span></p>
 <p>The math certainly looks scarier than <code>R</code> code:</p>
 <pre class="r"><code>backward_propagation &lt;-function(parameters, cache, X, Y) {
     
@@ -373,10 +371,7 @@ forward_propagation &lt;- function(X, parameters) {
     return(parameters)
 }</code></pre>
 <p>The weight adjustments are the most dramatic at the start of the training process. As the slope towards the optimum value flattens, the rate at which weights adjust slows down as well.</p>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_anim.gif" />
-
-</div>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_anim.gif" /></p>
 </div>
 <div id="bringing-it-all-together" class="section level2">
 <h2>Bringing it all together</h2>
@@ -439,10 +434,7 @@ nn_model &lt;- function(X, Y, n_h, num_iterations = 1000) {
 # model &lt;- nn_model(X,Y,n_h=4,100)
 # Predict - 100th iteration weights:
 # predictions = predict_nn(model[[1]][[100]], X)</code></pre>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/result.gif" />
-
-</div>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/result.gif" /></p>
 <p>For the plots, I used the packages <a href="https://github.com/tidyverse/ggplot2">ggplot</a>, <a href="https://github.com/thomasp85/ggraph">ggraph</a> <a href="https://github.com/thomasp85/ggraph">gganimate</a>, <a href="https://github.com/thomasp85/tweenr">tweenr</a>, <a href="https://cran.r-project.org/web/packages/animation/index.html">animation</a>. Thanks to the creators of these awesome tools, I was able to make all the gifs using only R code. The full script for each of the animations is in the Appendix section at the <a href="https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-11-11-animated_net.Rmd">bottom of this .Rmd file</a>.</p>
 </div>
 </div>
@@ -455,9 +447,9 @@ nn_model &lt;- function(X, Y, n_h, num_iterations = 1000) {
                 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'tamas-blog';
-    var disqus_identifier = 'http:\/\/tamaszilagyi.com\/blog\/an-animated-neural-net-implementation\/';
+    var disqus_identifier = '\/blog\/an-animated-neural-net-implementation\/';
     var disqus_title = 'An animated neuRal net implementation';
-    var disqus_url = 'http:\/\/tamaszilagyi.com\/blog\/an-animated-neural-net-implementation\/';
+    var disqus_url = '\/blog\/an-animated-neural-net-implementation\/';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -508,8 +500,8 @@ ga('send', 'pageview');
 
 
 
-<link rel="stylesheet" href="http://tamaszilagyi.com//css/vs.css">
-<script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+<link rel="stylesheet" href="//css/vs.css">
+<script src="../../js/highlight.pack.js"></script>
 <script>
   hljs.initHighlightingOnLoad();
 </script>

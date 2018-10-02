@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Neural Network on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/neural-network/index.xml</link>
+    <link>/tags/neural-network/index.xml</link>
     <description>Recent content in Neural Network on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="http://tamaszilagyi.com/tags/neural-network/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/neural-network/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>An animated neuRal net implementation</title>
-      <link>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</link>
+      <link>/blog/an-animated-neural-net-implementation/</link>
       <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</guid>
+      <guid>/blog/an-animated-neural-net-implementation/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -49,7 +49,7 @@ pre code, pre, code {
 &lt;p&gt;If we break down each of the two connections into a linear function &lt;span class=&#34;math inline&#34;&gt;\(Z^{[i]}\)&lt;/span&gt; and an activation function &lt;span class=&#34;math inline&#34;&gt;\(A^{[i]}\)&lt;/span&gt;, the architecture becomes &lt;span class=&#34;math inline&#34;&gt;\(X -&amp;gt;Z^{[1]}-&amp;gt;A^{[1]}-&amp;gt;Z^{[2]}-&amp;gt;A^{[2]}\)&lt;/span&gt; with &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; as the input data.&lt;/p&gt;
 &lt;p&gt;The activation function is usually a non-linear function that enables the network to cope with non-linear problems. Examples include the &lt;a href=&#34;https://en.wikipedia.org/wiki/Sigmoid_function&#34;&gt;sigmoid function&lt;/a&gt;, &lt;a href=&#34;https://en.wikipedia.org/wiki/Rectifier_neural_networks&#34;&gt;relu&lt;/a&gt; or &lt;a href=&#34;http://mathworld.wolfram.com/HyperbolicTangent.html&#34;&gt;tanh&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Let’s take for example the connections going &lt;strong&gt;from the input layer to one hidden node&lt;/strong&gt;. If &lt;span class=&#34;math inline&#34;&gt;\(X_{m,n}\)&lt;/span&gt; is the vertically stacked dataset where &lt;em&gt;m = number of features (2)&lt;/em&gt; , &lt;em&gt;n = number of observations&lt;/em&gt;, &lt;span class=&#34;math inline&#34;&gt;\(w\)&lt;/span&gt; is a weight vector of length &lt;em&gt;m&lt;/em&gt;; the linear function in one hidden node can be formally represented as a matrix vector product:&lt;/p&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
 
 w =
  \begin{pmatrix}
@@ -61,8 +61,8 @@ w =
   x_{1,1} &amp;amp; x_{1,2} &amp;amp; \cdots &amp;amp; x_{1,n} \\
   x_{2,1} &amp;amp; x_{2,2} &amp;amp; \cdots &amp;amp; x_{2,n} \\
  \end{pmatrix}
- \end{align*}\]&lt;/span&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
+ \end{align*}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
   Z = {w^T}X + b= 
   \begin{pmatrix}
   w_{1} &amp;amp; w_{2} \\
@@ -72,8 +72,8 @@ w =
   x_{2,1} &amp;amp; x_{2,2} &amp;amp; \cdots &amp;amp; x_{2,n} \\
  \end{pmatrix} 
   + b
-\end{align*}\]&lt;/span&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
+\end{align*}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
   Z = 
     \begin{pmatrix}
       w_{1}x_{1,1} + 
@@ -84,11 +84,11 @@ w =
       w_{1}x_{1,n} + 
       w_{2}x_{2,n}+b
     \end{pmatrix}
-\end{align*}\]&lt;/span&gt;
+\end{align*}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;The activation function &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]}\)&lt;/span&gt; is the &lt;em&gt;tanh&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]} = \tanh(Z^{[1]})\)&lt;/span&gt;, for the output layer we’ll use the sigmoid instead &lt;span class=&#34;math inline&#34;&gt;\(A^{[2]} = \sigma(Z^{[2]})\)&lt;/span&gt;. The computation can also be visualised as a subgraph of our neural network:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;412.8&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;It turns out that this implementation scales to multiple hidden nodes without any formal change to the math. Instead of a &lt;em&gt;weight vector&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(w\)&lt;/span&gt;, we are computing the same functions using a &lt;em&gt;weight matrix&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(W\)&lt;/span&gt;. The matrix-vector product now becomes a dot product between the two matrices. With each node in the hidden layer, we add an extra row in the transposed weight matrix. The dimensionality requirements of matrix multiplication are kept intact: &lt;em&gt;The number of columns of first matrix still equal the number of rows of the second&lt;/em&gt;. But the dimensions of the output change accordingly. We go from a transposed vector of length n to an m x n matrix where &lt;em&gt;m = the number of hidden nodes&lt;/em&gt;.&lt;/p&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
 Z = {W^T}X + b= 
   \begin{pmatrix}
   w_{1,1} &amp;amp; w_{1,2} \\
@@ -100,8 +100,8 @@ Z = {W^T}X + b=
   x_{2,1} &amp;amp; \cdots &amp;amp; x_{2,n} \\
  \end{pmatrix} 
   + b
-\end{align*}\]&lt;/span&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
+\end{align*}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
   Z = 
     \begin{pmatrix}
       w_{1,1}x_{1,1} + 
@@ -117,7 +117,7 @@ Z = {W^T}X + b=
       w_{n,1}x_{1,n} + 
        w_{n,2}x_{2,n}+b 
     \end{pmatrix}
-  \end{align*}\]&lt;/span&gt;
+  \end{align*}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../../blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The last step of going from the hidden layer to the output layer follows the same algebra. I’ll spare you the nitty gritty. Before we propagate forward for the first time, it is important to &lt;strong&gt;randomly initialize the weights&lt;/strong&gt;. Otherwise each connection will compute &lt;em&gt;the exact same thing&lt;/em&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;initialize_parameters &amp;lt;- function(n_x, n_h, n_y) {
@@ -158,10 +158,7 @@ forward_propagation &amp;lt;- function(X, parameters) {
     return(cache)
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Each pass of forward propagation ends with a prediction. Generating a prediction for every pixel of our plot raster, we can simulate decision boundaries. As the algorithm learns, the borders slowly align with the data:&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_bounds.gif&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_bounds.gif&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;computing-the-cost&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;2. Computing the cost&lt;/h2&gt;
@@ -176,7 +173,8 @@ forward_propagation &amp;lt;- function(X, parameters) {
         
         return(cost)
 }&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You saw how the algorithm was getting better at predicting the colors with each iteration. This is the result of reducing the cost as the model learns. &lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/costs.gif&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You saw how the algorithm was getting better at predicting the colors with each iteration. This is the result of reducing the cost as the model learns.
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/costs.gif&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;backward-propagation&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;3. Backward propagation&lt;/h2&gt;
@@ -184,7 +182,7 @@ forward_propagation &amp;lt;- function(X, parameters) {
 &lt;p&gt;We first calculate the gradient of &lt;span class=&#34;math inline&#34;&gt;\(Z^{[2]}\)&lt;/span&gt; with respect to &lt;span class=&#34;math inline&#34;&gt;\(A^{[2]}\)&lt;/span&gt;, this is equal to &lt;span class=&#34;math inline&#34;&gt;\(dZ^{[2]} = A^{[2]} - Y\)&lt;/span&gt;. Based on &lt;span class=&#34;math inline&#34;&gt;\(dZ^{[2]}\)&lt;/span&gt; we then calculate the gradients of the weights (and bias terms) going from the hidden layer to the output layer. We continue going backwards until we obtain the gradients for all the weights and bias terms.&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[A^{[2]} -&amp;gt;dZ^{[2]}-&amp;gt;A^{[1]} -&amp;gt; dZ^{[1]} \\ \quad \quad  \downarrow  \quad \quad \quad \quad \quad  \quad  \downarrow \\ \quad \quad \quad dW^{[2]},db^{[2]} \quad  \quad    dW^{[1]},db^{[1]}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Below is the list of formulae we will need for the computations. Drilling further into the math is beyond the scope of this post, but there are &lt;a href=&#34;http://briandolhansky.com/blog/2013/9/27/artificial-neural-networks-backpropagation-part-4&#34;&gt;great blog posts around dedicated to the topic&lt;/a&gt;.&lt;/p&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
 
  dZ^{[2]} = A^{[2]} - Y &amp;amp;
  \\ dW^{[2]} = \frac{1}mdZ^{[2]}A^{[1]T} &amp;amp;
@@ -193,7 +191,7 @@ forward_propagation &amp;lt;- function(X, parameters) {
  \\ dW^{[1]} = \frac{1}mdZ^{[1]}X^{T} &amp;amp;
  \\ db^{[1]} = \frac{1}m\sum_{n=1}^{m} dZ^{[1]}
  
-\end{align*}\]&lt;/span&gt;
+\end{align*}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;The math certainly looks scarier than &lt;code&gt;R&lt;/code&gt; code:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;backward_propagation &amp;lt;-function(parameters, cache, X, Y) {
     
@@ -239,10 +237,7 @@ forward_propagation &amp;lt;- function(X, parameters) {
     return(parameters)
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The weight adjustments are the most dramatic at the start of the training process. As the slope towards the optimum value flattens, the rate at which weights adjust slows down as well.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_anim.gif&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_anim.gif&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;bringing-it-all-together&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Bringing it all together&lt;/h2&gt;
@@ -305,10 +300,7 @@ nn_model &amp;lt;- function(X, Y, n_h, num_iterations = 1000) {
 # model &amp;lt;- nn_model(X,Y,n_h=4,100)
 # Predict - 100th iteration weights:
 # predictions = predict_nn(model[[1]][[100]], X)&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/result.gif&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/result.gif&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;For the plots, I used the packages &lt;a href=&#34;https://github.com/tidyverse/ggplot2&#34;&gt;ggplot&lt;/a&gt;, &lt;a href=&#34;https://github.com/thomasp85/ggraph&#34;&gt;ggraph&lt;/a&gt; &lt;a href=&#34;https://github.com/thomasp85/ggraph&#34;&gt;gganimate&lt;/a&gt;, &lt;a href=&#34;https://github.com/thomasp85/tweenr&#34;&gt;tweenr&lt;/a&gt;, &lt;a href=&#34;https://cran.r-project.org/web/packages/animation/index.html&#34;&gt;animation&lt;/a&gt;. Thanks to the creators of these awesome tools, I was able to make all the gifs using only R code. The full script for each of the animations is in the Appendix section at the &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-11-11-animated_net.Rmd&#34;&gt;bottom of this .Rmd file&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;

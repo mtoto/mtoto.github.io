@@ -17,11 +17,11 @@
      Parallelizing R code on Kubernetes 
 
 </title>
-<link rel="canonical" href="http://tamaszilagyi.com/blog/parallelizing-r-code-on-kubernetes/">
+<link rel="canonical" href="../../blog/parallelizing-r-code-on-kubernetes/">
 
 
 <script type="text/javascript">
-    var baseURL = 'http:\/\/tamaszilagyi.com\/';
+    var baseURL = '\/';
     var host = baseURL.substring(0, baseURL.length - 1).replace(/\//g, '');
     if ((host === window.location.host) && (window.location.protocol !== 'https:')) {
         window.location.protocol = 'https:';
@@ -31,8 +31,8 @@
 
 
 
-    <link rel="stylesheet" href="http://tamaszilagyi.com/css/vs.css">
-    <script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+    <link rel="stylesheet" href="../../css/vs.css">
+    <script src="../../js/highlight.pack.js"></script>
     <script>
   hljs.initHighlightingOnLoad();
     </script>
@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1534997916">
-    <link rel="stylesheet" href="../../css/main.css?t=1534997916">
+    <link rel="stylesheet" href="../../css/reset.css?t=1538495985">
+    <link rel="stylesheet" href="../../css/main.css?t=1538495985">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1534997916">
+        <link rel="stylesheet" href="../../css/override.css?t=1538495985">
     
 
 
@@ -140,7 +140,7 @@
 
 </div>
 
-                    <div class="initials"><a href="http://tamaszilagyi.com/"></a></div>
+                    <div class="initials"><a href="../../"></a></div>
                 </div>
                 <div class="meta">
                     <div class="date" title="Tue Aug 7 2018 22:13:14 -0500">Aug 7, 2018</div>
@@ -160,10 +160,7 @@ pre code, pre, code {
 <h1>Kubernetes who?</h1>
 <p>The hype around kubernetes is real, but likely also justified. Kubernetes is an open-source tool that facilitates deployment of jobs and services onto computer clusters. It provides different patterns for different type of workloads, be it API servers, databases or running batch jobs. Not only makes kubernetes running workloads and services easy, it also <a href="https://thenewstack.io/kubernetes-credited-saving-spire-service-s3-outage/">keeps them running</a>.</p>
 <p>At the core of the technology are containers, which kubernetes skillfully manages inside so-called pods. A pod represents a single instance of an application and contains one or sometimes more containers. Pods in turn live on worker nodes - actual servers - and are managed by a controller on the master node. We can interact with pods indirectly via instructions to controller.</p>
-<div class="figure">
-<img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/infra2.png" />
-
-</div>
+<p><img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/infra2.png" /></p>
 <p>Mark Edmondson has already written a <a href="http://code.markedmondson.me/r-on-kubernetes-serverless-shiny-r-apis-and-scheduled-scripts/">fantastic blog post</a> about different use cases for running R application inside kubernetes. I’ll dive into the one topic he didn’t expand upon: the parallel execution of R code on kubernetes.</p>
 <p>I will similarly use GCP’s <a href="https://cloud.google.com/kubernetes-engine/">kubernetes engine</a> to deploy my jobs, however all major cloud providers have similar offerings. It’s worth mentioning that Google provides 300$ worth of credit free to spend on any of their cloud products, so you can freely experiment without burning a hole in your pocket.</p>
 </div>
@@ -218,10 +215,7 @@ gcloud container clusters get-credentials kubepar
 # create job
 kubectl create -f job.yaml</code></pre>
 <p>We can monitor the progress of our job using the command <code>kubectl get pods</code>, to see how many pods have successfully run.</p>
-<div class="figure">
-<img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/static-pods-2.png" />
-
-</div>
+<p><img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/static-pods-2.png" /></p>
 <p>Similarly we can look at the state of the nodes with <code>kubectl get nodes</code> or the overall status of the job with <code>kubectl get jobs static-demo</code>. For a more detailed output, substitute <code>get</code> with <code>describe</code>, such as <code>kubectl describe pods</code>.</p>
 <p>Once the job has finished, we collect the output of our simulation from the logs of each pod and write it to a <code>.txt</code> file.</p>
 <pre class="bash"><code>for p in $(kubectl get pods -l jobgroup=static-example -o name)
@@ -230,10 +224,7 @@ do
 done</code></pre>
 <p>Reading the output into <code>R</code> we can plot the results:</p>
 <pre class="r"><code>hist(stockprices)</code></pre>
-<div class="figure">
-<img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/stockprices.png" />
-
-</div>
+<p><img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/stockprices.png" /></p>
 </div>
 <div id="common-template-and-multiple-parameters-using-expansion" class="section level1">
 <h1>Common template and multiple parameters using expansion</h1>
@@ -286,10 +277,7 @@ done</code></pre>
 <p>Plotting the results, the probability that 2 or more people will have the same birthday is 99% after 60 people are in the room.</p>
 <pre class="r"><code>plot(probabiliy, xlab=&quot;People in room&quot;, 
      ylab=&quot;Probability of shared birthday&quot;)</code></pre>
-<div class="figure">
-<img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/birthdays.png" />
-
-</div>
+<p><img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/birthdays.png" /></p>
 </div>
 <div id="fine-parallel-processing-using-a-work-queue" class="section level1">
 <h1>Fine parallel processing using a work queue</h1>
@@ -338,10 +326,7 @@ lrange test 0 -1</code></pre>
 <h2>Giving access to google cloud storage from kubernetes</h2>
 <p>Before we could extract the output from the logs, now we will save the models as <code>.rds</code> files on cloud storage. For this, the containers running on our cluster need write access to our storage bucket.</p>
 <p>Using GCP, we need to create a new <a href="https://cloud.google.com/compute/docs/access/service-accounts">service account</a> inside our project and under <strong>Roles</strong> give it full access to cloud storage by selecting <strong>Storage Object Admin</strong>. Make sure to check the box for <strong>Furnish a new private key</strong> and click SAVE.</p>
-<div class="figure">
-<img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/service.png" />
-
-</div>
+<p><img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/service.png" /></p>
 <p>Back to the terminal, we can save our credentials as a Secret that will be directly accessible to the kubernetes engine.</p>
 <pre class="bash"><code># create secret named &quot;gcs-key&quot;
 kubectl create secret generic gcs-key --from-file=key.json=PATH-TO-KEY-FILE.json</code></pre>
@@ -425,9 +410,9 @@ spec:
                 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'tamas-blog';
-    var disqus_identifier = 'http:\/\/tamaszilagyi.com\/blog\/parallelizing-r-code-on-kubernetes\/';
+    var disqus_identifier = '\/blog\/parallelizing-r-code-on-kubernetes\/';
     var disqus_title = 'Parallelizing R code on Kubernetes';
-    var disqus_url = 'http:\/\/tamaszilagyi.com\/blog\/parallelizing-r-code-on-kubernetes\/';
+    var disqus_url = '\/blog\/parallelizing-r-code-on-kubernetes\/';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -478,8 +463,8 @@ ga('send', 'pageview');
 
 
 
-<link rel="stylesheet" href="http://tamaszilagyi.com//css/vs.css">
-<script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+<link rel="stylesheet" href="//css/vs.css">
+<script src="../../js/highlight.pack.js"></script>
 <script>
   hljs.initHighlightingOnLoad();
 </script>

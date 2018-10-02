@@ -17,11 +17,11 @@
      Creating a Spotify Playlist using Luigi 
 
 </title>
-<link rel="canonical" href="http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/">
+<link rel="canonical" href="../../blog/creating-a-spotify-playlist-using-luigi/">
 
 
 <script type="text/javascript">
-    var baseURL = 'http:\/\/tamaszilagyi.com\/';
+    var baseURL = '\/';
     var host = baseURL.substring(0, baseURL.length - 1).replace(/\//g, '');
     if ((host === window.location.host) && (window.location.protocol !== 'https:')) {
         window.location.protocol = 'https:';
@@ -31,8 +31,8 @@
 
 
 
-    <link rel="stylesheet" href="http://tamaszilagyi.com/css/vs.css">
-    <script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+    <link rel="stylesheet" href="../../css/vs.css">
+    <script src="../../js/highlight.pack.js"></script>
     <script>
   hljs.initHighlightingOnLoad();
     </script>
@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1534997916">
-    <link rel="stylesheet" href="../../css/main.css?t=1534997916">
+    <link rel="stylesheet" href="../../css/reset.css?t=1538495985">
+    <link rel="stylesheet" href="../../css/main.css?t=1538495985">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1534997916">
+        <link rel="stylesheet" href="../../css/override.css?t=1538495985">
     
 
 
@@ -140,7 +140,7 @@
 
 </div>
 
-                    <div class="initials"><a href="http://tamaszilagyi.com/"></a></div>
+                    <div class="initials"><a href="../../"></a></div>
                 </div>
                 <div class="meta">
                     <div class="date" title="Sat Jul 22 2017 21:13:14 -0500">Jul 22, 2017</div>
@@ -168,10 +168,7 @@ pre code, pre, code {
 <div id="the-pipeline" class="section level1">
 <h1>The pipeline</h1>
 <p>We can break down the pipeline into four tasks.</p>
-<div class="figure">
-<img src="http://tamaszilagyi.com/img/luigi2.png" />
-
-</div>
+<p><img src="http://tamaszilagyi.com/img/luigi2.png" /></p>
 <div id="cronjob-to-ping-the-api" class="section level2">
 <h2>1. Cronjob to ping the API</h2>
 <p>The initial step is to ping the API, and store the raw response as a <code>.json</code> file locally. We need to have the <code>client_id</code>, <code>client_secret</code> and a <code>refresh_token</code> to generate a temporary access token. Follow the <a href="https://developer.spotify.com/web-api/tutorial/">Web API tutorial by Spotify</a> to attain them. In turn, the access token is required to make calls to the API.</p>
@@ -393,7 +390,8 @@ class spotify_morning_playlist(luigi.Task):
                         client=client)</code></pre>
 <p>I have put all of the tasks in a file named <code>tasks.py</code>. Luigi does not provide a scheduling mechanism out of the box, so we’ll trigger the tasks from crontab instead. For example every Monday at 7AM:</p>
 <pre class="bash"><code>0 7 * * 1 /usr/bin/python /spotify/tasks.py spotify_morning_playlist</code></pre>
-<p>Note that we should have the <a href="http://luigi.readthedocs.io/en/stable/central_scheduler.html">Central Scheduler</a> running in the background for the above to execute. The neat thing is that we only need to trigger the last task, and then Luigi considers all the dependencies and runs them if needed (ie. if the target file does not exists). Additionally, Luigi has a real nice GUI running on <code>localhost:8082</code>, where we can visualise the complete dependency graph and monitor the progress of our tasks: <img src="http://tamaszilagyi.com/img/dag.png" /></p>
+<p>Note that we should have the <a href="http://luigi.readthedocs.io/en/stable/central_scheduler.html">Central Scheduler</a> running in the background for the above to execute. The neat thing is that we only need to trigger the last task, and then Luigi considers all the dependencies and runs them if needed (ie. if the target file does not exists). Additionally, Luigi has a real nice GUI running on <code>localhost:8082</code>, where we can visualise the complete dependency graph and monitor the progress of our tasks:
+<img src="http://tamaszilagyi.com/img/dag.png" /></p>
 <p>If nothing fails, the tracks in the below playlist get updated every Monday morning:</p>
 <iframe src="https://open.spotify.com/embed/user/1170891844/playlist/6a2QBfOgCqFQLN08FUxpj3" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
 </div>
@@ -413,9 +411,9 @@ class spotify_morning_playlist(luigi.Task):
                 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'tamas-blog';
-    var disqus_identifier = 'http:\/\/tamaszilagyi.com\/blog\/creating-a-spotify-playlist-using-luigi\/';
+    var disqus_identifier = '\/blog\/creating-a-spotify-playlist-using-luigi\/';
     var disqus_title = 'Creating a Spotify Playlist using Luigi';
-    var disqus_url = 'http:\/\/tamaszilagyi.com\/blog\/creating-a-spotify-playlist-using-luigi\/';
+    var disqus_url = '\/blog\/creating-a-spotify-playlist-using-luigi\/';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -466,8 +464,8 @@ ga('send', 'pageview');
 
 
 
-<link rel="stylesheet" href="http://tamaszilagyi.com//css/vs.css">
-<script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+<link rel="stylesheet" href="//css/vs.css">
+<script src="../../js/highlight.pack.js"></script>
 <script>
   hljs.initHighlightingOnLoad();
 </script>

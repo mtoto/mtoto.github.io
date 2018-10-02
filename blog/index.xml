@@ -2,19 +2,262 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blog on Coding with Data</title>
-    <link>http://tamaszilagyi.com/blog/index.xml</link>
+    <link>/blog/index.xml</link>
     <description>Recent content in Blog on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 07 Aug 2018 22:13:14 -0500</lastBuildDate>
-    <atom:link href="http://tamaszilagyi.com/blog/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 18 Sep 2018 22:13:14 -0500</lastBuildDate>
+    <atom:link href="/blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Lightweight streaming analytics with NATS</title>
+      <link>/blog/lightweight-streaming-analytics-with-nats/</link>
+      <pubDate>Tue, 18 Sep 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/blog/lightweight-streaming-analytics-with-nats/</guid>
+      <description>&lt;style type=&#34;text/css&#34;&gt;
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+
+library(knitr)
+
+eng_go &lt;- function(options) {
+
+  # create a temporary file
+
+  f &lt;- basename(tempfile(&#34;go&#34;, &#39;.&#39;, paste(&#39;.&#39;, &#34;go&#34;, sep = &#39;&#39;)))
+  on.exit(unlink(f)) # cleanup temp file on function exit
+  writeLines(options$code, f)
+
+  out &lt;- &#39;&#39;
+
+  # if eval != FALSE compile/run the code, preserving output
+
+  if (options$eval) {
+    out &lt;- system(sprintf(&#39;go run %s&#39;, paste(f, options$engine.opts)), intern=TRUE)
+  }
+
+  # spit back stuff to the user
+
+  engine_output(options, options$code, out)
+}
+
+knitr::knit_engines$set(go=eng_go)
+&lt;/style&gt;
+&lt;div id=&#34;go-in-the-fast-lane&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Go in the fast lane&lt;/h2&gt;
+&lt;p&gt;Fast data is the new big data. But how difficult is it really to set up a complete streaming analytics solution from the ground up? It turns out not that hard, not if you are using &lt;a href=&#34;https://github.com/nats-io/go-nats-streaming&#34;&gt;NATS Streaming&lt;/a&gt;. Developed in Go&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“…NATS Streaming is an extremely performant, lightweight reliable streaming platform built on NATS.”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I have been wanting to experiment with Go for some time, so building a toy service on top NATS Streaming seemed like a interesting project to start with. To get familiar with the basics, I worked through about two thirds of the &lt;a href=&#34;https://github.com/nats-io/go-nats-streaming&#34;&gt;Tour of Go&lt;/a&gt; - a dope interactive introduction to the fundamentals of the langugae. At this point, I figured I know enough for the fifty or so lines of Go code I was about to write and headed for the IDE. What I had in mind was the classic streaming analytics demo: The real-time Twitter dashboard. After some initial research I was able to break down the task at hand into 4 subtasks:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Communicate with the &lt;a href=&#34;https://developer.twitter.com/en/docs/tutorials/consuming-streaming-data.html&#34;&gt;Twitter Streaming API&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Ingest tweets into &lt;a href=&#34;https://github.com/nats-io/go-nats-streaming&#34;&gt;NATS Streaming&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Provisiton a MySQL database where the tweets will be written to.&lt;/li&gt;
+&lt;li&gt;Create a Shiny App as a (near) real-time NLP dashboard.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;To ensure everything is working as expected I’ll use Docker containers in conjunction with &lt;a href=&#34;https://docs.docker.com/compose/overview/&#34;&gt;Docker Compose&lt;/a&gt; as the orchestration tool.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;about-nats-streaming&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;About NATS Streaming&lt;/h2&gt;
+&lt;p&gt;Undeniably, Kafka is the most widely used streaming solution right now. But is it the only option out there? Is it even the best option? It depends, of course. But if you prefer a lightweight footprint and simplicity without sacrificing performance, NATS is very, very hard to beat. NATS Streaming is a service layer on top the original NATS framework. The latter was originally conceived as a distributed messaging system with few guarantees, but blazing fast performance. NATS Streaming extends the original framework through the introduction of at-least-once delivery, durable storage, message replay and a couple other enhanced quality of service features.&lt;/p&gt;
+&lt;p&gt;The central piece is the NATS (Streaming) Server. It manages subscriptions on specific subjects and handles communications between clients. Once the server is up and running, we can create and publish messages unto subjects, and on the receiving end subscribe to them.&lt;/p&gt;
+&lt;p&gt;[]!(&lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/nats.png&#34; class=&#34;uri&#34;&gt;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/nats.png&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/nats-io/nats-streaming-server#getting-started&#34;&gt;Installing the package&lt;/a&gt; creates an executable &lt;code&gt;nats-streaming-server.go&lt;/code&gt; that we can run to start the server.&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;[12505] 2018/10/01 11:53:13.037897 [INF] STREAM: Starting nats-streaming-server[test-cluster] version 0.11.0
+[12505] 2018/10/01 11:53:13.038015 [INF] STREAM: ServerID: iDV733mTgjWieVayqCLiG2
+[12505] 2018/10/01 11:53:13.038022 [INF] STREAM: Go version: go1.11
+[12505] 2018/10/01 11:53:13.038880 [INF] Starting nats-server version 1.3.0
+[12505] 2018/10/01 11:53:13.038894 [INF] Git commit [not set]
+[12505] 2018/10/01 11:53:13.039199 [INF] Listening for client connections on 0.0.0.0:4222
+[12505] 2018/10/01 11:53:13.039208 [INF] Server is ready
+[12505] 2018/10/01 11:53:13.068118 [INF] STREAM: Recovering the state...
+[12505] 2018/10/01 11:53:13.068165 [INF] STREAM: No recovered state
+[12505] 2018/10/01 11:53:13.320178 [INF] STREAM: Message store is MEMORY
+[12505] 2018/10/01 11:53:13.320295 [INF] STREAM: ---------- Store Limits ----------
+[12505] 2018/10/01 11:53:13.320305 [INF] STREAM: Channels:                  100 *
+[12505] 2018/10/01 11:53:13.320312 [INF] STREAM: --------- Channels Limits --------
+[12505] 2018/10/01 11:53:13.320320 [INF] STREAM:   Subscriptions:          1000 *
+[12505] 2018/10/01 11:53:13.320329 [INF] STREAM:   Messages     :       1000000 *
+[12505] 2018/10/01 11:53:13.320337 [INF] STREAM:   Bytes        :     976.56 MB *
+[12505] 2018/10/01 11:53:13.320343 [INF] STREAM:   Age          :     unlimited *
+[12505] 2018/10/01 11:53:13.320349 [INF] STREAM:   Inactivity   :     unlimited *
+[12505] 2018/10/01 11:53:13.320356 [INF] STREAM: ----------------------------------&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;By default, NATS Streaming persists the messages as files. It suffices to start publishing messages to a subject, and they will be saved to memory. The other option is a MySQL database. Using the flags &lt;code&gt;--store&lt;/code&gt;, &lt;code&gt;--sql_driver&lt;/code&gt; and &lt;code&gt;--sql_source&lt;/code&gt; when starting the &lt;code&gt;nats-streaming-server&lt;/code&gt;, we can configure access to the database, or alternatively supply a &lt;code&gt;.conf&lt;/code&gt; file.&lt;/p&gt;
+&lt;p&gt;Once the server is up and running, we can create subjects and publish messages. So time for a simple worker program that ingests data from the Twitter Streaming API and funnels it into the database using NATS Streaming. The whole thing is barely ~50 lines of code using NATS’ Go client library.&lt;/p&gt;
+&lt;pre class=&#34;go&#34;&gt;&lt;code&gt;package main
+
+import (
+    &amp;quot;log&amp;quot;
+    &amp;quot;os&amp;quot;
+    &amp;quot;stream/keys&amp;quot;
+
+    &amp;quot;github.com/dghubble/go-twitter/twitter&amp;quot;
+    &amp;quot;github.com/dghubble/oauth1&amp;quot;
+    stan &amp;quot;github.com/nats-io/go-nats-streaming&amp;quot;
+)
+
+func main() {
+    var err error
+    word := os.Getenv(&amp;quot;TWITTER&amp;quot;)  // Get word to filter Twitter stream on 
+
+    config := oauth1.NewConfig(keys.Key, keys.Secret)
+    token := oauth1.NewToken(keys.Token, keys.TokenSecret)
+    httpClient := config.Client(oauth1.NoContext, token)
+
+    // Twitter client
+    twitterClient := twitter.NewClient(httpClient)
+    // Nats client
+    natsClient, err := stan.Connect(&amp;quot;test-cluster&amp;quot;, &amp;quot;test&amp;quot;,
+        stan.NatsURL(&amp;quot;nats://nats:4222&amp;quot;))
+    if err != nil {
+        log.Fatal(err)
+    }
+    
+    // Convenience Demux demultiplexed stream messages
+    demux := twitter.NewSwitchDemux()
+    demux.Tweet = func(tweet *twitter.Tweet) {
+        natsClient.Publish(word, []byte(tweet.Text))
+    }
+
+    // Filter parameters for Twitter stream
+    filterParams := &amp;amp;twitter.StreamFilterParams{
+        Track:         []string{word},
+        StallWarnings: twitter.Bool(true),
+        Language:      []string{&amp;quot;en&amp;quot;},
+    }
+    
+    stream, err := twitterClient.Streams.Filter(filterParams)
+    if err != nil {
+        log.Fatal(err)
+    }
+    for message := range stream.Messages {
+        demux.Handle(message)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That’s it. Of course this is only two pieces of the puzzle. We still need to provision a SQL database for the message store and build a Shiny App to munge and visualize the data.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;meet-the-architect-docker-compose&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Meet the architect: Docker Compose&lt;/h2&gt;
+&lt;p&gt;Instead of creating the remaining services one by one and linking them up, it is better to deploy this mini infrastructure in its entirety. With Docker containers, we can package each piece with all its dependencies. Using Docker Compose, we can configure how the containers should work in tandem and communicate with each other if needed.&lt;/p&gt;
+&lt;p&gt;With a Docker image for everything nowadays, our Dockerfiles won’t be long. Adding a couple of &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/db/Dockerfile&#34;&gt;enviromnent variables here&lt;/a&gt; or &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/shiny/Dockerfile&#34;&gt;install additional package there&lt;/a&gt;, most configurations will already be taken care of by the read-only layers of the base images.&lt;/p&gt;
+&lt;p&gt;Our infra consists of 4 containers: One for the MySQL database, the NATS streaming server, the NATS worker that will publish the messages and finally the Shiny app. A couple of pointers with regards to the &lt;code&gt;docker-compose.yml&lt;/code&gt; file below:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;build: context:&lt;/code&gt; parameter is the location of the Dockerfile.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;restart: always&lt;/code&gt; is set because services aren’t booted in sequence despite dependencies.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ports:&lt;/code&gt; will be shared among services, and also exposed to the outside world.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;environment: - TWITTER=${TWITTER}&lt;/code&gt; ensures that the &lt;code&gt;$TWITTER&lt;/code&gt; enviromnent variable (as defined in the &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/.env&#34;&gt;.env file&lt;/a&gt;) is available for all.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Without further ado, this is what the final &lt;code&gt;docker-compose.yml&lt;/code&gt; file looks like:&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;version: &amp;quot;3&amp;quot;
+
+services:
+  db:
+    build:
+      context: &amp;quot;./db&amp;quot;
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - &amp;quot;3306:3306&amp;quot;
+  nats:
+    image: nats-streaming:latest
+    restart: always
+    depends_on:
+      - db
+    command: -m 8222 --store SQL --sql_driver mysql --sql_source &amp;quot;root:pwd@tcp(db:3306)/nss_db&amp;quot;
+    ports:
+      - &amp;quot;4222:4222&amp;quot;
+      - &amp;quot;8222:8222&amp;quot;
+  nats-worker:
+    build:
+      context: &amp;quot;./nats&amp;quot;
+    environment:
+    - TWITTER=${TWITTER}
+    restart: always
+    entrypoint: /go/main
+    depends_on:
+      - nats
+  shiny:
+    build:
+      context: &amp;quot;./shiny&amp;quot;
+    environment:
+    - TWITTER=${TWITTER}
+    ports:
+      - &amp;quot;80:3838&amp;quot;
+    depends_on:
+      - db&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To build all the images we can use &lt;code&gt;docker-compose build&lt;/code&gt;; the command to spin up the services is &lt;code&gt;docker-compose -f docker-compose.yml up&lt;/code&gt;. Similarly to stop the containers we have &lt;code&gt;docker-compose stop&lt;/code&gt; and &lt;code&gt;docker-compose rm -fv&lt;/code&gt; to get rid of the stopped containers.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;shiny-apps-for-streaming-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Shiny Apps for streaming data&lt;/h2&gt;
+&lt;p&gt;I have written about &lt;a href=&#34;http://tamaszilagyi.com/blog/dockerized-shiny-app-development/&#34;&gt;Shiny Apps and how to containerize them before&lt;/a&gt;, so I will only briefly touch upon dealing with real-time data in shiny apps. As we have seen before, NATS Streaming is continously dumping new data into our MySQL database according to a &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny/blob/master/db/dump/schema.sql&#34;&gt;predefined schema&lt;/a&gt;. On the R side it turns out we have pretty sweet tools for dealing with databases, such as &lt;a href=&#34;https://shiny.rstudio.com/articles/pool-basics.html&#34;&gt;pool and DBI&lt;/a&gt;. Specifically for shiny apps, there is also a function called &lt;code&gt;shiny::reactivePoll()&lt;/code&gt; that:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“..create a reactive data source, which works by periodically polling a non-reactive data source.”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Two of the required arguments are functions. One to check whether some value in our database has been updated, and if so, one to pull the updated data from the database. The other two required arguments are the number of milliseconds to wait between checks, and the user session.&lt;/p&gt;
+&lt;p&gt;This is the relevant bit from the shiny app:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(pool)
+library(DBI)
+library(shiny)
+library(anytime)
+library(tidytext)
+
+pool &amp;lt;- dbPool(
+        drv = RMySQL::MySQL(),
+        dbname = &amp;quot;nss_db&amp;quot;,
+        host = &amp;quot;db&amp;quot;, 
+        port = 3306,
+        username = &amp;quot;nss&amp;quot;,
+        password = &amp;quot;password&amp;quot; 
+)
+
+data &amp;lt;- reactivePoll(1000, session,
+             # This function returns the latest timestamp from the DB
+             checkFunc = function() {
+                     pool %&amp;gt;% tbl(&amp;quot;Messages&amp;quot;) %&amp;gt;%
+                             summarise(max_time = max(timestamp, na.rm = TRUE)) %&amp;gt;%
+                             collect() %&amp;gt;%
+                             unlist()
+                     
+             },
+             # This function returns a data.frame ready for text mining
+             valueFunc = function() {
+                     pool %&amp;gt;% tbl(&amp;quot;Messages&amp;quot;) %&amp;gt;%
+                             filter(!data %like% &amp;quot;%http%&amp;quot;) %&amp;gt;% 
+                             arrange(-timestamp) %&amp;gt;%
+                             head(20000) %&amp;gt;%
+                             collect() %&amp;gt;%
+                             mutate(data = gsub(&amp;quot;[^[:alnum:][:space:]]&amp;quot;,&amp;quot;&amp;quot;,data)) %&amp;gt;%
+                             unnest_tokens(word, data) %&amp;gt;%
+                             anti_join(stop_words) %&amp;gt;% 
+                             mutate(timestamp = anytime(timestamp/1e+9)) %&amp;gt;%
+                             inner_join(get_sentiments(&amp;quot;bing&amp;quot;)) 
+                   
+             }
+        )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After estabilishing the pool connection, it is used to check whether the latest timestamp is different from the previous one. If that’s the case, we pull the last 20.000 tweets from the database, collect it as an R &lt;code&gt;data.frame&lt;/code&gt; and transform it using the &lt;a href=&#34;https://cran.r-project.org/web/packages/tidytext/vignettes/tidytext.html&#34;&gt;tidytext&lt;/a&gt; package.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;postscript&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Postscript&lt;/h2&gt;
+&lt;p&gt;The app I have outlined in this post is currently live on &lt;a href=&#34;http://stream.tamaszilagyi.com/&#34;&gt;stream.tamaszilagyi.com&lt;/a&gt; plotting a few metrics for tweets containing the word “trump”, for demonstration purposes. It is running on a small Linux VM on Azure so don’t be intimidated by slow load times. I only have so much free Azure credit.&lt;/p&gt;
+&lt;p&gt;With minor modifications though (and a more money to burn), we could deploy our containers onto a cluster of computers and scale the crap out of this little streaming service. Such is the beauty of cloud resources and using cloud-native technologies like Docker and NATS.&lt;/p&gt;
+&lt;p&gt;As always, all the code is on my &lt;a href=&#34;https://github.com/mtoto/stream-go-shiny&#34;&gt;GitHub&lt;/a&gt;, including instructions on how to try it for yourself.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Parallelizing R code on Kubernetes</title>
-      <link>http://tamaszilagyi.com/blog/parallelizing-r-code-on-kubernetes/</link>
+      <link>/blog/parallelizing-r-code-on-kubernetes/</link>
       <pubDate>Tue, 07 Aug 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/parallelizing-r-code-on-kubernetes/</guid>
+      <guid>/blog/parallelizing-r-code-on-kubernetes/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -27,10 +270,7 @@ pre code, pre, code {
 &lt;h1&gt;Kubernetes who?&lt;/h1&gt;
 &lt;p&gt;The hype around kubernetes is real, but likely also justified. Kubernetes is an open-source tool that facilitates deployment of jobs and services onto computer clusters. It provides different patterns for different type of workloads, be it API servers, databases or running batch jobs. Not only makes kubernetes running workloads and services easy, it also &lt;a href=&#34;https://thenewstack.io/kubernetes-credited-saving-spire-service-s3-outage/&#34;&gt;keeps them running&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;At the core of the technology are containers, which kubernetes skillfully manages inside so-called pods. A pod represents a single instance of an application and contains one or sometimes more containers. Pods in turn live on worker nodes - actual servers - and are managed by a controller on the master node. We can interact with pods indirectly via instructions to controller.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/infra2.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/infra2.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Mark Edmondson has already written a &lt;a href=&#34;http://code.markedmondson.me/r-on-kubernetes-serverless-shiny-r-apis-and-scheduled-scripts/&#34;&gt;fantastic blog post&lt;/a&gt; about different use cases for running R application inside kubernetes. I’ll dive into the one topic he didn’t expand upon: the parallel execution of R code on kubernetes.&lt;/p&gt;
 &lt;p&gt;I will similarly use GCP’s &lt;a href=&#34;https://cloud.google.com/kubernetes-engine/&#34;&gt;kubernetes engine&lt;/a&gt; to deploy my jobs, however all major cloud providers have similar offerings. It’s worth mentioning that Google provides 300$ worth of credit free to spend on any of their cloud products, so you can freely experiment without burning a hole in your pocket.&lt;/p&gt;
 &lt;/div&gt;
@@ -85,10 +325,7 @@ gcloud container clusters get-credentials kubepar
 # create job
 kubectl create -f job.yaml&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We can monitor the progress of our job using the command &lt;code&gt;kubectl get pods&lt;/code&gt;, to see how many pods have successfully run.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/static-pods-2.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/static-pods-2.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Similarly we can look at the state of the nodes with &lt;code&gt;kubectl get nodes&lt;/code&gt; or the overall status of the job with &lt;code&gt;kubectl get jobs static-demo&lt;/code&gt;. For a more detailed output, substitute &lt;code&gt;get&lt;/code&gt; with &lt;code&gt;describe&lt;/code&gt;, such as &lt;code&gt;kubectl describe pods&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Once the job has finished, we collect the output of our simulation from the logs of each pod and write it to a &lt;code&gt;.txt&lt;/code&gt; file.&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;for p in $(kubectl get pods -l jobgroup=static-example -o name)
@@ -97,10 +334,7 @@ do
 done&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Reading the output into &lt;code&gt;R&lt;/code&gt; we can plot the results:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;hist(stockprices)&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/stockprices.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/stockprices.png&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;common-template-and-multiple-parameters-using-expansion&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Common template and multiple parameters using expansion&lt;/h1&gt;
@@ -153,10 +387,7 @@ done&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Plotting the results, the probability that 2 or more people will have the same birthday is 99% after 60 people are in the room.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(probabiliy, xlab=&amp;quot;People in room&amp;quot;, 
      ylab=&amp;quot;Probability of shared birthday&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/birthdays.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/birthdays.png&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;fine-parallel-processing-using-a-work-queue&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Fine parallel processing using a work queue&lt;/h1&gt;
@@ -205,10 +436,7 @@ lrange test 0 -1&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Giving access to google cloud storage from kubernetes&lt;/h2&gt;
 &lt;p&gt;Before we could extract the output from the logs, now we will save the models as &lt;code&gt;.rds&lt;/code&gt; files on cloud storage. For this, the containers running on our cluster need write access to our storage bucket.&lt;/p&gt;
 &lt;p&gt;Using GCP, we need to create a new &lt;a href=&#34;https://cloud.google.com/compute/docs/access/service-accounts&#34;&gt;service account&lt;/a&gt; inside our project and under &lt;strong&gt;Roles&lt;/strong&gt; give it full access to cloud storage by selecting &lt;strong&gt;Storage Object Admin&lt;/strong&gt;. Make sure to check the box for &lt;strong&gt;Furnish a new private key&lt;/strong&gt; and click SAVE.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/service.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/service.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Back to the terminal, we can save our credentials as a Secret that will be directly accessible to the kubernetes engine.&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# create secret named &amp;quot;gcs-key&amp;quot;
 kubectl create secret generic gcs-key --from-file=key.json=PATH-TO-KEY-FILE.json&lt;/code&gt;&lt;/pre&gt;
@@ -288,10 +516,10 @@ spec:
     
     <item>
       <title>Interpretable GDPR Classifiers</title>
-      <link>http://tamaszilagyi.com/blog/interpretable-gdpr-classifiers/</link>
+      <link>/blog/interpretable-gdpr-classifiers/</link>
       <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/interpretable-gdpr-classifiers/</guid>
+      <guid>/blog/interpretable-gdpr-classifiers/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -303,7 +531,7 @@ pre code, pre, code {
 &lt;div id=&#34;we-have-updated-our-privacy-policies&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;em&gt;We have updated our privacy policies…&lt;/em&gt;&lt;/h1&gt;
 &lt;p&gt;Whether internet companies are now compliant with GDPR is hard to say, but they sure left updating their privacy policies to the last minute. What happened in the last days of May was the greatest corporate email tsunami since Y2K. I hardly read the updated policies, or remember what the old ones looked like. Wouldn’t it be great if we could model where GDPR inspired policies are different from the old ones instead of reading them?&lt;/p&gt;
-&lt;p&gt;Looking for data, I came upon the &lt;a href=&#34;https://usableprivacy.org/data&#34;&gt;Usable Privacy Project&lt;/a&gt;, that has a few datasets available consisting of privacy policies. I downloaded the ACL/COLING 2014 Dataset &lt;a href=&#34;#fn1&#34; class=&#34;footnoteRef&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;, which contains roughly 1000 documents in .xml files. Collected pre GDPR, this is a great starting point. But I still need a respectable amount of policies inspired by recent European regulation.&lt;/p&gt;
+&lt;p&gt;Looking for data, I came upon the &lt;a href=&#34;https://usableprivacy.org/data&#34;&gt;Usable Privacy Project&lt;/a&gt;, that has a few datasets available consisting of privacy policies. I downloaded the ACL/COLING 2014 Dataset &lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;, which contains roughly 1000 documents in .xml files. Collected pre GDPR, this is a great starting point. But I still need a respectable amount of policies inspired by recent European regulation.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;async-web-scraping-ftw&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Async web scraping FTW&lt;/h1&gt;
@@ -461,7 +689,7 @@ plot(vi_glm, vi_svm, vi_gbm)&lt;/code&gt;&lt;/pre&gt;
 &lt;li&gt;Length of the interval means larger loss -&amp;gt; more important variable.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Looking at the above plot, it confirms that gbm has the lowest overall error rate and there are words shared among the three plots such as &lt;strong&gt;shield&lt;/strong&gt;, &lt;strong&gt;controller&lt;/strong&gt; or &lt;strong&gt;regulation&lt;/strong&gt; that appear in all three plots.&lt;/p&gt;
-&lt;p&gt;Knowing which variables are important is only the half the story; we would also like to investigate the nature of relationship between the predictor and the prediction. DALEX implements &lt;a href=&#34;https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf&#34;&gt;Partial Dependence Plots&lt;/a&gt; &lt;a href=&#34;#fn2&#34; class=&#34;footnoteRef&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; that show how different values of a numeric variable affect the prediction in isolation. We only need to change our prediction function to return probabilities,&lt;/p&gt;
+&lt;p&gt;Knowing which variables are important is only the half the story; we would also like to investigate the nature of relationship between the predictor and the prediction. DALEX implements &lt;a href=&#34;https://journal.r-project.org/archive/2017/RJ-2017-016/RJ-2017-016.pdf&#34;&gt;Partial Dependence Plots&lt;/a&gt; &lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; that show how different values of a numeric variable affect the prediction in isolation. We only need to change our prediction function to return probabilities,&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p_fun &amp;lt;- function(object, newdata){
         predict(object, newdata=newdata, type=&amp;quot;prob&amp;quot;)[,1]
 }&lt;/code&gt;&lt;/pre&gt;
@@ -485,8 +713,8 @@ plot(pdp_glm, pdp_svm, pdp_gbm)&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;footnotes&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Corpus of 1,010 privacy policies from the top websites ranked on Alexa.com, created as part of: F. Liu, R. Ramanath, N. Sadeh, N.A. Smith. A Step Towards Usable Privacy Policy: Automatic Alignment of Privacy Statements. Proceedings of the 25th International Conference on Computational Linguistics (COLING). 2014.&lt;a href=&#34;#fnref1&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;Greenwell, Brandon M. 2017. “Pdp: An R Package for Constructing Partial Dependence Plots.” The R Journal 9 (1):421–36. &lt;a href=&#34;https://journal.r-project.org/archive/2017/RJ-2017-016/index.html&#34; class=&#34;uri&#34;&gt;https://journal.r-project.org/archive/2017/RJ-2017-016/index.html&lt;/a&gt;.&lt;a href=&#34;#fnref2&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Corpus of 1,010 privacy policies from the top websites ranked on Alexa.com, created as part of: F. Liu, R. Ramanath, N. Sadeh, N.A. Smith. A Step Towards Usable Privacy Policy: Automatic Alignment of Privacy Statements. Proceedings of the 25th International Conference on Computational Linguistics (COLING). 2014.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;Greenwell, Brandon M. 2017. “Pdp: An R Package for Constructing Partial Dependence Plots.” The R Journal 9 (1):421–36. &lt;a href=&#34;https://journal.r-project.org/archive/2017/RJ-2017-016/index.html&#34; class=&#34;uri&#34;&gt;https://journal.r-project.org/archive/2017/RJ-2017-016/index.html&lt;/a&gt;.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -494,10 +722,10 @@ plot(pdp_glm, pdp_svm, pdp_gbm)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Dockerized Shiny App development</title>
-      <link>http://tamaszilagyi.com/blog/dockerized-shiny-app-development/</link>
+      <link>/blog/dockerized-shiny-app-development/</link>
       <pubDate>Tue, 16 Jan 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/dockerized-shiny-app-development/</guid>
+      <guid>/blog/dockerized-shiny-app-development/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -525,10 +753,7 @@ library(shinytest)
 
 recordTest(&amp;quot;path/to/app&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This launches an iframe consisting of your dashboard and controls over what to test. Each interaction with the dashboard is recorded, and when you hit &lt;strong&gt;take snapshot&lt;/strong&gt;, the state of your dashboard is saved, along with raw scripts to reproduce the interactions.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://i.imgur.com/t3xcuCX.gif&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/t3xcuCX.gif&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Upon exiting the test event recorder, a new folder &lt;code&gt;test/&lt;/code&gt; is created inside the app’s directory, containing both the test script - &lt;code&gt;dates.R&lt;/code&gt;, as well as the application’s state as a .json and a .png files in &lt;code&gt;test/dates-expected&lt;/code&gt;. The latter serve as expected output, based on which consequent runs of tests shall be evaluated. Using my example app, &lt;code&gt;dates.R&lt;/code&gt; looks like this:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;options(shiny.testmode=TRUE)
 
@@ -623,7 +848,8 @@ docker run -d -p 80:3838 --name site mtoto/shiny:latest&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Integration with Travis CI&lt;/h2&gt;
 &lt;p&gt;If you are a seasoned R package developer, you are no stranger to Travis CI. It is a &lt;strong&gt;Continuous Integration&lt;/strong&gt; tool that automatically performs checks and runs tests on your code every time you push a commit to GitHub. The broad idea behind continuous integration is to encourage test-driven development, thereby allowing for frequent commits to the codebase without having to worry about integration problems.&lt;/p&gt;
 &lt;p&gt;Travis supports many languages - including R, and can also build from Docker images. After creating an account on the &lt;a href=&#34;https://travis-ci.org&#34;&gt;Travis website&lt;/a&gt;, connect with GitHub and pick the repository for which you’d like to use it.&lt;/p&gt;
-&lt;p&gt;The repo needs to contain a &lt;code&gt;.travis.yml&lt;/code&gt; file, encapsulating the instructions for Travis. You’d tempted to write &lt;code&gt;language: R&lt;/code&gt; as the first line, but if we do that Travis will implicitly assume we are developing an R package and will start looking for the &lt;code&gt;DESCRIPTION&lt;/code&gt; file we do not have. Instead, I went with the undocumented option &lt;code&gt;language: generic&lt;/code&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnoteRef&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;, as we’ll be only running Docker commands anyway.&lt;/p&gt;
+&lt;p&gt;The repo needs to contain a &lt;code&gt;.travis.yml&lt;/code&gt; file, encapsulating the instructions for Travis.
+You’d tempted to write &lt;code&gt;language: R&lt;/code&gt; as the first line, but if we do that Travis will implicitly assume we are developing an R package and will start looking for the &lt;code&gt;DESCRIPTION&lt;/code&gt; file we do not have. Instead, I went with the undocumented option &lt;code&gt;language: generic&lt;/code&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;, as we’ll be only running Docker commands anyway.&lt;/p&gt;
 &lt;p&gt;The naive approach would be to build our Docker image on every single run, instantiate a test container, run tests inside and upon success get rid of the container. Such a &lt;code&gt;.travis.yml&lt;/code&gt; would look like this:&lt;/p&gt;
 &lt;pre class=&#34;text&#34;&gt;&lt;code&gt;language: generic
 sudo: required
@@ -642,10 +868,7 @@ after_script:
 - docker rm -f test&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we’d only rebuild the changed layers after downloading the latest image from the registry.&lt;/p&gt;
 &lt;p&gt;To make sure everything is nice and up to date, we will push the changes back to Dockerhub after every successful run. We need credentials to do so, but Travis conveniently allows for defining environment variables inside the repository settings (or via the CLI):&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://i.imgur.com/gdTnLjd.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/gdTnLjd.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Now we can go wild and revamp &lt;code&gt;.travis.yml&lt;/code&gt; accordingly:&lt;/p&gt;
 &lt;pre class=&#34;text&#34;&gt;&lt;code&gt;language: generic
 sudo: required
@@ -667,10 +890,7 @@ after_success:
 - docker tag mtoto/shiny:latest mtoto/shiny:$TRAVIS_BUILD_NUMBER
 - docker push mtoto/shiny&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;After the second run (once the latest image is on Dockerhub), the build time is reduced by a factor of 10. Sweet. When we use the flag &lt;code&gt;--cache-from&lt;/code&gt;, Docker only rebuilds changed layers, ie. modifications to our shiny app. We can see this in the Travis log as &lt;code&gt;---&amp;gt; Using cache&lt;/code&gt;:&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://i.imgur.com/hTNuQhY.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/hTNuQhY.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Keep in mind when making significant changes to your dashboard, it is important to update the tests that create fresh expected outputs reflecting these changes. If you don’t trust the outputs will align, remember to use &lt;code&gt;exportTestValues()&lt;/code&gt; and fill it up with the new objects.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;was-it-all-worth-it&#34; class=&#34;section level2&#34;&gt;
@@ -680,7 +900,7 @@ after_success:
 &lt;div class=&#34;footnotes&#34;&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;In reality this points to &lt;code&gt;language: bash&lt;/code&gt;, &lt;code&gt;language: sh&lt;/code&gt; and &lt;code&gt;language: shell&lt;/code&gt;.&lt;a href=&#34;#fnref1&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;In reality this points to &lt;code&gt;language: bash&lt;/code&gt;, &lt;code&gt;language: sh&lt;/code&gt; and &lt;code&gt;language: shell&lt;/code&gt;.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -688,10 +908,10 @@ after_success:
     
     <item>
       <title>An animated neuRal net implementation</title>
-      <link>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</link>
+      <link>/blog/an-animated-neural-net-implementation/</link>
       <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/an-animated-neural-net-implementation/</guid>
+      <guid>/blog/an-animated-neural-net-implementation/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -727,7 +947,7 @@ pre code, pre, code {
 &lt;p&gt;If we break down each of the two connections into a linear function &lt;span class=&#34;math inline&#34;&gt;\(Z^{[i]}\)&lt;/span&gt; and an activation function &lt;span class=&#34;math inline&#34;&gt;\(A^{[i]}\)&lt;/span&gt;, the architecture becomes &lt;span class=&#34;math inline&#34;&gt;\(X -&amp;gt;Z^{[1]}-&amp;gt;A^{[1]}-&amp;gt;Z^{[2]}-&amp;gt;A^{[2]}\)&lt;/span&gt; with &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; as the input data.&lt;/p&gt;
 &lt;p&gt;The activation function is usually a non-linear function that enables the network to cope with non-linear problems. Examples include the &lt;a href=&#34;https://en.wikipedia.org/wiki/Sigmoid_function&#34;&gt;sigmoid function&lt;/a&gt;, &lt;a href=&#34;https://en.wikipedia.org/wiki/Rectifier_neural_networks&#34;&gt;relu&lt;/a&gt; or &lt;a href=&#34;http://mathworld.wolfram.com/HyperbolicTangent.html&#34;&gt;tanh&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Let’s take for example the connections going &lt;strong&gt;from the input layer to one hidden node&lt;/strong&gt;. If &lt;span class=&#34;math inline&#34;&gt;\(X_{m,n}\)&lt;/span&gt; is the vertically stacked dataset where &lt;em&gt;m = number of features (2)&lt;/em&gt; , &lt;em&gt;n = number of observations&lt;/em&gt;, &lt;span class=&#34;math inline&#34;&gt;\(w\)&lt;/span&gt; is a weight vector of length &lt;em&gt;m&lt;/em&gt;; the linear function in one hidden node can be formally represented as a matrix vector product:&lt;/p&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
 
 w =
  \begin{pmatrix}
@@ -739,8 +959,8 @@ w =
   x_{1,1} &amp;amp; x_{1,2} &amp;amp; \cdots &amp;amp; x_{1,n} \\
   x_{2,1} &amp;amp; x_{2,2} &amp;amp; \cdots &amp;amp; x_{2,n} \\
  \end{pmatrix}
- \end{align*}\]&lt;/span&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
+ \end{align*}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
   Z = {w^T}X + b= 
   \begin{pmatrix}
   w_{1} &amp;amp; w_{2} \\
@@ -750,8 +970,8 @@ w =
   x_{2,1} &amp;amp; x_{2,2} &amp;amp; \cdots &amp;amp; x_{2,n} \\
  \end{pmatrix} 
   + b
-\end{align*}\]&lt;/span&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
+\end{align*}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
   Z = 
     \begin{pmatrix}
       w_{1}x_{1,1} + 
@@ -762,11 +982,11 @@ w =
       w_{1}x_{1,n} + 
       w_{2}x_{2,n}+b
     \end{pmatrix}
-\end{align*}\]&lt;/span&gt;
+\end{align*}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;The activation function &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]}\)&lt;/span&gt; is the &lt;em&gt;tanh&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(A^{[1]} = \tanh(Z^{[1]})\)&lt;/span&gt;, for the output layer we’ll use the sigmoid instead &lt;span class=&#34;math inline&#34;&gt;\(A^{[2]} = \sigma(Z^{[2]})\)&lt;/span&gt;. The computation can also be visualised as a subgraph of our neural network:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;412.8&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;It turns out that this implementation scales to multiple hidden nodes without any formal change to the math. Instead of a &lt;em&gt;weight vector&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(w\)&lt;/span&gt;, we are computing the same functions using a &lt;em&gt;weight matrix&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(W\)&lt;/span&gt;. The matrix-vector product now becomes a dot product between the two matrices. With each node in the hidden layer, we add an extra row in the transposed weight matrix. The dimensionality requirements of matrix multiplication are kept intact: &lt;em&gt;The number of columns of first matrix still equal the number of rows of the second&lt;/em&gt;. But the dimensions of the output change accordingly. We go from a transposed vector of length n to an m x n matrix where &lt;em&gt;m = the number of hidden nodes&lt;/em&gt;.&lt;/p&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
 Z = {W^T}X + b= 
   \begin{pmatrix}
   w_{1,1} &amp;amp; w_{1,2} \\
@@ -778,8 +998,8 @@ Z = {W^T}X + b=
   x_{2,1} &amp;amp; \cdots &amp;amp; x_{2,n} \\
  \end{pmatrix} 
   + b
-\end{align*}\]&lt;/span&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
+\end{align*}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
   Z = 
     \begin{pmatrix}
       w_{1,1}x_{1,1} + 
@@ -795,7 +1015,7 @@ Z = {W^T}X + b=
       w_{n,1}x_{1,n} + 
        w_{n,2}x_{2,n}+b 
     \end{pmatrix}
-  \end{align*}\]&lt;/span&gt;
+  \end{align*}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The last step of going from the hidden layer to the output layer follows the same algebra. I’ll spare you the nitty gritty. Before we propagate forward for the first time, it is important to &lt;strong&gt;randomly initialize the weights&lt;/strong&gt;. Otherwise each connection will compute &lt;em&gt;the exact same thing&lt;/em&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;initialize_parameters &amp;lt;- function(n_x, n_h, n_y) {
@@ -836,10 +1056,7 @@ forward_propagation &amp;lt;- function(X, parameters) {
     return(cache)
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Each pass of forward propagation ends with a prediction. Generating a prediction for every pixel of our plot raster, we can simulate decision boundaries. As the algorithm learns, the borders slowly align with the data:&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_bounds.gif&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_bounds.gif&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;computing-the-cost&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;2. Computing the cost&lt;/h2&gt;
@@ -854,7 +1071,8 @@ forward_propagation &amp;lt;- function(X, parameters) {
         
         return(cost)
 }&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You saw how the algorithm was getting better at predicting the colors with each iteration. This is the result of reducing the cost as the model learns. &lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/costs.gif&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You saw how the algorithm was getting better at predicting the colors with each iteration. This is the result of reducing the cost as the model learns.
+&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/costs.gif&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;backward-propagation&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;3. Backward propagation&lt;/h2&gt;
@@ -862,7 +1080,7 @@ forward_propagation &amp;lt;- function(X, parameters) {
 &lt;p&gt;We first calculate the gradient of &lt;span class=&#34;math inline&#34;&gt;\(Z^{[2]}\)&lt;/span&gt; with respect to &lt;span class=&#34;math inline&#34;&gt;\(A^{[2]}\)&lt;/span&gt;, this is equal to &lt;span class=&#34;math inline&#34;&gt;\(dZ^{[2]} = A^{[2]} - Y\)&lt;/span&gt;. Based on &lt;span class=&#34;math inline&#34;&gt;\(dZ^{[2]}\)&lt;/span&gt; we then calculate the gradients of the weights (and bias terms) going from the hidden layer to the output layer. We continue going backwards until we obtain the gradients for all the weights and bias terms.&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[A^{[2]} -&amp;gt;dZ^{[2]}-&amp;gt;A^{[1]} -&amp;gt; dZ^{[1]} \\ \quad \quad  \downarrow  \quad \quad \quad \quad \quad  \quad  \downarrow \\ \quad \quad \quad dW^{[2]},db^{[2]} \quad  \quad    dW^{[1]},db^{[1]}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Below is the list of formulae we will need for the computations. Drilling further into the math is beyond the scope of this post, but there are &lt;a href=&#34;http://briandolhansky.com/blog/2013/9/27/artificial-neural-networks-backpropagation-part-4&#34;&gt;great blog posts around dedicated to the topic&lt;/a&gt;.&lt;/p&gt;
-&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{align*}
 
  dZ^{[2]} = A^{[2]} - Y &amp;amp;
  \\ dW^{[2]} = \frac{1}mdZ^{[2]}A^{[1]T} &amp;amp;
@@ -871,7 +1089,7 @@ forward_propagation &amp;lt;- function(X, parameters) {
  \\ dW^{[1]} = \frac{1}mdZ^{[1]}X^{T} &amp;amp;
  \\ db^{[1]} = \frac{1}m\sum_{n=1}^{m} dZ^{[1]}
  
-\end{align*}\]&lt;/span&gt;
+\end{align*}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;The math certainly looks scarier than &lt;code&gt;R&lt;/code&gt; code:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;backward_propagation &amp;lt;-function(parameters, cache, X, Y) {
     
@@ -917,10 +1135,7 @@ forward_propagation &amp;lt;- function(X, parameters) {
     return(parameters)
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The weight adjustments are the most dramatic at the start of the training process. As the slope towards the optimum value flattens, the rate at which weights adjust slows down as well.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_anim.gif&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_anim.gif&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;bringing-it-all-together&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Bringing it all together&lt;/h2&gt;
@@ -983,10 +1198,7 @@ nn_model &amp;lt;- function(X, Y, n_h, num_iterations = 1000) {
 # model &amp;lt;- nn_model(X,Y,n_h=4,100)
 # Predict - 100th iteration weights:
 # predictions = predict_nn(model[[1]][[100]], X)&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/result.gif&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/result.gif&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;For the plots, I used the packages &lt;a href=&#34;https://github.com/tidyverse/ggplot2&#34;&gt;ggplot&lt;/a&gt;, &lt;a href=&#34;https://github.com/thomasp85/ggraph&#34;&gt;ggraph&lt;/a&gt; &lt;a href=&#34;https://github.com/thomasp85/ggraph&#34;&gt;gganimate&lt;/a&gt;, &lt;a href=&#34;https://github.com/thomasp85/tweenr&#34;&gt;tweenr&lt;/a&gt;, &lt;a href=&#34;https://cran.r-project.org/web/packages/animation/index.html&#34;&gt;animation&lt;/a&gt;. Thanks to the creators of these awesome tools, I was able to make all the gifs using only R code. The full script for each of the animations is in the Appendix section at the &lt;a href=&#34;https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-11-11-animated_net.Rmd&#34;&gt;bottom of this .Rmd file&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -995,14 +1207,11 @@ nn_model &amp;lt;- function(X, Y, n_h, num_iterations = 1000) {
     
     <item>
       <title>A tidy text analysis of Rick and Morty</title>
-      <link>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
+      <link>/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
-      <description>&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;http://i.imgur.com/a841k9g.gif&#34; /&gt;
-
-&lt;/div&gt;
+      <guid>/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/a841k9g.gif&#34; /&gt;&lt;/p&gt;
 &lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -1057,10 +1266,7 @@ tidy_df %&amp;gt;% group_by(season) %&amp;gt;%
         labs(x = NULL) +
         guides(fill = FALSE) +
         scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-6-1.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-6-1.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Both seasons are dominated by, well, Rick and Morty. The main characters are tirelessly addressing each other, talking one another either into or out of the mess they find themselves in. What stands out most is the absence of Rick’s daughter, Beth from the top 10 in all seasons. She’s perhaps the only sane person of the family, but then again, sanity doesn’t get too much airtime on this show.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;network-analysis-on-bi-grams&#34; class=&#34;section level2&#34;&gt;
@@ -1082,24 +1288,18 @@ bigram_graph &amp;lt;- df %&amp;gt;%
 &lt;pre&gt;&lt;code&gt;## Warning in graph_from_data_frame(.): In `d&amp;#39; `NA&amp;#39; elements were replaced
 ## with string &amp;quot;NA&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;print(bigram_graph)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## IGRAPH ad72c57 DN-- 311 283 -- 
+&lt;pre&gt;&lt;code&gt;## IGRAPH bddc2ef DN-- 311 283 -- 
 ## + attr: name (v/c), season (e/c), n (e/n)
-## + edges from ad72c57 (vertex names):
+## + edges from bddc2ef (vertex names):
 ## [1] NA      -&amp;gt;NA      NA      -&amp;gt;NA      NA      -&amp;gt;NA      tiny    -&amp;gt;rick   
 ## [5] yeah    -&amp;gt;yeah   
 ##  [ reached getOption(&amp;quot;max.print&amp;quot;) -- omitted 21 entries ]
 ## + ... omitted several edges&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This igraph object contains a directed network, where the vertices are the words and an edge exists between each that appear after one another more than twice. Representing the text as a graph, we can calculate things such as &lt;a href=&#34;https://en.wikipedia.org/wiki/Centrality#Degree_centrality&#34;&gt;degree centrality&lt;/a&gt;, and plot the results.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-9-1.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-9-1.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Looking at the largest connected network, we arrive at the same conclusion as with term frequencies. Rick and Morty are the most important words. They are at the center of the network and so have the highest degree centrality scores.&lt;/p&gt;
 &lt;p&gt;Besides visualising the importance of words in our network, we can similarly differentiate between words that precede either Rick or Morty. These are all the 1st degree connections (words) that have an edge pointing towards the main characters, but aren’t shared among the them.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-10-1.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-10-1.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Looking at the red nodes, we recognize many of the things Rick throws at Morty: &lt;em&gt;“Relax Morty!…It’s science Morty!…Run Morty!”&lt;/em&gt;. There is also a handful of words that precede both characters like &lt;em&gt;“Geez”, “Boy”&lt;/em&gt; or &lt;em&gt;“God”&lt;/em&gt;. All other words that are more than one degree away, are colored blue as out of range.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;tf-idf&#34; class=&#34;section level2&#34;&gt;
@@ -1108,13 +1308,16 @@ bigram_graph &amp;lt;- df %&amp;gt;%
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tf_idf_df &amp;lt;- tidy_df %&amp;gt;% 
         count(season, word, sort = TRUE) %&amp;gt;%
         bind_tf_idf(word, season, n)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-12-1.png&#34; /&gt; What we get back are the most important elements, characters, motives or places across episodes. I’m somewhat surprised that Mr. Meeseeks didn’t come in first though. I was sure as hell annoyed out of my mind after hearing it uttered for the 100th time during the episode &lt;a href=&#34;https://en.wikipedia.org/wiki/Meeseeks_and_Destroy&#34;&gt;Meeseeks and Destroy&lt;/a&gt;. But then again, Mr Meeseeks does make a cameo in two other seasons, so that kind of torpedoes his chances for the first spot.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-12-1.png&#34; /&gt;
+What we get back are the most important elements, characters, motives or places across episodes. I’m somewhat surprised that Mr. Meeseeks didn’t come in first though. I was sure as hell annoyed out of my mind after hearing it uttered for the 100th time during the episode &lt;a href=&#34;https://en.wikipedia.org/wiki/Meeseeks_and_Destroy&#34;&gt;Meeseeks and Destroy&lt;/a&gt;. But then again, Mr Meeseeks does make a cameo in two other seasons, so that kind of torpedoes his chances for the first spot.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;topic-models&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Topic models&lt;/h2&gt;
 &lt;p&gt;Having seen the most unique words of the script by seasons, we will take our analysis one last step further and try to capture the gist of a the show using topic modeling. Broadly speaking, it’s an unsupervised classification method that tries to represent a document as a collection of topics. Here, I will take the classic &lt;a href=&#34;https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation&#34;&gt;Latent Dirichlet Allocation or shortly LDA&lt;/a&gt; algorithm for a spin. The basic idea is that&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;“…a topic is defined as a mixture over words where each word has a probability of belonging to a topic. And a document is a mixture over topics, meaning that a single document can be composed of multiple topics.”&amp;quot;&lt;/p&gt;
+&lt;p&gt;“…a topic is defined as a mixture over words where each word has a probability
+of belonging to a topic. And a document is a mixture over topics, meaning that a single
+document can be composed of multiple topics.”&amp;quot;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;We could for example take season two, and tell &lt;code&gt;LDA()&lt;/code&gt; that we want to compress 10 episodes into just 6 topics. To compensate for the omnipresence of the top words across episodes, I will exclude them for the purpose of clearer separation of topics.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(topicmodels)
@@ -1124,14 +1327,14 @@ popular_words &amp;lt;- c(&amp;quot;rick&amp;quot;,&amp;quot;morty&amp;quot;, &a
 episodes_dtm &amp;lt;- tidy_df %&amp;gt;% filter(season_num == 2 &amp;amp; !word %in% popular_words) %&amp;gt;%
         group_by(episode_num) %&amp;gt;%
         count(word, sort = TRUE) %&amp;gt;%
-        cast_dtm(episode_num, word, n) 
-
-episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;/code&gt;&lt;/pre&gt;
+        cast_dtm(episode_num, word, n) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Trying to compute distinct() for variables not found in the data:
+## - `row_col`, `column_col`
+## This is an error, but only a warning is raised for compatibility reasons.
+## The operation will return the input unchanged.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;After &lt;code&gt;tidy()&lt;/code&gt;ing the results, we can plot the top 10 words that contribute (&lt;em&gt;beta&lt;/em&gt;) to most to each topic.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-14-1.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-14-1.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There’s definitely a few topics that contain multiple elements of a particular episode. Take for example &lt;strong&gt;topic 1&lt;/strong&gt;. It includes “&lt;em&gt;Roy&lt;/em&gt;”, the name of the videogame Morty plays in the same episode “&lt;em&gt;Fart&lt;/em&gt;” appears, a gaseous creature kept under locks by aliens. Or &lt;strong&gt;topic 5&lt;/strong&gt;, which probably relates to the episode where Rick visits his old lover “&lt;em&gt;Unity&lt;/em&gt;”. It further contains words as “&lt;em&gt;remember&lt;/em&gt;” and “&lt;em&gt;memories&lt;/em&gt;”. The episode ends with Unity repeating “I want it &lt;em&gt;real&lt;/em&gt;”.&lt;/p&gt;
 &lt;p&gt;Not only can we examine the &lt;strong&gt;word per topic probabilities&lt;/strong&gt;, we can also plot &lt;strong&gt;the topic per document probabilities&lt;/strong&gt;, or &lt;em&gt;gamma&lt;/em&gt; values. This lets us see what topic belongs to what episode.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tidy(episodes_lda, matrix = &amp;quot;gamma&amp;quot;) %&amp;gt;%
@@ -1140,10 +1343,7 @@ episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;
         geom_boxplot() +
         facet_wrap(~ title) +
         ggtitle(&amp;quot;Dominant Topics per Episode&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-16-1.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-16-1.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Our previous assumptions are confirmed, the first topic does belong to the episode &lt;em&gt;Mortynight Run&lt;/em&gt; as does the fifth topic to &lt;em&gt;Auto-Erotic Assimilation&lt;/em&gt;. It is important to note that the results strongly depend on the number of topics supplied to &lt;code&gt;LDA()&lt;/code&gt;, so inevitably, some experimentation is required to arrive at meaningful results.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;final-thoughts&#34; class=&#34;section level2&#34;&gt;
@@ -1156,10 +1356,10 @@ episodes_lda &amp;lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))&lt;
     
     <item>
       <title>Self-learning Hue Lights</title>
-      <link>http://tamaszilagyi.com/blog/self-learning-hue-lights/</link>
+      <link>/blog/self-learning-hue-lights/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/self-learning-hue-lights/</guid>
+      <guid>/blog/self-learning-hue-lights/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -1289,10 +1489,10 @@ gbmFit &amp;lt;- train(y ~ ., data = training,
 table(preds, testing$y)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##         
 ## preds     dim  mid bright zero
-##   dim      71  147     15  287
-##   mid      67  137     20  142
-##   bright   37   57      0   32
-##   zero     45  102     30 4283&lt;/code&gt;&lt;/pre&gt;
+##   dim      87  186     30  325
+##   mid      43   80      6  189
+##   bright   44   74      0   20
+##   zero     46  103     29 4210&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.&lt;/p&gt;
@@ -1340,10 +1540,10 @@ jug() %&amp;gt;% post(&amp;quot;/predict-hue&amp;quot;, decorate(predict_hue)) %
     
     <item>
       <title>Creating a Spotify Playlist using Luigi</title>
-      <link>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</link>
+      <link>/blog/creating-a-spotify-playlist-using-luigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</guid>
+      <guid>/blog/creating-a-spotify-playlist-using-luigi/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -1364,10 +1564,7 @@ pre code, pre, code {
 &lt;div id=&#34;the-pipeline&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;The pipeline&lt;/h1&gt;
 &lt;p&gt;We can break down the pipeline into four tasks.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;http://tamaszilagyi.com/img/luigi2.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;http://tamaszilagyi.com/img/luigi2.png&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;cronjob-to-ping-the-api&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;1. Cronjob to ping the API&lt;/h2&gt;
 &lt;p&gt;The initial step is to ping the API, and store the raw response as a &lt;code&gt;.json&lt;/code&gt; file locally. We need to have the &lt;code&gt;client_id&lt;/code&gt;, &lt;code&gt;client_secret&lt;/code&gt; and a &lt;code&gt;refresh_token&lt;/code&gt; to generate a temporary access token. Follow the &lt;a href=&#34;https://developer.spotify.com/web-api/tutorial/&#34;&gt;Web API tutorial by Spotify&lt;/a&gt; to attain them. In turn, the access token is required to make calls to the API.&lt;/p&gt;
@@ -1589,7 +1786,8 @@ class spotify_morning_playlist(luigi.Task):
                         client=client)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;I have put all of the tasks in a file named &lt;code&gt;tasks.py&lt;/code&gt;. Luigi does not provide a scheduling mechanism out of the box, so we’ll trigger the tasks from crontab instead. For example every Monday at 7AM:&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;0 7 * * 1 /usr/bin/python /spotify/tasks.py spotify_morning_playlist&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Note that we should have the &lt;a href=&#34;http://luigi.readthedocs.io/en/stable/central_scheduler.html&#34;&gt;Central Scheduler&lt;/a&gt; running in the background for the above to execute. The neat thing is that we only need to trigger the last task, and then Luigi considers all the dependencies and runs them if needed (ie. if the target file does not exists). Additionally, Luigi has a real nice GUI running on &lt;code&gt;localhost:8082&lt;/code&gt;, where we can visualise the complete dependency graph and monitor the progress of our tasks: &lt;img src=&#34;http://tamaszilagyi.com/img/dag.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note that we should have the &lt;a href=&#34;http://luigi.readthedocs.io/en/stable/central_scheduler.html&#34;&gt;Central Scheduler&lt;/a&gt; running in the background for the above to execute. The neat thing is that we only need to trigger the last task, and then Luigi considers all the dependencies and runs them if needed (ie. if the target file does not exists). Additionally, Luigi has a real nice GUI running on &lt;code&gt;localhost:8082&lt;/code&gt;, where we can visualise the complete dependency graph and monitor the progress of our tasks:
+&lt;img src=&#34;http://tamaszilagyi.com/img/dag.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;If nothing fails, the tracks in the below playlist get updated every Monday morning:&lt;/p&gt;
 &lt;iframe src=&#34;https://open.spotify.com/embed/user/1170891844/playlist/6a2QBfOgCqFQLN08FUxpj3&#34; width=&#34;300&#34; height=&#34;380&#34; frameborder=&#34;0&#34; allowtransparency=&#34;true&#34;&gt;&lt;/iframe&gt;
 &lt;/div&gt;
@@ -1605,10 +1803,10 @@ class spotify_morning_playlist(luigi.Task):
     
     <item>
       <title>Analyzing My Spotify Listening History</title>
-      <link>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</link>
+      <link>/blog/analyzing-my-spotify-listening-history/</link>
       <pubDate>Sun, 02 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/analyzing-my-spotify-listening-history/</guid>
+      <guid>/blog/analyzing-my-spotify-listening-history/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -1838,10 +2036,7 @@ one_gen_per_a &amp;lt;- unnested %&amp;gt;%
                alpha = FALSE)
         
 gganimate(gg_life)&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;http://tamaszilagyi.com/img/lifecycle.gif&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;http://tamaszilagyi.com/img/lifecycle.gif&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;More than anything, the plot makes it obvious that I cannot go on for too long without listening to my favourite genres such as &lt;code&gt;jazz blues&lt;/code&gt;, &lt;code&gt;hip hop&lt;/code&gt; and &lt;code&gt;psychedelic trance&lt;/code&gt;. My least often played genres from the top 20 on the other hand are distributed pretty evenly across the &lt;strong&gt;recency axis&lt;/strong&gt; of my plot in the last row (containing genres with less than or equal to 50 listens).&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;whats-left&#34; class=&#34;section level1&#34;&gt;
@@ -1854,10 +2049,10 @@ gganimate(gg_life)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Starting a blog(down)</title>
-      <link>http://tamaszilagyi.com/blog/starting-a-blogdown/</link>
+      <link>/blog/starting-a-blogdown/</link>
       <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/starting-a-blogdown/</guid>
+      <guid>/blog/starting-a-blogdown/</guid>
       <description>&lt;div id=&#34;starting-an-analytics-blog&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Starting an analytics blog&lt;/h1&gt;
 &lt;p&gt;Having learned lots from the open source community over the past years - from blogs and videos to attending meetups and awesome conferences - I have decided to start a blog myself, and share some of the things I find interesting. I expect most of the posts to be &lt;code&gt;R&lt;/code&gt; specific, because that’s what I am most comfortable with. However I do enjoy fiddling with other technologies such as &lt;code&gt;Python&lt;/code&gt; or &lt;code&gt;Spark&lt;/code&gt;, so watch out! In a nuthsell though, this blog will be about using open source tools to build all sorts of cool things with &lt;strong&gt;data&lt;/strong&gt;.&lt;/p&gt;
@@ -1876,10 +2071,7 @@ blogdown::install_hugo()
 # 3 create new site
 blogdown::new_site()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;That’s it. You now have a complete folder structure initialized in your working directory:&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/img/folderstruct.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/img/folderstruct.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The local build of your new site is now running on &lt;code&gt;localhost&lt;/code&gt;. You can see it in RStudio’s Viewer, or inside a browser by clicking &lt;em&gt;Show in new window&lt;/em&gt; in the top left corner of the Viewer.&lt;/p&gt;
 &lt;p&gt;You future blog posts will reside in the &lt;code&gt;content/post&lt;/code&gt; folder. Here we find two pre-existing posts as &lt;code&gt;.Rmd&lt;/code&gt; files. We can start editing these straight away and see the results immediately after saving. Because everytime you save changes, your site is instantly rebuilt. If you come back to work on your existing site, you can simply run the function &lt;code&gt;serve_site()&lt;/code&gt; after you are done editing, and see the site regenerated accordingly in the Viewer.&lt;/p&gt;
 &lt;/div&gt;

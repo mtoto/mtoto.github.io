@@ -17,11 +17,11 @@
      Dockerized Shiny App development 
 
 </title>
-<link rel="canonical" href="http://tamaszilagyi.com/blog/dockerized-shiny-app-development/">
+<link rel="canonical" href="../../blog/dockerized-shiny-app-development/">
 
 
 <script type="text/javascript">
-    var baseURL = 'http:\/\/tamaszilagyi.com\/';
+    var baseURL = '\/';
     var host = baseURL.substring(0, baseURL.length - 1).replace(/\//g, '');
     if ((host === window.location.host) && (window.location.protocol !== 'https:')) {
         window.location.protocol = 'https:';
@@ -31,8 +31,8 @@
 
 
 
-    <link rel="stylesheet" href="http://tamaszilagyi.com/css/vs.css">
-    <script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+    <link rel="stylesheet" href="../../css/vs.css">
+    <script src="../../js/highlight.pack.js"></script>
     <script>
   hljs.initHighlightingOnLoad();
     </script>
@@ -44,10 +44,10 @@
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=1534997916">
-    <link rel="stylesheet" href="../../css/main.css?t=1534997916">
+    <link rel="stylesheet" href="../../css/reset.css?t=1538495985">
+    <link rel="stylesheet" href="../../css/main.css?t=1538495985">
     
-        <link rel="stylesheet" href="../../css/override.css?t=1534997916">
+        <link rel="stylesheet" href="../../css/override.css?t=1538495985">
     
 
 
@@ -140,7 +140,7 @@
 
 </div>
 
-                    <div class="initials"><a href="http://tamaszilagyi.com/"></a></div>
+                    <div class="initials"><a href="../../"></a></div>
                 </div>
                 <div class="meta">
                     <div class="date" title="Tue Jan 16 2018 22:13:14 -0500">Jan 16, 2018</div>
@@ -175,10 +175,7 @@ library(shinytest)
 
 recordTest(&quot;path/to/app&quot;)</code></pre>
 <p>This launches an iframe consisting of your dashboard and controls over what to test. Each interaction with the dashboard is recorded, and when you hit <strong>take snapshot</strong>, the state of your dashboard is saved, along with raw scripts to reproduce the interactions.</p>
-<div class="figure">
-<img src="https://i.imgur.com/t3xcuCX.gif" />
-
-</div>
+<p><img src="https://i.imgur.com/t3xcuCX.gif" /></p>
 <p>Upon exiting the test event recorder, a new folder <code>test/</code> is created inside the app’s directory, containing both the test script - <code>dates.R</code>, as well as the application’s state as a .json and a .png files in <code>test/dates-expected</code>. The latter serve as expected output, based on which consequent runs of tests shall be evaluated. Using my example app, <code>dates.R</code> looks like this:</p>
 <pre class="r"><code>options(shiny.testmode=TRUE)
 
@@ -273,7 +270,8 @@ docker run -d -p 80:3838 --name site mtoto/shiny:latest</code></pre>
 <h2>Integration with Travis CI</h2>
 <p>If you are a seasoned R package developer, you are no stranger to Travis CI. It is a <strong>Continuous Integration</strong> tool that automatically performs checks and runs tests on your code every time you push a commit to GitHub. The broad idea behind continuous integration is to encourage test-driven development, thereby allowing for frequent commits to the codebase without having to worry about integration problems.</p>
 <p>Travis supports many languages - including R, and can also build from Docker images. After creating an account on the <a href="https://travis-ci.org">Travis website</a>, connect with GitHub and pick the repository for which you’d like to use it.</p>
-<p>The repo needs to contain a <code>.travis.yml</code> file, encapsulating the instructions for Travis. You’d tempted to write <code>language: R</code> as the first line, but if we do that Travis will implicitly assume we are developing an R package and will start looking for the <code>DESCRIPTION</code> file we do not have. Instead, I went with the undocumented option <code>language: generic</code><a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, as we’ll be only running Docker commands anyway.</p>
+<p>The repo needs to contain a <code>.travis.yml</code> file, encapsulating the instructions for Travis.
+You’d tempted to write <code>language: R</code> as the first line, but if we do that Travis will implicitly assume we are developing an R package and will start looking for the <code>DESCRIPTION</code> file we do not have. Instead, I went with the undocumented option <code>language: generic</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, as we’ll be only running Docker commands anyway.</p>
 <p>The naive approach would be to build our Docker image on every single run, instantiate a test container, run tests inside and upon success get rid of the container. Such a <code>.travis.yml</code> would look like this:</p>
 <pre class="text"><code>language: generic
 sudo: required
@@ -292,10 +290,7 @@ after_script:
 - docker rm -f test</code></pre>
 <p>The problem here is that we are building the Docker image from scratch with every single Travis run, resulting in a build time of over 20 minutes for my simple app. But our image is on Dockerhub, so why not pull it from there and take advantage of caching. Then, we’d only rebuild the changed layers after downloading the latest image from the registry.</p>
 <p>To make sure everything is nice and up to date, we will push the changes back to Dockerhub after every successful run. We need credentials to do so, but Travis conveniently allows for defining environment variables inside the repository settings (or via the CLI):</p>
-<div class="figure">
-<img src="https://i.imgur.com/gdTnLjd.png" />
-
-</div>
+<p><img src="https://i.imgur.com/gdTnLjd.png" /></p>
 <p>Now we can go wild and revamp <code>.travis.yml</code> accordingly:</p>
 <pre class="text"><code>language: generic
 sudo: required
@@ -317,10 +312,7 @@ after_success:
 - docker tag mtoto/shiny:latest mtoto/shiny:$TRAVIS_BUILD_NUMBER
 - docker push mtoto/shiny</code></pre>
 <p>After the second run (once the latest image is on Dockerhub), the build time is reduced by a factor of 10. Sweet. When we use the flag <code>--cache-from</code>, Docker only rebuilds changed layers, ie. modifications to our shiny app. We can see this in the Travis log as <code>---&gt; Using cache</code>:</p>
-<div class="figure">
-<img src="https://i.imgur.com/hTNuQhY.png" />
-
-</div>
+<p><img src="https://i.imgur.com/hTNuQhY.png" /></p>
 <p>Keep in mind when making significant changes to your dashboard, it is important to update the tests that create fresh expected outputs reflecting these changes. If you don’t trust the outputs will align, remember to use <code>exportTestValues()</code> and fill it up with the new objects.</p>
 </div>
 <div id="was-it-all-worth-it" class="section level2">
@@ -330,7 +322,7 @@ after_success:
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>In reality this points to <code>language: bash</code>, <code>language: sh</code> and <code>language: shell</code>.<a href="#fnref1">↩</a></p></li>
+<li id="fn1"><p>In reality this points to <code>language: bash</code>, <code>language: sh</code> and <code>language: shell</code>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 
@@ -342,9 +334,9 @@ after_success:
                 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'tamas-blog';
-    var disqus_identifier = 'http:\/\/tamaszilagyi.com\/blog\/dockerized-shiny-app-development\/';
+    var disqus_identifier = '\/blog\/dockerized-shiny-app-development\/';
     var disqus_title = 'Dockerized Shiny App development';
-    var disqus_url = 'http:\/\/tamaszilagyi.com\/blog\/dockerized-shiny-app-development\/';
+    var disqus_url = '\/blog\/dockerized-shiny-app-development\/';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -395,8 +387,8 @@ ga('send', 'pageview');
 
 
 
-<link rel="stylesheet" href="http://tamaszilagyi.com//css/vs.css">
-<script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+<link rel="stylesheet" href="//css/vs.css">
+<script src="../../js/highlight.pack.js"></script>
 <script>
   hljs.initHighlightingOnLoad();
 </script>
