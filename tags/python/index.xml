@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Python on Coding with Data</title>
-    <link>/tags/python/index.xml</link>
+    <link>http://tamaszilagyi.com/tags/python/index.xml</link>
     <description>Recent content in Python on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tamaszilagyi.com/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>A tidy text analysis of Rick and Morty</title>
-      <link>/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
+      <link>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
+      <guid>http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;http://i.imgur.com/a841k9g.gif&#34; /&gt;&lt;/p&gt;
 &lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
@@ -159,10 +159,10 @@ episodes_dtm &amp;lt;- tidy_df %&amp;gt;% filter(season_num == 2 &amp;amp; !word
     
     <item>
       <title>Self-learning Hue Lights</title>
-      <link>/blog/self-learning-hue-lights/</link>
+      <link>http://tamaszilagyi.com/blog/self-learning-hue-lights/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>/blog/self-learning-hue-lights/</guid>
+      <guid>http://tamaszilagyi.com/blog/self-learning-hue-lights/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
@@ -343,10 +343,10 @@ jug() %&amp;gt;% post(&amp;quot;/predict-hue&amp;quot;, decorate(predict_hue)) %
     
     <item>
       <title>Creating a Spotify Playlist using Luigi</title>
-      <link>/blog/creating-a-spotify-playlist-using-luigi/</link>
+      <link>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>/blog/creating-a-spotify-playlist-using-luigi/</guid>
+      <guid>http://tamaszilagyi.com/blog/creating-a-spotify-playlist-using-luigi/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;

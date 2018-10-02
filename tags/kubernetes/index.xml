@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Kubernetes on Coding with Data</title>
-    <link>/tags/kubernetes/index.xml</link>
+    <link>http://tamaszilagyi.com/tags/kubernetes/index.xml</link>
     <description>Recent content in Kubernetes on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tamaszilagyi.com/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Parallelizing R code on Kubernetes</title>
-      <link>/blog/parallelizing-r-code-on-kubernetes/</link>
+      <link>http://tamaszilagyi.com/blog/parallelizing-r-code-on-kubernetes/</link>
       <pubDate>Tue, 07 Aug 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/parallelizing-r-code-on-kubernetes/</guid>
+      <guid>http://tamaszilagyi.com/blog/parallelizing-r-code-on-kubernetes/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;

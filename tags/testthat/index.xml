@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Testthat on Coding with Data</title>
-    <link>/tags/testthat/index.xml</link>
+    <link>http://tamaszilagyi.com/tags/testthat/index.xml</link>
     <description>Recent content in Testthat on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="/tags/testthat/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tamaszilagyi.com/tags/testthat/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Dockerized Shiny App development</title>
-      <link>/blog/dockerized-shiny-app-development/</link>
+      <link>http://tamaszilagyi.com/blog/dockerized-shiny-app-development/</link>
       <pubDate>Tue, 16 Jan 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/dockerized-shiny-app-development/</guid>
+      <guid>http://tamaszilagyi.com/blog/dockerized-shiny-app-development/</guid>
       <description>&lt;style type=&#34;text/css&#34;&gt;
 pre code, pre, code {
   white-space: pre !important;
