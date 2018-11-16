@@ -166,7 +166,7 @@ Our infra consists of 4 containers: One for the MySQL database, the NATS streami
 
 Without further ado, this is what the final `docker-compose.yml` file looks like:
 
-```{text eval=FALSE}
+```{yaml eval=FALSE}
 version: "3"
 
 services:
