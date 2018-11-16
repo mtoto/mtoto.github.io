@@ -117,7 +117,7 @@
 }
 /* Keyword.Type */
 .m {
-  color: #009999;
+  color: #000000;
 }
 /* Literal.Number */
 .s {
@@ -187,19 +187,19 @@
 }
 /* Text.Whitespace */
 .mf {
-  color: #009999;
+  color: #000000;
 }
 /* Literal.Number.Float */
 .mh {
-  color: #009999;
+  color: #000000;
 }
 /* Literal.Number.Hex */
 .mi {
-  color: #009999;
+  color: 000000;
 }
 /* Literal.Number.Integer */
 .mo {
-  color: #009999;
+  color: #000000;
 }
 /* Literal.Number.Oct */
 .sb {
@@ -263,6 +263,6 @@
 }
 /* Name.Variable.Instance */
 .il {
-  color: #009999;
+  color: #000000;
 }
 /* Literal.Number.Integer.Long */

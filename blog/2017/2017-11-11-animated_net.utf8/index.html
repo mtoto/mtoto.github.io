@@ -14,7 +14,7 @@
 <meta property="og:title" content="An animated neuRal net implementation" />
 <meta property="og:description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Yet another neural net from scratch tutorial? One would be forgiven to think that artificial neural networks are the newest and shiniest of modern data science. On the contrary, the main concepts have been around for decades. But it is recent progress in computational resources and the availability of massive datasets that these learning architectures revealed their true powers." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="/blog/2017/2017-11-11-animated_net/" /><meta property="article:published_time" content="2017-11-09T21:00:30-05:00"/>
+<meta property="og:url" content="/blog/2017/2017-11-11-animated_net.utf8/" /><meta property="article:published_time" content="2017-11-09T21:00:30-05:00"/>
 <meta property="article:modified_time" content="2017-11-09T21:00:30-05:00"/>
 
 
@@ -24,7 +24,7 @@
      An animated neuRal net implementation 
 
 </title>
-<link rel="canonical" href="../../../blog/2017/2017-11-11-animated_net/">
+<link rel="canonical" href="../../../blog/2017/2017-11-11-animated_net.utf8/">
 
 
 
@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2018-11-16%2003%3a47%3a05.722526%20%2b0100%20CET%20m%3d%2b0.840877788">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2018-11-16%2003%3a47%3a05.722526%20%2b0100%20CET%20m%3d%2b0.840877788">
-    <link rel="stylesheet" href="../../../css/main.css?t=2018-11-16%2003%3a47%3a05.722526%20%2b0100%20CET%20m%3d%2b0.840877788">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2018-11-16%2003%3a28%3a53.714003%20%2b0100%20CET%20m%3d%2b0.868618513">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2018-11-16%2003%3a28%3a53.714003%20%2b0100%20CET%20m%3d%2b0.868618513">
+    <link rel="stylesheet" href="../../../css/main.css?t=2018-11-16%2003%3a28%3a53.714003%20%2b0100%20CET%20m%3d%2b0.868618513">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2018-11-16%2003%3a47%3a05.722526%20%2b0100%20CET%20m%3d%2b0.840877788">
+        <link rel="stylesheet" href="../../../css/override.css?t=2018-11-16%2003%3a28%3a53.714003%20%2b0100%20CET%20m%3d%2b0.868618513">
     
 
 
@@ -174,29 +174,6 @@
         <script src="../../../js/highlight.pack.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
             
-
-
-        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
-        
-        <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({
-            tex2jax: {
-                inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-                displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-                processEscapes: true,
-                processEnvironments: true
-            },
-            // Center justify equations in code and markdown cells. Elsewhere
-            // we use CSS to left justify single line equations in code cells.
-            displayAlign: 'center',
-            "HTML-CSS": {
-                styles: {'.MathJax_Display': {"margin": 0}},
-                linebreaks: { automatic: true }
-            }
-        });
-        </script>
-
-            
         </div>
     </div>
 </section>
@@ -227,10 +204,6 @@
             <div class="markdown">
                 
 
-
-
-
-
 <style type="text/css">
 pre code, pre, code {
   white-space: pre !important;
@@ -239,105 +212,127 @@ pre code, pre, code {
   word-wrap: initial !important;
 }
 </style>
-<div id="yet-another-neural-net-from-scratch-tutorial" class="section level1">
-<h1>Yet another neural net from scratch tutorial?</h1>
-<p>One would be forgiven to think that artificial neural networks are the newest and shiniest of modern data science. On the contrary, the main concepts have been around for decades. But it is recent progress in computational resources and the availability of massive datasets that these learning architectures revealed their true powers. AlphaGo, Siri and Alexa, self-driving cars are all running on some form or other of deep artificial neural networks.</p>
-<p>The hype means the Internet is aflush with tutorials and online resources to get started. Yet, somehow R hasn’t gotten much street cred in the area. Most of the frameworks are implemented in Python, and so are the tutorials. R is supposed to be the de facto lingua franca of statistical computing, so what’s up with that?</p>
-<p>What follows is a custom build of a simple one hidden-layer neural network, where we’ll save just enough parameters at every iteration to be able to <a href="https://github.com/dgrtwo/gganimate">gganimate</a> the training process afterwards.</p>
-</div>
-<div id="the-main-ingredients" class="section level1">
-<h1>The main ingredients</h1>
-<p><img src="../../../blog/2017/2017-11-11-animated_net_files/figure-html/fig2-1.png" width="864" style="display: block; margin: auto;" /></p>
-<p>This post is mostly inspired by <a href="https://www.coursera.org/specializations/deep-learning">Andrew Ng’s Deep Learning course</a> (including the dataset), which I strongly recommend for anyone interested in neural networks. The task is to predict the color of the points in the plot on the right. While it seems like a trivial problem, linear algorithms will inevitably fail at it because the colors are not linearly separable. There’s no single line we can draw that perfectly separates the red dots from the blue dots.</p>
-<div id="how-does-the-algorithm-work" class="section level2">
-<h2>How does the algorithm work?</h2>
-<p>The input layer contains the input data. The number of nodes in the input layer is <em>always</em> equal to the number of features in the data (X, Y coordinates). The input is then <strong>1. propagated forward</strong> through the hidden layer. Number of hidden nodes and number of hidden layers can be modified at will. The edges between the nodes represent the weights, and the prediction is essentially a function of these weights.</p>
-<p>Once the data has been passed through the entire network, we get the predictions in the output node and <strong>2. compute the cost</strong> with respect to the actual labels. At each iteration, we adjust the weights to minimize this cost as much possible.</p>
-<p>How do we do that? That’s the job of <strong>3. backward propagation</strong>. By means of gradient descent, we calculate the partial derivatives of all computations with respect to what came after, alas we go <em>backwards</em>. First the derivatives of the weights of the hidden layer with respect to the output layer, and secondly those of the input layer with respect to the hidden layer. The gradients we obtain are then used to <strong>update the weights</strong> and start the process all over again. With each pass - also called <strong>epochs</strong>, we get closer to the optimal weights.</p>
-</div>
-</div>
-<div id="down-the-rabbit-hole" class="section level1">
-<h1>Down the rabbit hole</h1>
-<p>I will now explain in short and code up each of the three computations. The scripts we define will be used inside a single function call that trains the neural network. Significant overhead will be introduced by saving parameters at every iteration, but hopefully the animated plots will be worth it.</p>
-<div id="forward-propagation" class="section level2">
-<h2>1. Forward propagation</h2>
-<p>Forward propagation is the first pass through the data, calculating an output based on the weights of each edge. The connections from the input layer to each of the hidden nodes is a linear function, followed by an activation function.</p>
-<p>The computational steps of forward propagations are <span class="math inline">\(Input -&gt; Hidden -&gt; Output\)</span> .</p>
-<p>If we break down each of the two connections into a linear function <span class="math inline">\(Z^{[i]}\)</span> and an activation function <span class="math inline">\(A^{[i]}\)</span>, the architecture becomes <span class="math inline">\(X -&gt;Z^{[1]}-&gt;A^{[1]}-&gt;Z^{[2]}-&gt;A^{[2]}\)</span> with <span class="math inline">\(X\)</span> as the input data.</p>
-<p>The activation function is usually a non-linear function that enables the network to cope with non-linear problems. Examples include the <a href="https://en.wikipedia.org/wiki/Sigmoid_function">sigmoid function</a>, <a href="https://en.wikipedia.org/wiki/Rectifier_neural_networks">relu</a> or <a href="http://mathworld.wolfram.com/HyperbolicTangent.html">tanh</a>.</p>
-<p>Let’s take for example the connections going <strong>from the input layer to one hidden node</strong>. If <span class="math inline">\(X_{m,n}\)</span> is the vertically stacked dataset where <em>m = number of features (2)</em> , <em>n = number of observations</em>, <span class="math inline">\(w\)</span> is a weight vector of length <em>m</em>; the linear function in one hidden node can be formally represented as a matrix vector product:</p>
-<p><span class="math display">\[\begin{align*}
 
-w =
+<h1 id="yet-another-neural-net-from-scratch-tutorial">Yet another neural net from scratch tutorial?</h1>
+
+<p>One would be forgiven to think that artificial neural networks are the newest and shiniest of modern data science. On the contrary, the main concepts have been around for decades. But it is recent progress in computational resources and the availability of massive datasets that these learning architectures revealed their true powers. AlphaGo, Siri and Alexa, self-driving cars are all running on some form or other of deep artificial neural networks.</p>
+
+<p>The hype means the Internet is aflush with tutorials and online resources to get started. Yet, somehow R hasn’t gotten much street cred in the area. Most of the frameworks are implemented in Python, and so are the tutorials. R is supposed to be the de facto lingua franca of statistical computing, so what’s up with that?</p>
+
+<p>What follows is a custom build of a simple one hidden-layer neural network, where we’ll save just enough parameters at every iteration to be able to <a href="https://github.com/dgrtwo/gganimate">gganimate</a> the training process afterwards.</p>
+
+<h1 id="the-main-ingredients">The main ingredients</h1>
+
+<p><img src="2017-11-11-animated_net_files/figure-html/fig2-1.png" width="864" style="display: block; margin: auto;" /></p>
+
+<p>This post is mostly inspired by <a href="https://www.coursera.org/specializations/deep-learning">Andrew Ng&rsquo;s Deep Learning course</a> (including the dataset), which I strongly recommend for anyone interested in neural networks. The task is to predict the color of the points in the plot on the right. While it seems like a trivial problem, linear algorithms will inevitably fail at it because the colors are not linearly separable. There&rsquo;s no single line we can draw that perfectly separates the red dots from the blue dots.</p>
+
+<h2 id="how-does-the-algorithm-work">How does the algorithm work?</h2>
+
+<p>The input layer contains the input data. The number of nodes in the input layer is <em>always</em> equal to the number of features in the data (X, Y coordinates). The input is then    <strong>1. propagated forward</strong> through the hidden layer. Number of hidden nodes and number of hidden layers can be modified at will. The edges between the nodes represent the weights, and the prediction is essentially a function of these weights.</p>
+
+<p>Once the data has been passed through the entire network, we get the predictions in the output node and <strong>2. compute the cost</strong> with respect to the actual labels. At each iteration, we adjust the weights to minimize this cost as much possible.</p>
+
+<p>How do we do that? That&rsquo;s the job of <strong>3. backward propagation</strong>. By means of gradient descent, we calculate the partial derivatives of all computations with respect to what came after, alas we go <em>backwards</em>. First the derivatives of the weights of the hidden layer with respect to the output layer, and secondly those of the input layer with respect to the hidden layer. The gradients we obtain are then used to <strong>update the weights</strong> and start the process all over again. With each pass - also called <strong>epochs</strong>, we get closer to the optimal weights.</p>
+
+<h1 id="down-the-rabbit-hole">Down the rabbit hole</h1>
+
+<p>I will now explain in short and code up each of the three computations. The scripts we define will be used inside a single function call that trains the neural network. Significant overhead will be introduced by saving parameters at every iteration, but hopefully the animated plots will be worth it.</p>
+
+<h2 id="1-forward-propagation">1. Forward propagation</h2>
+
+<p>Forward propagation is the first pass through the data, calculating an output based on the weights of each edge. The connections from the input layer to each of the hidden nodes is a linear function, followed by an activation function.</p>
+
+<p>The computational steps of forward propagations are $Input -&gt; Hidden -&gt; Output$ .</p>
+
+<p>If we break down each of the two connections into a linear function $Z^{[i]}$ and an activation function $A^{[i]}$, the architecture becomes $X -&gt;Z^{[1]}-&gt;A^{[1]}-&gt;Z^{[2]}-&gt;A^{[2]}$ with $X$ as the input data.</p>
+
+<p>The activation function is usually a non-linear function that enables the network to cope with non-linear problems. Examples include the <a href="https://en.wikipedia.org/wiki/Sigmoid_function">sigmoid function</a>, <a href="https://en.wikipedia.org/wiki/Rectifier_neural_networks">relu</a> or <a href="http://mathworld.wolfram.com/HyperbolicTangent.html">tanh</a>.</p>
+
+<p>Let&rsquo;s take for example the connections going <strong>from the input layer to one hidden node</strong>. If $X_{m,n}$ is the vertically stacked dataset where <em>m = number of features (2)</em> , <em>n = number of observations</em>, $w$ is a weight vector of length <em>m</em>; the linear function in one hidden node can be formally represented as a matrix vector product:</p>
+
+<p>\begin{align*}</p>
+
+<p>w =
  \begin{pmatrix}
-  w_{1} \\
-  w_{2} \\
+  w<em>{1} <br />
+  w</em>{2} <br />
  \end{pmatrix};
- X = 
+ X =
  \begin{pmatrix}
-  x_{1,1} &amp; x_{1,2} &amp; \cdots &amp; x_{1,n} \\
-  x_{2,1} &amp; x_{2,2} &amp; \cdots &amp; x_{2,n} \\
+  x<em>{1,1} &amp; x</em>{1,2} &amp; \cdots &amp; x<em>{1,n} <br />
+  x</em>{2,1} &amp; x<em>{2,2} &amp; \cdots &amp; x</em>{2,n} <br />
  \end{pmatrix}
- \end{align*}\]</span></p>
-<p><span class="math display">\[\begin{align*}
-  Z = {w^T}X + b= 
+ \end{align*}</p>
+
+<p>\begin{align<em>}
+  Z = {w^T}X + b=
   \begin{pmatrix}
-  w_{1} &amp; w_{2} \\
+  w<em>{1} &amp; w</em>{2} <br />
  \end{pmatrix}
   \begin{pmatrix}
-  x_{1,1} &amp; x_{1,2} &amp; \cdots &amp; x_{1,n} \\
-  x_{2,1} &amp; x_{2,2} &amp; \cdots &amp; x_{2,n} \\
- \end{pmatrix} 
+  x<em>{1,1} &amp; x</em>{1,2} &amp; \cdots &amp; x<em>{1,n} <br />
+  x</em>{2,1} &amp; x<em>{2,2} &amp; \cdots &amp; x</em>{2,n} <br />
+ \end{pmatrix}
   + b
-\end{align*}\]</span></p>
-<p><span class="math display">\[\begin{align*}
-  Z = 
+\end{align</em>}</p>
+
+<p>\begin{align<em>}
+  Z =
     \begin{pmatrix}
-      w_{1}x_{1,1} + 
-      w_{2}x_{2,1}+b &amp; 
-      w_{1}x_{1,2}+ + 
-      w_{2}x_{2,2}+b &amp;
+      w<em>{1}x</em>{1,1} +
+      w<em>{2}x</em>{2,1}+b &amp;
+      w<em>{1}x</em>{1,2}+ +
+      w<em>{2}x</em>{2,2}+b &amp;
       \cdots &amp;
-      w_{1}x_{1,n} + 
-      w_{2}x_{2,n}+b
+      w<em>{1}x</em>{1,n} +
+      w<em>{2}x</em>{2,n}+b
     \end{pmatrix}
-\end{align*}\]</span></p>
-<p>The activation function <span class="math inline">\(A^{[1]}\)</span> is the <em>tanh</em> <span class="math inline">\(A^{[1]} = \tanh(Z^{[1]})\)</span>, for the output layer we’ll use the sigmoid instead <span class="math inline">\(A^{[2]} = \sigma(Z^{[2]})\)</span>. The computation can also be visualised as a subgraph of our neural network:</p>
-<p><img src="../../../blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-3-1.png" width="412.8" /></p>
-<p>It turns out that this implementation scales to multiple hidden nodes without any formal change to the math. Instead of a <em>weight vector</em> <span class="math inline">\(w\)</span>, we are computing the same functions using a <em>weight matrix</em> <span class="math inline">\(W\)</span>. The matrix-vector product now becomes a dot product between the two matrices. With each node in the hidden layer, we add an extra row in the transposed weight matrix. The dimensionality requirements of matrix multiplication are kept intact: <em>The number of columns of first matrix still equal the number of rows of the second</em>. But the dimensions of the output change accordingly. We go from a transposed vector of length n to an m x n matrix where <em>m = the number of hidden nodes</em>.</p>
-<p><span class="math display">\[\begin{align*}
-Z = {W^T}X + b= 
+\end{align</em>}</p>
+
+<p>The activation function $A^{[1]}$ is the <em>tanh</em>  $A^{[1]} = \tanh(Z^{[1]})$, for the output layer we&rsquo;ll use the sigmoid instead $A^{[2]} = \sigma(Z^{[2]})$. The computation can also be visualised as a subgraph of our neural network:</p>
+
+<p><img src="2017-11-11-animated_net_files/figure-html/unnamed-chunk-3-1.png" width="412.8" /></p>
+
+<p>It turns out that this implementation scales to multiple hidden nodes without any formal change to the math. Instead of a <em>weight vector</em> $w$, we are computing the same functions using a <em>weight matrix</em> $W$. The matrix-vector product now becomes a dot product between the two matrices. With each node in the hidden layer, we add an extra row in the transposed weight matrix. The dimensionality requirements of matrix multiplication are kept intact: <em>The number of columns of first matrix still equal the number of rows of the second</em>. But the dimensions of the output change accordingly. We go from a transposed vector of length n to an m x n matrix where <em>m =  the number of hidden nodes</em>.</p>
+
+<p>\begin{align<em>}
+Z = {W^T}X + b=
   \begin{pmatrix}
-  w_{1,1} &amp; w_{1,2} \\
-  \vdots  &amp; \vdots  \\
-  w_{n,1} &amp; w_{n,2}  
+  w<em>{1,1} &amp; w</em>{1,2} <br />
+  \vdots  &amp; \vdots  <br />
+  w<em>{n,1} &amp; w</em>{n,2}<br />
  \end{pmatrix}
   \begin{pmatrix}
-  x_{1,1} &amp; \cdots &amp; x_{1,n} \\
-  x_{2,1} &amp; \cdots &amp; x_{2,n} \\
- \end{pmatrix} 
+  x<em>{1,1} &amp; \cdots &amp; x</em>{1,n} <br />
+  x<em>{2,1} &amp; \cdots &amp; x</em>{2,n} <br />
+ \end{pmatrix}
   + b
-\end{align*}\]</span></p>
-<p><span class="math display">\[\begin{align*}
-  Z = 
+\end{align</em>}</p>
+
+<p>\begin{align<em>}
+  Z =
     \begin{pmatrix}
-      w_{1,1}x_{1,1} + 
-       w_{1,2}x_{2,1}+b &amp; 
+      w<em>{1,1}x</em>{1,1} +
+       w<em>{1,2}x</em>{2,1}+b &amp;
       \cdots &amp;
-      w_{1,1}x_{1,n} + 
-      w_{1,2}x_{2,n}+b 
-      \\
-      \vdots  &amp; \ddots &amp; \vdots\\
-      w_{n,1}x_{1,1} + 
-      w_{n,2}x_{2,1}+b &amp; 
+      w<em>{1,1}x</em>{1,n} +
+      w<em>{1,2}x</em>{2,n}+b
+      <br />
+      \vdots  &amp; \ddots &amp; \vdots<br />
+      w<em>{n,1}x</em>{1,1} +
+      w<em>{n,2}x</em>{2,1}+b &amp;
       \cdots &amp;
-      w_{n,1}x_{1,n} + 
-       w_{n,2}x_{2,n}+b 
+      w<em>{n,1}x</em>{1,n} +
+       w<em>{n,2}x</em>{2,n}+b
     \end{pmatrix}
-  \end{align*}\]</span></p>
-<p><img src="../../../blog/2017/2017-11-11-animated_net_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>The last step of going from the hidden layer to the output layer follows the same algebra. I’ll spare you the nitty gritty. Before we propagate forward for the first time, it is important to <strong>randomly initialize the weights</strong>. Otherwise each connection will compute <em>the exact same thing</em>.</p>
-<pre class="r"><code>initialize_parameters &lt;- function(n_x, n_h, n_y) {
+  \end{align</em>}</p>
+
+<p><img src="2017-11-11-animated_net_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+
+<p>The last step of going from the hidden layer to the output layer follows the same algebra. I&rsquo;ll spare you the nitty gritty. Before we propagate forward for the first time, it is important to <strong>randomly initialize the weights</strong>. Otherwise each connection will compute <em>the exact same thing</em>.</p>
+
+<pre><code class="language-r">initialize_parameters &lt;- function(n_x, n_h, n_y) {
 
     set.seed(2) 
     # W1 -- weight matrix of shape (n_h, n_x)
@@ -352,9 +347,12 @@ Z = {W^T}X + b=
     parameters = list(W1 = W1,b1 = b1,W2 = W2,b2 = b2)
     
     return(parameters)
-}</code></pre>
-<p>Remember the schema is <span class="math inline">\(X -&gt;Z^{[1]}-&gt;A^{[1]}-&gt;Z^{[2]}-&gt;A^{[2]}\)</span>. Both <span class="math inline">\(Z^{[1]}\)</span> and <span class="math inline">\(Z^{[2]}\)</span> are the same linear function, while <span class="math inline">\(A^{[1]} = \tanh(Z^{[1]})\)</span> and <span class="math inline">\(A^{[2]} = \sigma(Z^{[2]})\)</span>. The sigmoid function didn’t make it to <code>base</code> R, so we define it first.</p>
-<pre class="r"><code>sigmoid &lt;- function(x) {
+}
+</code></pre>
+
+<p>Remember the schema is $X -&gt;Z^{[1]}-&gt;A^{[1]}-&gt;Z^{[2]}-&gt;A^{[2]}$. Both $Z^{[1]}$ and $Z^{[2]}$ are the same linear function, while $A^{[1]} = \tanh(Z^{[1]})$ and $A^{[2]} = \sigma(Z^{[2]})$. The sigmoid function didn&rsquo;t make it to <code>base</code> R, so we define it first.</p>
+
+<pre><code class="language-r">sigmoid &lt;- function(x) {
    1 / (1 + exp(-x))
 }
 
@@ -373,15 +371,20 @@ forward_propagation &lt;- function(X, parameters) {
     cache &lt;- list(Z1=Z1,A1=A1,Z2=Z2,A2=A2)
     
     return(cache)
-}</code></pre>
+}
+</code></pre>
+
 <p>Each pass of forward propagation ends with a prediction. Generating a prediction for every pixel of our plot raster, we can simulate decision boundaries. As the algorithm learns, the borders slowly align with the data:</p>
-<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_bounds.gif" /></p>
-</div>
-<div id="computing-the-cost" class="section level2">
-<h2>2. Computing the cost</h2>
+
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_bounds.gif" alt="" /></p>
+
+<h2 id="2-computing-the-cost">2. Computing the cost</h2>
+
 <p>As we have seen above, forward propagation is nothing more than a <em>predict</em> function. When the dataset has been passed through the network, we get an output that can be compared to the actual label. The purpose of the cost function is to inform the model how far the output is from the target value. One of the most popular cost functions is log loss, formally known as:</p>
-<p><span class="math display">\[J = - \frac{1}{m} \sum\limits_{i = 0}^{m} \large\left(\small Y\log\left(A^{[2]}\right) + (1-Y)\log\left(1- A^{[2]}\right)  \large  \right) \small \]</span></p>
-<pre class="r"><code>compute_cost &lt;- function(A2, Y) {
+
+<p>$$J = - \frac{1}{m} \sum\limits_{i = 0}^{m} \large\left(\small Y\log\left(A^{[2]}\right) + (1-Y)\log\left(1- A^{[2]}\right)  \large  \right) \small $$</p>
+
+<pre><code class="language-r">compute_cost &lt;- function(A2, Y) {
         
         # Number of observations
         m &lt;- dim(Y)[2] 
@@ -389,28 +392,36 @@ forward_propagation &lt;- function(X, parameters) {
         cost &lt;- -1/m * sum(Y * log(A2) + (1-Y)*log(1-A2))
         
         return(cost)
-}</code></pre>
-<p>You saw how the algorithm was getting better at predicting the colors with each iteration. This is the result of reducing the cost as the model learns.
-<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/costs.gif" /></p>
-</div>
-<div id="backward-propagation" class="section level2">
-<h2>3. Backward propagation</h2>
-<p>Out of all building blocks of neural networks, back propagation is perhaps the most difficult to grasp. In a nutshell, it is calculating the error contribution of each weight to cost. The idea is to backward engineer the derivative or <em>slope</em> of every computation and update the weights so that the cost will decrease at each iteration.</p>
-<p>We first calculate the gradient of <span class="math inline">\(Z^{[2]}\)</span> with respect to <span class="math inline">\(A^{[2]}\)</span>, this is equal to <span class="math inline">\(dZ^{[2]} = A^{[2]} - Y\)</span>. Based on <span class="math inline">\(dZ^{[2]}\)</span> we then calculate the gradients of the weights (and bias terms) going from the hidden layer to the output layer. We continue going backwards until we obtain the gradients for all the weights and bias terms.</p>
-<p><span class="math display">\[A^{[2]} -&gt;dZ^{[2]}-&gt;A^{[1]} -&gt; dZ^{[1]} \\ \quad \quad  \downarrow  \quad \quad \quad \quad \quad  \quad  \downarrow \\ \quad \quad \quad dW^{[2]},db^{[2]} \quad  \quad    dW^{[1]},db^{[1]}\]</span></p>
-<p>Below is the list of formulae we will need for the computations. Drilling further into the math is beyond the scope of this post, but there are <a href="http://briandolhansky.com/blog/2013/9/27/artificial-neural-networks-backpropagation-part-4">great blog posts around dedicated to the topic</a>.</p>
-<p><span class="math display">\[\begin{align*}
+}
+</code></pre>
 
- dZ^{[2]} = A^{[2]} - Y &amp;
- \\ dW^{[2]} = \frac{1}mdZ^{[2]}A^{[1]T} &amp;
- \\ db^{[2]} = \frac{1}m\sum_{n=1}^{m} dZ^{[2]} &amp;
- \\ dZ^{[1]} = W^{[2]T}dZ^{[2]} * (1-A^{[1]2}) &amp;
- \\ dW^{[1]} = \frac{1}mdZ^{[1]}X^{T} &amp;
- \\ db^{[1]} = \frac{1}m\sum_{n=1}^{m} dZ^{[1]}
- 
-\end{align*}\]</span></p>
+<p>You saw how the algorithm was getting better at predicting the colors with each iteration. This is the result of reducing the cost as the model learns.
+<img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/costs.gif" alt="" /></p>
+
+<h2 id="3-backward-propagation">3. Backward propagation</h2>
+
+<p>Out of all building blocks of neural networks, back propagation is perhaps the most difficult to grasp. In a nutshell, it is calculating the error contribution of each weight to cost. The idea is to backward engineer the derivative or <em>slope</em> of every computation and update the weights so that the cost will decrease at each iteration.</p>
+
+<p>We first calculate the gradient of $Z^{[2]}$ with respect to $A^{[2]}$, this is equal to $dZ^{[2]} = A^{[2]} - Y$. Based on $dZ^{[2]}$ we then calculate the gradients of the weights (and bias terms) going from the hidden layer to the output layer. We continue going backwards until we obtain the gradients for all the weights and bias terms.</p>
+
+<p>$$A^{[2]} -&gt;dZ^{[2]}-&gt;A^{[1]} -&gt; dZ^{[1]} \ \quad \quad  \downarrow  \quad \quad \quad \quad \quad  \quad  \downarrow \ \quad \quad \quad dW^{[2]},db^{[2]} \quad  \quad    dW^{[1]},db^{[1]}$$</p>
+
+<p>Below is the list of formulae we will need for the computations. Drilling further into the math is beyond the scope of this post, but there are <a href="http://briandolhansky.com/blog/2013/9/27/artificial-neural-networks-backpropagation-part-4">great blog posts around dedicated to the topic</a>.</p>
+
+<p>\begin{align*}</p>
+
+<p>dZ^{[2]} = A^{[2]} - Y &amp;
+ \ dW^{[2]} = \frac{1}mdZ^{[2]}A^{[1]T} &amp;
+ \ db^{[2]} = \frac{1}m\sum<em>{n=1}^{m} dZ^{[2]} &amp;
+ \ dZ^{[1]} = W^{[2]T}dZ^{[2]} * (1-A^{[1]2}) &amp;
+ \ dW^{[1]} = \frac{1}mdZ^{[1]}X^{T} &amp;
+ \ db^{[1]} = \frac{1}m\sum</em>{n=1}^{m} dZ^{[1]}</p>
+
+<p>\end{align*}</p>
+
 <p>The math certainly looks scarier than <code>R</code> code:</p>
-<pre class="r"><code>backward_propagation &lt;-function(parameters, cache, X, Y) {
+
+<pre><code class="language-r">backward_propagation &lt;-function(parameters, cache, X, Y) {
     
     m = dim(X)[2]
     
@@ -431,9 +442,12 @@ forward_propagation &lt;- function(X, parameters) {
     grads &lt;- list(dW1 = dW1,db1 = db1, dW2 = dW2,db2 = db2)
     
     return(grads)
-}</code></pre>
+}
+</code></pre>
+
 <p>Having obtained the gradients, we can choose a <strong>learning rate</strong> - the size of the step - at which we wish to update the weights at each iteration. This will be the heart of the <a href="https://en.wikipedia.org/wiki/Gradient_descent">gradient descent</a> optimization we will shorty define.</p>
-<pre class="r"><code>update_parameters &lt;- function(parameters, grads, learning_rate = 5.2) {
+
+<pre><code class="language-r">update_parameters &lt;- function(parameters, grads, learning_rate = 5.2) {
 
     # Retrieve parameters
     W1 &lt;- parameters$W1; b1 &lt;- parameters$b1
@@ -452,14 +466,18 @@ forward_propagation &lt;- function(X, parameters) {
     parameters &lt;- list(W1 = W1, b1 = b1, W2 = W2, b2 = b2)
 
     return(parameters)
-}</code></pre>
+}
+</code></pre>
+
 <p>The weight adjustments are the most dramatic at the start of the training process. As the slope towards the optimum value flattens, the rate at which weights adjust slows down as well.</p>
-<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_anim.gif" /></p>
-</div>
-<div id="bringing-it-all-together" class="section level2">
-<h2>Bringing it all together</h2>
-<p>Now we have all the ingredients of a neural network, it’s only a matter of putting the pieces together in one function.</p>
-<pre class="r"><code>library(tidygraph)
+
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/test_anim.gif" alt="" /></p>
+
+<h2 id="bringing-it-all-together">Bringing it all together</h2>
+
+<p>Now we have all the ingredients of a neural network, it&rsquo;s only a matter of putting the pieces together in one function.</p>
+
+<pre><code class="language-r">library(tidygraph)
 
 nn_model &lt;- function(X, Y, n_h, num_iterations = 1000) {
 
@@ -502,9 +520,12 @@ nn_model &lt;- function(X, Y, n_h, num_iterations = 1000) {
     }
 
     return(list(list_of_params, list_of_graphs, costs))
-}</code></pre>
+}
+</code></pre>
+
 <p>Under <code># save intermediate weights for plotting</code> is the overhead introduced by saving objects for the animations throughout this post. The only thing left is the predict function, and we are good to go.</p>
-<pre class="r"><code>predict_nn&lt;-function(parameters, X) {
+
+<pre><code class="language-r">predict_nn&lt;-function(parameters, X) {
 
     # Forward propagation 
     cache = forward_propagation(X, parameters)
@@ -516,11 +537,12 @@ nn_model &lt;- function(X, Y, n_h, num_iterations = 1000) {
 # Run the model: 
 # model &lt;- nn_model(X,Y,n_h=4,100)
 # Predict - 100th iteration weights:
-# predictions = predict_nn(model[[1]][[100]], X)</code></pre>
-<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/result.gif" /></p>
+# predictions = predict_nn(model[[1]][[100]], X)
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/data/2017-11-08-net/result.gif" alt="" /></p>
+
 <p>For the plots, I used the packages <a href="https://github.com/tidyverse/ggplot2">ggplot</a>, <a href="https://github.com/thomasp85/ggraph">ggraph</a> <a href="https://github.com/thomasp85/ggraph">gganimate</a>, <a href="https://github.com/thomasp85/tweenr">tweenr</a>, <a href="https://cran.r-project.org/web/packages/animation/index.html">animation</a>. Thanks to the creators of these awesome tools, I was able to make all the gifs using only R code. The full script for each of the animations is in the Appendix section at the <a href="https://github.com/mtoto/mtoto.github.io/blob/master/blog/2017/2017-11-11-animated_net.Rmd">bottom of this .Rmd file</a>.</p>
-</div>
-</div>
 
                 <br>
                 
