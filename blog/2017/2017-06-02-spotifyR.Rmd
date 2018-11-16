@@ -3,7 +3,7 @@ title: "Analyzing My Spotify Listening History"
 author: "Tamas Szilagyi"
 date: 2017-07-02T21:13:14-05:00
 categories: ["R"]
-tags: ["Spotify", "ggplot", "dplyr", "tidyr","purrr"]
+tags: ["Spotify", "R"]
 output: html_document
 ---
 ```{css, echo = FALSE}

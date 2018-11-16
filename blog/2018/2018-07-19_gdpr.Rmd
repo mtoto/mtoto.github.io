@@ -3,7 +3,7 @@ title: "Interpretable GDPR Classifiers"
 author: "Tamas Szilagyi"
 date: 2018-06-19T22:13:14-05:00
 categories: ["R"]
-tags: ["R", "text2vec", "DALEX", "async","rvest", "rnn", "lstm"]
+tags: ["R", "text2vec", "DALEX", "async","rvest"]
 output: html_document
 ---
 ```{css, echo = FALSE}
@@ -17,8 +17,10 @@ pre code, pre, code {
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(googleCloudStorageR)
 source("~/Dropbox/my_site/public/data/2018-06-19-gdpr/functions.R")
-data <- readRDS("~/Dropbox/my_site/data/data.rds")
+data <- gcs_get_object("data.csv", bucket = "gdpr-dalex")
+
 data$is_gdpr <- ifelse(data$is_gdpr == "ja", "yes", "no")
 ```
 

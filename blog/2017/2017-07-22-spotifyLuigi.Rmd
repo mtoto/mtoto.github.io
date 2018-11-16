@@ -328,7 +328,7 @@ Note that we should have the [Central Scheduler](http://luigi.readthedocs.io/en/
 If nothing fails, the tracks in the below playlist get updated every Monday morning:
 
 ```{r, echo=FALSE, width = 100}
-htmltools::includeHTML("/Users/tamas/Dropbox/my_site/data/pls.html")
+htmltools::includeHTML("/Users/tamas/Dropbox/my_site/pls.html")
 ```
 
 ## Final thoughts

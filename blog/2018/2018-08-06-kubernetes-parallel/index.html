@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Tamas Szilagyi">
+<meta name="description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Kubernetes who? The hype around kubernetes is real, but likely also justified. Kubernetes is an open-source tool that facilitates deployment of jobs and services onto computer clusters. It provides different patterns for different type of workloads, be it API servers, databases or running batch jobs. Not only makes kubernetes running workloads and services easy, it also keeps them running.">
+
+<meta property="og:title" content="Parallelizing R code on Kubernetes" />
+<meta property="og:description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Kubernetes who? The hype around kubernetes is real, but likely also justified. Kubernetes is an open-source tool that facilitates deployment of jobs and services onto computer clusters. It provides different patterns for different type of workloads, be it API servers, databases or running batch jobs. Not only makes kubernetes running workloads and services easy, it also keeps them running." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/blog/2018/2018-08-06-kubernetes-parallel/" /><meta property="article:published_time" content="2018-08-07T22:13:14-05:00"/>
+<meta property="article:modified_time" content="2018-08-07T22:13:14-05:00"/>
+
+
+<title>
+
+
+     Parallelizing R code on Kubernetes 
+
+</title>
+<link rel="canonical" href="../../../blog/2018/2018-08-06-kubernetes-parallel/">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="../../../css/reset.css?t=2018-11-16%2002%3a52%3a09.387722%20%2b0100%20CET%20m%3d%2b0.375141223">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2018-11-16%2002%3a52%3a09.387722%20%2b0100%20CET%20m%3d%2b0.375141223">
+    <link rel="stylesheet" href="../../../css/main.css?t=2018-11-16%2002%3a52%3a09.387722%20%2b0100%20CET%20m%3d%2b0.375141223">
+    
+        <link rel="stylesheet" href="../../../css/override.css?t=2018-11-16%2002%3a52%3a09.387722%20%2b0100%20CET%20m%3d%2b0.375141223">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="../../../img/ts.png"
+
+>
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+                
+                
+                
+                
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                
+                <a href="../../../"><img class="avatar" src="../../../img/profile_pic.png" srcset="../../../img/profile_pic.png 1x"></a>
+            
+            <a href="../../../"><div class="name">Tamas Szilagyi</div></a>
+            
+              <h3 class="self-intro">Coding with Data</h3>
+            
+            <nav>
+                <ul>
+                    
+                        <li class="nav-"><a href="../../../about/about"><span>About</span></a></li>
+                    
+                        <li class="nav-"><a href="../../../blog/"><span>Blog</span></a></li>
+                    
+                        <li class="nav-"><a href="../../../consulting/consulting"><span>Consulting</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/mtoto" target="_blank" rel="noopener"><img class="icon" src="../../../img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/tudosgar" target="_blank" rel="noopener"><img class="icon" src="../../../img/twitter.svg" alt="twitter" /></a>
+        
+
+	
+
+        
+
+        
+
+        
+            <a href="//linkedin.com/in/tszilagyi" target="_blank" rel="noopener"><img class="icon" src="../../../img/linkedin.svg" alt="linkedin" /></a>
+        
+            
+        
+            <a href="//stackoverflow.com/users/4964651/mtoto?tab=profile" target="_blank" rel="noopener"><img class="icon" src="../../../img/stackoverflow.svg" alt="stackoverflow" /></a>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+            <a href="//soundcloud.com/tamas-szilagyi" target="_blank" rel="noopener"><img class="icon" src="../../../img/soundcloud.svg" alt="soundcloud" /></a>
+        
+
+        
+            <a href="mailto:tszilagyi@outlook.com"><img class="icon" src="../../../img/email.svg" alt="email" /></a>
+        
+
+        
+
+        
+            
+        <link rel="stylesheet" href="../../../css/github-gist.css" rel="stylesheet" id="theme-stylesheet">
+        <script src="../../../js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+            
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Parallelizing R code on Kubernetes
+
+</div>
+
+                    <div class="initials"><a href="../../../"></a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Tue Aug 7 2018 22:13:14 -0500'>Aug 7, 2018</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>10 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                
+
+
+<style type="text/css">
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+</style>
+<div id="kubernetes-who" class="section level1">
+<h1>Kubernetes who?</h1>
+<p>The hype around kubernetes is real, but likely also justified. Kubernetes is an open-source tool that facilitates deployment of jobs and services onto computer clusters. It provides different patterns for different type of workloads, be it API servers, databases or running batch jobs. Not only makes kubernetes running workloads and services easy, it also <a href="https://thenewstack.io/kubernetes-credited-saving-spire-service-s3-outage/">keeps them running</a>.</p>
+<p>At the core of the technology are containers, which kubernetes skillfully manages inside so-called pods. A pod represents a single instance of an application and contains one or sometimes more containers. Pods in turn live on worker nodes - actual servers - and are managed by a controller on the master node. We can interact with pods indirectly via instructions to controller.</p>
+<p><img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/infra2.png" /></p>
+<p>Mark Edmondson has already written a <a href="http://code.markedmondson.me/r-on-kubernetes-serverless-shiny-r-apis-and-scheduled-scripts/">fantastic blog post</a> about different use cases for running R application inside kubernetes. I’ll dive into the one topic he didn’t expand upon: the parallel execution of R code on kubernetes.</p>
+<p>I will similarly use GCP’s <a href="https://cloud.google.com/kubernetes-engine/">kubernetes engine</a> to deploy my jobs, however all major cloud providers have similar offerings. It’s worth mentioning that Google provides 300$ worth of credit free to spend on any of their cloud products, so you can freely experiment without burning a hole in your pocket.</p>
+</div>
+<div id="single-job-with-static-parameters" class="section level1">
+<h1>Single job with static parameters</h1>
+<p>The simplest use case of parallelization is running the same script over and over again, but in parallel instead of in a sequential order. A classic example is simulation, i.e. the random generation of numbers given a fixed set of parameters.</p>
+<p>I am taking an example from <a href="https://docs.microsoft.com/en-us/azure/batch/tutorial-r-doazureparallel#run-a-parallel-simulation">Azure’s tutorial on running R code in parallel</a>, simulating stock prices after a year (365 days) given a fixed value for standard deviation and average stock price movement per day.</p>
+<pre class="r"><code>mean_change = 1.001 
+volatility = 0.01 
+opening_price = 100 
+
+getClosingPrice &lt;- function(days) { 
+        movement &lt;- rnorm(days, mean=mean_change, sd=volatility) 
+        path &lt;- cumprod(c(opening_price, movement)) 
+        closingPrice &lt;- path[days] 
+        return(closingPrice) 
+} 
+
+replicate(1000, getClosingPrice(365)) </code></pre>
+<p>Let’s save the above script into an executable file, in our case <code>monte-carlo.R</code>, and write a minimal <code>Dockerfile</code> encapsulating the script. Remember kubernetes works with containers and can access them directly from <a href="https://hub.docker.com/">Dockerhub</a>.</p>
+<pre class="bash"><code>FROM rocker/r-base
+COPY monte-carlo.R ./</code></pre>
+<p>We build the image and upload it to Dockerhub using the docker command line tool.</p>
+<pre class="bash"><code># build image
+docker build -t mtoto/mc-demo:latest .
+# upload to docker hub
+docker push mtoto/mc-demo:latest</code></pre>
+<p>Now comes the kubernetes bit in the form of a <code>job.yaml</code> file, that contains the instructions for the controller. Note that under <code>spec:</code> we specify the number of pods to run our job on in parallel (distribution of pods over nodes is handled by kubernetes), and the number of completions. Each pod picks up a single run and exists after the script has finished. By the end of this workload 100 pods have been created, run and terminated.</p>
+<pre class="yml"><code>apiVersion: batch/v1
+kind: Job
+metadata:
+  name: static-demo
+spec:
+  parallelism: 10
+  completions: 100
+  template:
+    metadata:
+      name: static-example
+      labels:
+        jobgroup: static-example
+    spec:
+      containers:
+      - name: birthday
+        image: mtoto/mc-demo
+        command: [&quot;Rscript&quot;, &quot;monte-carlo.R&quot;]
+      restartPolicy: Never</code></pre>
+<p>With everything in place (<code>R</code> script, <code>Dockerfile</code>, <code>.yaml</code> file), we are ready to deploy our first job to kubernetes. Assuming you have <a href="https://support.google.com/cloud/answer/6158841?hl=en">enabled the relevant services</a> in the google cloud console, downloaded the <a href="https://cloud.google.com/sdk/">google cloud SDK</a> and have <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/">kubectl</a> installed, we can create our cluster and deploy our first the workload on GCP in the following way:</p>
+<pre class="bash"><code># create 4 node cluster &quot;kubepar&quot; on google kubernetes engine
+gcloud container clusters create kubepar --machine-type n1-standard-1 --num-nodes 4
+# get credentials to point kubectl to our cluster
+gcloud container clusters get-credentials kubepar
+# create job
+kubectl create -f job.yaml</code></pre>
+<p>We can monitor the progress of our job using the command <code>kubectl get pods</code>, to see how many pods have successfully run.</p>
+<p><img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/static-pods-2.png" /></p>
+<p>Similarly we can look at the state of the nodes with <code>kubectl get nodes</code> or the overall status of the job with <code>kubectl get jobs static-demo</code>. For a more detailed output, substitute <code>get</code> with <code>describe</code>, such as <code>kubectl describe pods</code>.</p>
+<p>Once the job has finished, we collect the output of our simulation from the logs of each pod and write it to a <code>.txt</code> file.</p>
+<pre class="bash"><code>for p in $(kubectl get pods -l jobgroup=static-example -o name)
+do
+  kubectl logs $p &gt;&gt; output.txt
+done</code></pre>
+<p>Reading the output into <code>R</code> we can plot the results:</p>
+<pre class="r"><code>hist(stockprices)</code></pre>
+<p><img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/stockprices.png" /></p>
+</div>
+<div id="common-template-and-multiple-parameters-using-expansion" class="section level1">
+<h1>Common template and multiple parameters using expansion</h1>
+<p>Moving on, we want to parallelize a script with different parameters at each run. Again, I am taking an example from a <a href="http://blog.revolutionanalytics.com/2018/01/doazureparallel-simulations.html">doAzureParallel tutorial</a> where</p>
+<blockquote>
+<p>… we calculate for a room of N people the probability that someone in the room shares a birthday with someone else in the room.</p>
+</blockquote>
+<p>Below is the simulation script for 100.000 rooms where we supply the number of people in the room as a command line argument.</p>
+<pre class="r"><code>#!/usr/bin/env Rscript
+args = commandArgs(trailingOnly=TRUE)
+n &lt;- as.double(args[1])
+
+pbirthdaysim &lt;- function(n) { 
+        ntests &lt;- 100000 
+        pop &lt;- 1:365 
+        anydup &lt;- function(i) 
+                any(duplicated( 
+                    sample(pop, n, replace=TRUE)))
+        sum(sapply(seq(ntests), anydup)) / ntests 
+}
+
+pbirthdaysim(n)</code></pre>
+<p>Unlike before, we are not creating a single representation of our Job object in a <code>.yaml</code> file, but a <em>Job template</em> with placeholders. The <a href="https://github.com/mtoto/kubernetes-r-playground/blob/master/expansion/Dockerfile">Dockerfile</a> is the same as before, except for the script. Don’t forget to build and upload the image before continuing.</p>
+<pre class="yaml"><code>apiVersion: batch/v1
+kind: Job
+metadata:
+  name: par-demo-$ITEM
+spec:
+  template:
+    metadata:
+      name: par-example
+      labels:
+        jobgroup: par-example
+    spec:
+      containers:
+      - name: birthday
+        image: mtoto/birthday-demo
+        command: [&quot;Rscript&quot;, &quot;birthday.R $ITEM&quot;]
+      restartPolicy: Never</code></pre>
+<p>Notice that we didn’t specify parallelization parameters nor the number of completions. It’s because we are going to <strong>expand</strong> the above template into 100 different <code>job.yaml</code> files, one for each run with a different <code>n</code> parameter (<code>$ITEM</code> in the <code>.yaml</code> fie) for the birthday simulation.</p>
+<pre class="bash"><code># create folder for jobs
+mkdir jobs
+# create job.yaml files
+for i in {1..100}
+do
+  cat job.yaml | sed &quot;s/\$ITEM/$i/&quot; &gt; ./jobs/job-$i.yaml
+done</code></pre>
+<p>With the same command as before, we create all the jobs at once: <code>kubectl create -f ./jobs</code>. Kubernetes will automatically create, distribute and run our jobs in parallel across pods on the nodes of our cluster.</p>
+<p>Using the same <code>bash</code> script as before, we can retrieve the output from each run and after read it into <code>R</code>.</p>
+<p>Plotting the results, the probability that 2 or more people will have the same birthday is 99% after 60 people are in the room.</p>
+<pre class="r"><code>plot(probabiliy, xlab=&quot;People in room&quot;, 
+     ylab=&quot;Probability of shared birthday&quot;)</code></pre>
+<p><img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/birthdays.png" /></p>
+</div>
+<div id="fine-parallel-processing-using-a-work-queue" class="section level1">
+<h1>Fine parallel processing using a work queue</h1>
+<p>In the previous example, we created all the jobs at once, which can overload the scheduler if the number of jobs is very large. A smarter approach is to create a work queue and let the pods pick them off one by one as they go along. Unlike before, each pod will work on multiple items until the queue is empty instead of creating a pod for each task.</p>
+<p>To illustrate the last approach, we will parallelize the training of different regression models, a common use case for parallelization in <code>R</code>.</p>
+<p>The function below takes the name of an algorithm, loads the dataset, creates a training set, runs a model using the caret package and finally uploads the result to google cloud storage as an <code>.rds</code> file. This way the work queue only needs to contain the names of the models to run.</p>
+<pre class="r"><code># modeling function
+run_save_model &lt;- function(method) {
+        # load pkgs and data
+        library(mlbench)
+        library(caret)
+        data(&quot;BostonHousing&quot;)
+        # split data
+        set.seed(123)
+        train_index &lt;- createDataPartition(BostonHousing$medv,1, p = .7)
+        train &lt;- BostonHousing[train_index[[1]],]
+        # train model
+        model &lt;- train(medv ~., 
+                       data = train, 
+                       method = method)
+        
+        # upload to storage bucket
+        file &lt;- sprintf(&quot;%s_model.rds&quot;, method)
+        saveRDS(model, file)
+        googleCloudStorageR::gcs_upload(file, 
+                   name = file,
+                   bucket = &quot;bostonmodels&quot;)
+}</code></pre>
+<div id="setting-up-redis-on-kubernetes" class="section level2">
+<h2>Setting up Redis on kubernetes</h2>
+<p>We’ll be using Redis for the work queue, so we need an additional pod running Redis and a service so other pods can find it. The recipes for both are within <a href="https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-pod.yaml">redis-master.yaml</a> and <a href="https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/redis-service.yaml">redis-service.yaml</a>. Similarly to jobs, we can use <code>kubectl create</code> command to start the instances and then use the Redis command line tool to add the work items to the queue.</p>
+<pre class="bash"><code># create redis pod and redis service
+kubectl create -f ./redis-pod.yaml
+kubectl create -f ./redis-service.yaml
+# create temporary interactive pod
+kubectl run temp -i --rm --tty  --image redis --command &quot;/bin/sh&quot;
+# initiate redis cli
+redis-cli -h redis
+# push items into queue named &quot;test&quot;
+rpush test &quot;lm&quot; &quot;rf&quot; &quot;gbm&quot; &quot;enet&quot; &quot;brnn&quot; &quot;bridge&quot;
+# doublecheck queue
+lrange test 0 -1</code></pre>
+<p>On the consumer side, I re-implemented the <a href="https://kubernetes.io/examples/application/job/redis/rediswq.py">Redis client from the official docs</a> in R using the <a href="https://cran.r-project.org/web/packages/redux/vignettes/redux.html">redux package</a>. The file <a href="https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/rediswq.R">rediswq.R</a> contains all the building blocks.</p>
+</div>
+<div id="giving-access-to-google-cloud-storage-from-kubernetes" class="section level2">
+<h2>Giving access to google cloud storage from kubernetes</h2>
+<p>Before we could extract the output from the logs, now we will save the models as <code>.rds</code> files on cloud storage. For this, the containers running on our cluster need write access to our storage bucket.</p>
+<p>Using GCP, we need to create a new <a href="https://cloud.google.com/compute/docs/access/service-accounts">service account</a> inside our project and under <strong>Roles</strong> give it full access to cloud storage by selecting <strong>Storage Object Admin</strong>. Make sure to check the box for <strong>Furnish a new private key</strong> and click SAVE.</p>
+<p><img src="https://github.com/mtoto/mtoto.github.io/raw/master/blog/2018/service.png" /></p>
+<p>Back to the terminal, we can save our credentials as a Secret that will be directly accessible to the kubernetes engine.</p>
+<pre class="bash"><code># create secret named &quot;gcs-key&quot;
+kubectl create secret generic gcs-key --from-file=key.json=PATH-TO-KEY-FILE.json</code></pre>
+<p>We’ll see how to use this secret in the <code>job.yaml</code> file shortly.</p>
+</div>
+<div id="worker-program" class="section level2">
+<h2>Worker program</h2>
+<p>Finally, we write a worker program that takes the work items from the Redis work queue and executes <code>run_save_model()</code>. While the pods have no knowledge of the number of work items in the queue, they notice when the queue is empty and will automatically terminate.</p>
+<pre class="r"><code>source(&quot;rediswq.R&quot;)
+source(&quot;functions.R&quot;)
+
+# connect to redis host
+host &lt;- Sys.getenv(&quot;REDIS_SERVICE_HOST&quot;)
+db &lt;- redis_init(host = host)
+vars_init(&quot;test&quot;)
+
+# authenticate gcs
+library(googleCloudStorageR)
+
+print(paste0(&quot;Worker with sessionID: &quot;, session))
+print(paste0(&quot;Initial queue state: empty=&quot;, as.character(empty())))
+
+while (!empty()) {
+        item &lt;- lease(lease_secs=10,
+                        block = TRUE,
+                        timeout = 2)
+        if (!is.null(item)) {
+                print(paste0(&quot;working on: &quot;, item))
+                # actual work
+                run_save_model(item)
+                complete(item)
+        } else {
+          print(&quot;waiting for work&quot;)       
+        }
+}
+print(&quot;queue emtpy, finished&quot;)</code></pre>
+<p>Now that we have all the scripts in place, let’s not forget to build a Docker image and upload it to Dockerhub. The <a href="https://github.com/mtoto/kubernetes-r-playground/blob/master/fine/Dockerfile">Dockerfie</a> is going to be a bit longer this time given the numerous dependencies our program needs.</p>
+<p>As for the <code>.yaml</code> file, it is very similar to what we have written before with the addition of mounting our Secret <code>gcs-key</code> as a volume so that the containers have access. We name this variable <code>GCS_AUTH_FILE</code>, which the <a href="https://github.com/cloudyr/googleCloudStorageR">googlegoogleCloudStorageR package</a> looks for when loading the library to authenticate the client.</p>
+<pre class="yaml"><code>apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fine-demo
+spec:
+  parallelism: 4
+  template:
+    metadata:
+      name: fine-example
+      labels:
+        jobgroup: fine-example
+    spec:
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: gcs-key
+      containers:
+      - name: c
+        image: mtoto/ml-demo
+        volumeMounts:
+        - name: google-cloud-key
+          mountPath: /var/secrets/google
+        env:
+        - name: GCS_AUTH_FILE
+          value: /var/secrets/google/key.json
+        command: [&quot;Rscript&quot;, &quot;worker.R&quot;]
+      restartPolicy: OnFailure</code></pre>
+<p>Just like before, we hit <code>kubectl create -f job.yaml</code> to start the job and monitor the status of the 4 pods with <code>kubectl get pods</code>. You will notice that the pods don’t exit until the queue is finished. Once they are done working on one item they pick up the next one, saving additional overhead compared to the previous two approaches.</p>
+</div>
+</div>
+<div id="trade-offs-to-keep-in-mind" class="section level1">
+<h1>Trade-offs to keep in mind</h1>
+<p>Going from static workloads to setting up work queues that feed into the workers, we are introducing additional complexity. It’s not always a good thing, especially not if modifying existing applications is costly. We could’ve done parallel machine learning just as well using parameter expansion (the second approach).</p>
+<p>On the other hand, having one Job object for each work item creates some overhead that a single Job object for all work items does not. Again, the difference will become more apparent the more work we have.</p>
+<p>Lastly, the first two approaches create as many pods as work items, requiring less modification to existing code. With the last approach however each pod can process multiple items, which is a gain in efficiency.</p>
+</div>
+
+                <br>
+                
+                  <div class="tags">
+                    <strong>Tags:</strong>
+                  
+                    <a href="../../../tags/r">R</a>
+                  
+                    <a href="../../../tags/kubernetes">kubernetes</a>
+                  
+                    <a href="../../../tags/google-cloud-platfrom">google-cloud-platfrom</a>
+                  
+                    <a href="../../../tags/docker">Docker</a>
+                  
+                  </div>
+                  <br />
+                
+                <p class="back-to-posts"><a href="../../../blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "tamas-blog" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-97386385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/r.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+

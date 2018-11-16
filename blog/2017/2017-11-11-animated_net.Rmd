@@ -65,12 +65,19 @@ dfg <- as_tbl_graph(df, directed = TRUE) %>%
                               levels = c("Input", "Hidden", "Output")))
 library(data.table)
 library(ggplot2)
+library(googleCloudStorageR)
 
-X <- as.matrix(fread( "/Users/tamas/Dropbox/my_site/data/X.csv"))
-Y <- as.matrix(fread( "/Users/tamas/Dropbox/my_site/data/Y.csv"))
+X <- gcs_get_object("X.csv")
+X[2,]<-X[1,]
+X[1,]<-as.numeric(names(X[1,]))
+X <- as.matrix(X)
+
+Y <- c(rep(0,200),rep(1,200))
+Y <- as.matrix(t(Y))
+
 data <- data.frame(cbind(t(X),t(Y)))
 data1 <- data
-data1$Y <- factor(data1$X3)
+data1$Y <- factor(data1$V3)
 
 ```
 

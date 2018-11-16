@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Coding with Data</title>
+    <link>/tags/</link>
+    <description>Recent content in Tags on Coding with Data</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 09 Nov 2017 21:00:30 -0500</lastBuildDate>
+    
+	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Ai</title>
+      <link>/tags/ai/</link>
+      <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
+      
+      <guid>/tags/ai/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Async</title>
+      <link>/tags/async/</link>
+      <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/tags/async/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Blogdown</title>
+      <link>/tags/blogdown/</link>
+      <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
+      
+      <guid>/tags/blogdown/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Caret</title>
+      <link>/tags/caret/</link>
+      <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
+      
+      <guid>/tags/caret/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Dalex</title>
+      <link>/tags/dalex/</link>
+      <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/tags/dalex/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Deep Learning</title>
+      <link>/tags/deep-learning/</link>
+      <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
+      
+      <guid>/tags/deep-learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Docker</title>
+      <link>/tags/docker/</link>
+      <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Github Pages</title>
+      <link>/tags/github-pages/</link>
+      <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
+      
+      <guid>/tags/github-pages/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Golang</title>
+      <link>/tags/golang/</link>
+      <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/tags/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Google Cloud Platfrom</title>
+      <link>/tags/google-cloud-platfrom/</link>
+      <pubDate>Tue, 07 Aug 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/tags/google-cloud-platfrom/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Hue</title>
+      <link>/tags/hue/</link>
+      <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
+      
+      <guid>/tags/hue/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kubernetes</title>
+      <link>/tags/kubernetes/</link>
+      <pubDate>Tue, 07 Aug 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Luigi</title>
+      <link>/tags/luigi/</link>
+      <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
+      
+      <guid>/tags/luigi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Nats</title>
+      <link>/tags/nats/</link>
+      <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/tags/nats/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Neural Network</title>
+      <link>/tags/neural-network/</link>
+      <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
+      
+      <guid>/tags/neural-network/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>/tags/python/</link>
+      <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
+      
+      <guid>/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>R</title>
+      <link>/tags/r/</link>
+      <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/tags/r/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Rvest</title>
+      <link>/tags/rvest/</link>
+      <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/tags/rvest/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Shiny</title>
+      <link>/tags/shiny/</link>
+      <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/tags/shiny/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Spotify</title>
+      <link>/tags/spotify/</link>
+      <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
+      
+      <guid>/tags/spotify/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Testthat</title>
+      <link>/tags/testthat/</link>
+      <pubDate>Tue, 16 Jan 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/tags/testthat/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Text2vec</title>
+      <link>/tags/text2vec/</link>
+      <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/tags/text2vec/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Travis Ci</title>
+      <link>/tags/travis-ci/</link>
+      <pubDate>Tue, 16 Jan 2018 22:13:14 -0500</pubDate>
+      
+      <guid>/tags/travis-ci/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

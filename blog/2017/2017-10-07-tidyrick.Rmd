@@ -46,7 +46,7 @@ str(df)
 
 ```{r, echo = F}
 library(subtools)
-a <- read.subtitles.serie(dir = "/Users/tamas/Dropbox/my_site/data/rick and morty/")
+a <- read.subtitles.serie(dir = "/Users/tamas/Dropbox/my_site/data1/rick and morty/")
 df <- subDataFrame(a)
 str(df)
 ```
