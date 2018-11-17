@@ -14,7 +14,7 @@
 <meta property="og:title" content="A tidy text analysis of Rick and Morty" />
 <meta property="og:description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Adventures in the multiverse For those unfamiliar with the show, Rick and Morty is an animated series about the interuniversal exploits of a half-drunk mad scientist Rick, and his daft grandson Morty. Living under one roof with his daughter, Rick constantly drags his grandson Morty along for adventures into unusual worlds inhabited by surreal creatures." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="/blog/2017/2017-10-07-tidyrick/" /><meta property="article:published_time" content="2017-10-07T23:15:14-05:00"/>
+<meta property="og:url" content="http://tamaszilagyi.com/blog/2017/2017-10-07-tidyrick/" /><meta property="article:published_time" content="2017-10-07T23:15:14-05:00"/>
 <meta property="article:modified_time" content="2017-10-07T23:15:14-05:00"/>
 
 
@@ -24,7 +24,7 @@
      A tidy text analysis of Rick and Morty 
 
 </title>
-<link rel="canonical" href="../../../blog/2017/2017-10-07-tidyrick/">
+<link rel="canonical" href="http://tamaszilagyi.com/blog/2017/2017-10-07-tidyrick/">
 
 
 
@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2018-11-16%2018%3a30%3a00.973061%20%2b0100%20CET%20m%3d%2b2.714182496">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2018-11-16%2018%3a30%3a00.973061%20%2b0100%20CET%20m%3d%2b2.714182496">
-    <link rel="stylesheet" href="../../../css/main.css?t=2018-11-16%2018%3a30%3a00.973061%20%2b0100%20CET%20m%3d%2b2.714182496">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2018-11-17%2012%3a40%3a35.164871%20%2b0100%20CET%20m%3d%2b0.457879544">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2018-11-17%2012%3a40%3a35.164871%20%2b0100%20CET%20m%3d%2b0.457879544">
+    <link rel="stylesheet" href="../../../css/main.css?t=2018-11-17%2012%3a40%3a35.164871%20%2b0100%20CET%20m%3d%2b0.457879544">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2018-11-16%2018%3a30%3a00.973061%20%2b0100%20CET%20m%3d%2b2.714182496">
+        <link rel="stylesheet" href="../../../css/override.css?t=2018-11-17%2012%3a40%3a35.164871%20%2b0100%20CET%20m%3d%2b0.457879544">
     
 
 
@@ -102,7 +102,7 @@
                     
                 
                 
-                <a href="../../../"><img class="avatar" src="../../../img/profile_pic.png" srcset="../../../img/profile_pic.png 1x"></a>
+                <a href="../../../"><img class="avatar" src="../../../img/profile_pic.png" srcset="http://tamaszilagyi.com/img/profile_pic.png 1x"></a>
             
             <a href="../../../"><div class="name">Tamas Szilagyi</div></a>
             
@@ -111,11 +111,11 @@
             <nav>
                 <ul>
                     
-                        <li class="nav-"><a href="../../../about/about"><span>About</span></a></li>
+                        <li class="nav-"><a href="http://tamaszilagyi.com/about/about"><span>About</span></a></li>
                     
-                        <li class="nav-"><a href="../../../blog/"><span>Blog</span></a></li>
+                        <li class="nav-"><a href="http://tamaszilagyi.com/blog/"><span>Blog</span></a></li>
                     
-                        <li class="nav-"><a href="../../../consulting/consulting"><span>Consulting</span></a></li>
+                        <li class="nav-"><a href="http://tamaszilagyi.com/consulting/consulting"><span>Consulting</span></a></li>
                     
                 </ul>
             </nav>
@@ -170,8 +170,8 @@
 
         
             
-        <link rel="stylesheet" href="../../../css/github-gist.css" rel="stylesheet" id="theme-stylesheet">
-        <script src="../../../js/highlight.pack.js"></script>
+        <link rel="stylesheet" href="http://tamaszilagyi.com/css/github-gist.css" rel="stylesheet" id="theme-stylesheet">
+        <script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
             
 
@@ -213,22 +213,19 @@
 
 </div>
 
-                    <div class="initials"><a href="../../../"></a></div>
+                    <div class="initials"><a href="http://tamaszilagyi.com/"></a></div>
                 </div>
                 <div class="meta">
                     
                     <div class="date" title='Sat Oct 7 2017 23:15:14 -0500'>Oct 7, 2017</div>
                     
                     
-		    <div class="reading-time"><div class="middot"></div>9 minutes read</div>
+		    <div class="reading-time"><div class="middot"></div>8 minutes read</div>
                     
                 </div>
             </div>
             <div class="markdown">
-                
-
-
-<p><img src="http://i.imgur.com/a841k9g.gif" /></p>
+                <p><img src="http://i.imgur.com/a841k9g.gif" /></p>
 <style type="text/css">
 pre code, pre, code {
   white-space: pre !important;
@@ -301,13 +298,12 @@ bigram_graph &lt;- df %&gt;%
   count(word1, word2, sort = TRUE) %&gt;%
   select(word1, word2, season, n) %&gt;%
   filter(n &gt; 2) %&gt;%
-  graph_from_data_frame()</code></pre>
-<pre><code>## Warning in graph_from_data_frame(.): In `d&#39; `NA&#39; elements were replaced
-## with string &quot;NA&quot;</code></pre>
-<pre class="r"><code>print(bigram_graph)</code></pre>
-<pre><code>## IGRAPH af7bd84 DN-- 311 283 -- 
+  graph_from_data_frame()
+
+print(bigram_graph)</code></pre>
+<pre><code>## IGRAPH 1d32034 DN-- 311 283 -- 
 ## + attr: name (v/c), season (e/c), n (e/n)
-## + edges from af7bd84 (vertex names):
+## + edges from 1d32034 (vertex names):
 ## [1] NA      -&gt;NA      NA      -&gt;NA      NA      -&gt;NA      tiny    -&gt;rick   
 ## [5] yeah    -&gt;yeah   
 ##  [ reached getOption(&quot;max.print&quot;) -- omitted 21 entries ]
@@ -344,12 +340,9 @@ popular_words &lt;- c(&quot;rick&quot;,&quot;morty&quot;, &quot;yeah&quot;,&quot
 episodes_dtm &lt;- tidy_df %&gt;% filter(season_num == 2 &amp; !word %in% popular_words) %&gt;%
         group_by(episode_num) %&gt;%
         count(word, sort = TRUE) %&gt;%
-        cast_dtm(episode_num, word, n) </code></pre>
-<pre><code>## Warning: Trying to compute distinct() for variables not found in the data:
-## - `row_col`, `column_col`
-## This is an error, but only a warning is raised for compatibility reasons.
-## The operation will return the input unchanged.</code></pre>
-<pre class="r"><code>episodes_lda &lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))</code></pre>
+        cast_dtm(episode_num, word, n) 
+
+episodes_lda &lt;- LDA(episodes_dtm, k = 6, control = list(seed = 1234))</code></pre>
 <p>After <code>tidy()</code>ing the results, we can plot the top 10 words that contribute (<em>beta</em>) to most to each topic.</p>
 <p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2017/2017-10-07-tidyrick_files/figure-html/unnamed-chunk-14-1.png" /></p>
 <p>There’s definitely a few topics that contain multiple elements of a particular episode. Take for example <strong>topic 1</strong>. It includes “<em>Roy</em>”, the name of the videogame Morty plays in the same episode “<em>Fart</em>” appears, a gaseous creature kept under locks by aliens. Or <strong>topic 5</strong>, which probably relates to the episode where Rick visits his old lover “<em>Unity</em>”. It further contains words as “<em>remember</em>” and “<em>memories</em>”. The episode ends with Unity repeating “I want it <em>real</em>”.</p>
@@ -374,11 +367,11 @@ episodes_dtm &lt;- tidy_df %&gt;% filter(season_num == 2 &amp; !word %in% popula
                   <div class="tags">
                     <strong>Tags:</strong>
                   
-                    <a href="../../../tags/hue">Hue</a>
+                    <a href="../../../tags/tidytext">tidytext</a>
                   
                     <a href="../../../tags/r">R</a>
                   
-                    <a href="../../../tags/python">Python</a>
+                    <a href="../../../tags/tidyverse">tidyverse</a>
                   
                   </div>
                   <br />

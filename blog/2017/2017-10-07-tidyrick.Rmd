@@ -3,7 +3,7 @@ title: "A tidy text analysis of Rick and Morty"
 author: "Tamas Szilagyi"
 date: 2017-10-07T23:15:14-05:00
 categories: ["R"]
-tags: ["Hue", "R", "Python"]
+tags: ["tidytext", "R", "tidyverse"]
 output: html_document
 ---
 
@@ -112,7 +112,7 @@ stop_words <- stop_words %>%
                          lexicon = "custom"))
 ```
 
-```{r}
+```{r, warning = FALSE}
 library(tidyr)
 library(igraph)
 
@@ -234,7 +234,7 @@ document can be composed of multiple topics.""
 
 We could for example take season two, and tell `LDA()` that we want to compress 10 episodes into just 6 topics. To compensate for the omnipresence of the top words across episodes, I will exclude them for the purpose of clearer separation of topics.
 
-```{r}
+```{r, warning = FALSE}
 library(topicmodels)
 popular_words <- c("rick","morty", "yeah","hey",
                    "summer", "jerry", "uh", "gonna")

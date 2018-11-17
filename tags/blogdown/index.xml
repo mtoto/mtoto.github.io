@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blogdown on Coding with Data</title>
-    <link>/tags/blogdown/</link>
+    <link>http://tamaszilagyi.com/tags/blogdown/</link>
     <description>Recent content in Blogdown on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 14 May 2017 21:13:14 -0500</lastBuildDate>
     
-	<atom:link href="/tags/blogdown/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://tamaszilagyi.com/tags/blogdown/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Starting a blog(down)</title>
-      <link>/blog/2017/2017-05-14-blogdown/</link>
+      <link>http://tamaszilagyi.com/blog/2017/2017-05-14-blogdown/</link>
       <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
       
-      <guid>/blog/2017/2017-05-14-blogdown/</guid>
+      <guid>http://tamaszilagyi.com/blog/2017/2017-05-14-blogdown/</guid>
       <description>Starting an analytics blog Having learned lots from the open source community over the past years - from blogs and videos to attending meetups and awesome conferences - I have decided to start a blog myself, and share some of the things I find interesting. I expect most of the posts to be R specific, because that’s what I am most comfortable with. However I do enjoy fiddling with other technologies such as Python or Spark, so watch out!</description>
     </item>
     
