@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-13%2019%3a36%3a10.7929%20%2b0100%20CET%20m%3d%2b0.384160359">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-13%2019%3a36%3a10.7929%20%2b0100%20CET%20m%3d%2b0.384160359">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-13%2019%3a36%3a10.7929%20%2b0100%20CET%20m%3d%2b0.384160359">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-13%2019%3a53%3a12.188371%20%2b0100%20CET%20m%3d%2b0.562098664">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-13%2019%3a53%3a12.188371%20%2b0100%20CET%20m%3d%2b0.562098664">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-13%2019%3a53%3a12.188371%20%2b0100%20CET%20m%3d%2b0.562098664">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-13%2019%3a36%3a10.7929%20%2b0100%20CET%20m%3d%2b0.384160359">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-13%2019%3a53%3a12.188371%20%2b0100%20CET%20m%3d%2b0.562098664">
     
 
 
@@ -255,9 +255,9 @@ pre code, pre, code {
 <p>Densenets have several compelling advantages: they alleviate the vanishing-gradient
 problem, strengthen feature propagation, encourage feature reuse, and substantially reduce the number of parameters. <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
 </blockquote>
-<p><img src="densenet.png" /></p>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/densenet.png" /></p>
 <p>And here is the architecture of the different densenets.</p>
-<p><img src="dense_table.png" /></p>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/dense_table.png" /></p>
 <p>Doing transfer learning with DenseNets is as easy as the below according to the package README.</p>
 <pre class="python"><code>import tensorflow as tf
 import tensornets as nets
@@ -307,7 +307,7 @@ with tf.Session() as sess:
 <p>A common way to feed data in TensorFlow is with <code>feed_dict</code>. Training data is usually loaded as numpy arrays and reshaped to <code>(batch_size*pixel*pixel*channel)</code>, which is the shape of the placeholder. If your data doesn’t fit into memory, you are out of luck and will be forced to write <em>a lot</em> of boilerplate code for I/O. Besides the verbosity, this approach tends to be slower as computation ends up waiting for new data.</p>
 <p>The Dataset API aims to provide a unifying framework for loading, transforming and consuming data. The main advantage is loading data batch per batch, while the preprocessing steps for the following batch are simultaneously performed in the background. The result is lower memory footprint, and a continuous stream of preprocessed training data to the accelerator with no idle time.</p>
 <p>For the purpose of this post, I took on the fer2013 dataset from the Kaggle competition <a href="https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data">Facial Expression Recognition Challenge</a> from six years ago. The training data consists of 28.709 grayscale images with 48*48 pixel resolution. The target column is an integer indicating one of the 7 emotions, and the pixels column is a space separated string of 2.304 pixels. A rather unusual format for image data if you ask me. To get an idea though, here is three pictures from the dataset:</p>
-<p><img src="fer1.png" title="title-1" /> <img src="fer2.png" title="Angry" /></p>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/fer1.png" /> <img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/fer2.png" /></p>
 <p>With the Dataset API, we can load data from many sources including numpy arrays, tensors, text files, csv’s or even folders. In addition, dataset objects come with a handful handy methods for data preparation.</p>
 <ul>
 <li><code>.skip()</code>: Most datasets have a header row to be ignored.</li>
@@ -517,7 +517,7 @@ while(True):
 cap.release()
 cv2.destroyAllWindows()</code></pre>
 <p>Running this, the detected expression is displayed above the bounding box for your face.</p>
-<p><img src="emotins.png" title="webcam" /></p>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/emotins.png" /></p>
 </div>
 <div id="thats-all-folks" class="section level2">
 <h2>That’s all folks</h2>

@@ -38,11 +38,11 @@ For this particular project I picked dense convolutional networks (DenseNets in 
 > Densenets have several compelling advantages: they alleviate the vanishing-gradient
 problem, strengthen feature propagation, encourage feature reuse, and substantially reduce the number of parameters. [^1]
 
-![](./densenet.png)
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/densenet.png)
 
 And here is the architecture of the different densenets.
 
-![](./dense_table.png)
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/dense_table.png)
 
 Doing transfer learning with DenseNets is as easy as the below according to the package README.
 
@@ -107,7 +107,7 @@ The Dataset API aims to provide a unifying framework for loading, transforming a
 
 For the purpose of this post, I took on the fer2013 dataset from the Kaggle competition [Facial Expression Recognition Challenge](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data) from six years ago. The training data consists of 28.709 grayscale images with 48*48 pixel resolution. The target column is an integer indicating one of the 7 emotions, and the pixels column is a space separated string of 2.304 pixels. A rather unusual format for image data if you ask me. To get an idea though, here is three pictures from the dataset:
 
-![](fer1.png "title-1") ![](fer2.png "Angry")
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/fer1.png) ![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/fer2.png)
 
 
 With the Dataset API, we can load data from many sources including numpy arrays, tensors, text files, csv's or even folders. In addition, dataset objects come with a handful handy methods for data preparation. 
@@ -313,7 +313,7 @@ cv2.destroyAllWindows()
 
 Running this, the detected expression is displayed above the bounding box for your face.
 
-![](emotins.png "webcam") 
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/emotins.png) 
 
 ## That's all folks
 
