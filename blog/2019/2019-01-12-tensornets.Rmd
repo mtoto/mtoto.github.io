@@ -31,7 +31,7 @@ In case of fine-tuning, not only do we retrain the classifier at the end of the 
 
 ## And now, Tensornets
 
-There is a wide range of pre-trained model to choose from for object detection. Thanks to extensive research in the area performance have been skyrocketing. The latest models can detect 1,000 different objects in a regular picture with 95% accuracy. 
+There is a wide range of pre-trained models to choose from for object detection. Thanks to extensive research in the area performance have been skyrocketing. The latest models can detect 1,000 different objects in a regular picture with 95% accuracy. 
 
 For this particular project I picked dense convolutional networks (DenseNets in short), for no obvious reason other than being the example on [tensornets' GitHub repo](https://github.com/taehoonlee/tensornets/#Examples). But now that we here: DenseNets are like convolutional networks with the main difference that each layer serves as an input to all subsequent layers. With regular CNN's each layer is only connected to the following one.  According to the [paper from 2016](https://arxiv.org/pdf/1608.06993.pdf):
 
@@ -176,7 +176,7 @@ validation_init_op=iterator.make_initializer(valid_dataset)
 # loss = tf.losses.softmax_cross_entropy(y, model)
 ```
 
-Running `sess.run(training_init_op)` before training and `sess.run(validation_init_op)` before testing ensures that we are loading the right dataset. Doing data preparation this way, we get rid of the `feed_dict` mechanism for data ingestion and can plug the values from `iterator.get_next()` straight into the graph instead. Last but not least, we should also checkpoint the model's progress with `tf.train.Saver()`.
+Running `sess.run(training_init_op)` before training and `sess.run(validation_init_op)` before testing ensures that we are loading the right dataset. Doing data preparation this way, we get rid of the `feed_dict` mechanism for data ingestion and can plug the values from `iterator.get_next()` straight into the graph. Last but not least, we should also checkpoint the model's progress with `tf.train.Saver()`.
 
 ```{python, eval = F}
 with tf.Session() as sess:

@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-13%2020%3a54%3a01.209662%20%2b0100%20CET%20m%3d%2b0.432671471">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-13%2020%3a54%3a01.209662%20%2b0100%20CET%20m%3d%2b0.432671471">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-13%2020%3a54%3a01.209662%20%2b0100%20CET%20m%3d%2b0.432671471">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-13%2021%3a09%3a46.768957%20%2b0100%20CET%20m%3d%2b0.416725752">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-13%2021%3a09%3a46.768957%20%2b0100%20CET%20m%3d%2b0.416725752">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-13%2021%3a09%3a46.768957%20%2b0100%20CET%20m%3d%2b0.416725752">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-13%2020%3a54%3a01.209662%20%2b0100%20CET%20m%3d%2b0.432671471">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-13%2021%3a09%3a46.768957%20%2b0100%20CET%20m%3d%2b0.416725752">
     
 
 
@@ -249,7 +249,7 @@ pre code, pre, code {
 </div>
 <div id="and-now-tensornets" class="section level2">
 <h2>And now, Tensornets</h2>
-<p>There is a wide range of pre-trained model to choose from for object detection. Thanks to extensive research in the area performance have been skyrocketing. The latest models can detect 1,000 different objects in a regular picture with 95% accuracy.</p>
+<p>There is a wide range of pre-trained models to choose from for object detection. Thanks to extensive research in the area performance have been skyrocketing. The latest models can detect 1,000 different objects in a regular picture with 95% accuracy.</p>
 <p>For this particular project I picked dense convolutional networks (DenseNets in short), for no obvious reason other than being the example on <a href="https://github.com/taehoonlee/tensornets/#Examples">tensornets’ GitHub repo</a>. But now that we here: DenseNets are like convolutional networks with the main difference that each layer serves as an input to all subsequent layers. With regular CNN’s each layer is only connected to the following one. According to the <a href="https://arxiv.org/pdf/1608.06993.pdf">paper from 2016</a>:</p>
 <blockquote>
 <p>DenseNets have several compelling advantages: they alleviate the vanishing-gradient
@@ -361,7 +361,7 @@ validation_init_op=iterator.make_initializer(valid_dataset)
 # And now this works:
 # model = nets.DenseNet169(x, is_training=is_train, classes=7)
 # loss = tf.losses.softmax_cross_entropy(y, model)</code></pre>
-<p>Running <code>sess.run(training_init_op)</code> before training and <code>sess.run(validation_init_op)</code> before testing ensures that we are loading the right dataset. Doing data preparation this way, we get rid of the <code>feed_dict</code> mechanism for data ingestion and can plug the values from <code>iterator.get_next()</code> straight into the graph instead. Last but not least, we should also checkpoint the model’s progress with <code>tf.train.Saver()</code>.</p>
+<p>Running <code>sess.run(training_init_op)</code> before training and <code>sess.run(validation_init_op)</code> before testing ensures that we are loading the right dataset. Doing data preparation this way, we get rid of the <code>feed_dict</code> mechanism for data ingestion and can plug the values from <code>iterator.get_next()</code> straight into the graph. Last but not least, we should also checkpoint the model’s progress with <code>tf.train.Saver()</code>.</p>
 <pre class="python"><code>with tf.Session() as sess:
        
        sess.run(training_init_op)
