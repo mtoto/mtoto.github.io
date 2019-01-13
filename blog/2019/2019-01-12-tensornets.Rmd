@@ -67,7 +67,7 @@ If you have seen TensorFlow code, this looks quite straightforward. However, the
 
 Secondly, keep in mind that the input tensor size is fixed, so we'll need to reshape our images to fit `224*224*3`. The output tensor shape on the other hand can be changed to equal the number of classes in our specific use case. 
 
-Thirdly, we need to set the `is_training=` flag to `True` during training and to `False` during testing. Under the hood, this points to the argument of the same name for the batch normalization layers. This layer is responsible for normalizing activation layers based on the statistics of each batch during training. 
+Thirdly, we need to set the `is_training=` flag to `True` during training and to `False` during testing. Under the hood, this points to the argument of the same name for the batch normalization layers. These layers are responsible for normalizing activation layers based on the statistics of each batch during training. 
 
 However, during test time not only do we need to turn it off, we also need the global statistics (`moving_mean` and `moving_variance`) from all batches to use as constants. Somewhat strangely, these values [don't get updated during training by default](https://github.com/tensorflow/tensorflow/blob/a6d8ffae097d0132989ae4688d224121ec6d8f35/tensorflow/contrib/layers/python/layers/layers.py#L200), and we are left with the statistics of the last batch. This needs to be fixed.
 
@@ -87,7 +87,7 @@ accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name="accuracy")
 train_list = model.get_weights() # get list of weights
 update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS) # update batch stats during training
 with tf.control_dependencies(update_ops):               # only train last "block"
-    train = tf.train.AdamOptimizer(1e-5).minimize(loss, var_list[520:]) 
+    train = tf.train.AdamOptimizer(1e-5).minimize(loss, train_list[520:]) 
  
 with tf.Session() as sess:
     sess.run(model.pretrained())
@@ -103,11 +103,11 @@ with tf.Session() as sess:
 
 ## Preprocessing with the Dataset API
 
-A common way to feed data in TensorFlow is with `feed_dict`. Training data is usually loaded as numpy arrays and reshaped to `(batch_size*pixel*pixel*channel)`, which is the shape of the placeholder. If your data doesn't fit into memory, you are out of luck and will be forced to write *a lot* of boilerplate code for I/O. Besides the verbosity, this approach tends to be slower as computation ends up waiting for new data.
+A common way to feed data in TensorFlow is with `feed_dict`. Training data is usually loaded as numpy arrays and reshaped to `(batch_size*pixel*pixel*channel)`, the shape of the placeholder. If your data doesn't fit into memory, you are out of luck and will be forced to write *a lot* of boilerplate code for I/O. Besides the verbosity, this approach tends to be slower as computation ends up waiting for new data.
 
 The Dataset API aims to provide a unifying framework for loading, transforming and consuming data. The main advantage is loading data batch per batch, while the preprocessing steps for the following batch are simultaneously performed in the background. The result is lower memory footprint, and a continuous stream of preprocessed training data to the accelerator with no idle time. 
 
-For the purpose of this post, I took on the fer2013 dataset from the Kaggle competition [Facial Expression Recognition Challenge](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data) from six years ago. The training data consists of 28.709 grayscale images with 48*48 pixel resolution. The target column is an integer indicating one of the 7 emotions, and the pixels column is a space separated string of 2.304 pixels. A rather unusual format for image data if you ask me. To get an idea though, here is three pictures from the dataset:
+For the purpose of this post, I took on the fer2013 dataset from the Kaggle competition [Facial Expression Recognition Challenge](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data) from six years ago. The training data consists of 28.709 grayscale images with 48*48 pixel resolution. The target column is an integer indicating one of the 7 emotions, and the pixels column is a space separated string of 2.304 pixels. A rather unusual format for image data if you ask me. To get an idea though, here is two pictures from the dataset:
 
 ![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/fer1.png) ![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/fer2.png)
 
@@ -133,7 +133,7 @@ train_dataset=tf.data.TextLineDataset("path/to/train.csv") \
         .prefetch(1)
 ```
 
-The `parse_csv()` defines how get from the aforementioned .csv file to tensor. This can be written using TensorFlow functions too. 
+The function `parse_csv()` defines how get from the aforementioned .csv file to tensors. This can be written using TensorFlow functions too. 
 
 ```{python, eval = F}
 CSV_COLUMNS=['emotion', 'pixels']
@@ -176,7 +176,7 @@ validation_init_op=iterator.make_initializer(valid_dataset)
 # loss = tf.losses.softmax_cross_entropy(y, model)
 ```
 
-Running `sess.run(training_init_op)` before training and `sess.run(validation_init_op)` before testing ensures that we are loading the right dataset. Defining data preparation this way, we can get rid of the `feed_dict` mechanism for data ingestion and can plug the values from `iterator.get_next()` straight into the graph instead. Last but not least, we should also checkpoint the model's progress `tf.train.Saver()`.
+Running `sess.run(training_init_op)` before training and `sess.run(validation_init_op)` before testing ensures that we are loading the right dataset. Doing data preparation this way, we get rid of the `feed_dict` mechanism for data ingestion and can plug the values from `iterator.get_next()` straight into the graph instead. Last but not least, we should also checkpoint the model's progress with `tf.train.Saver()`.
 
 ```{python, eval = F}
 with tf.Session() as sess:
@@ -205,12 +205,12 @@ with tf.Session() as sess:
 
 I could *in theory* train this on my Macbook Air - perhaps with a batch size of 1 - but why torment my machine when I can outsource the job to Google. Submitting TensorFlow programs to the Cloud ML Engine is easy (and cheap) enough with the `gcloud command-line tool`. It is recommended to upload your training and validation data to Google Cloud Storage first. Then, by parametrising the trainer program, you can supply these as additional arguments when submitting the job. 
 
-You also need to select a region, resource type, the package-path of your trainer program and the module's name, a staging bucket on GCS and the path to the tarballs of packages that you need. 
+You also need to select a region, resource type, the package-path of your trainer program and the module's name, a staging bucket on GCS and the path to the tarballs of packages that you need [besides the defaults](https://cloud.google.com/ml-engine/docs/tensorflow/runtime-version-list). 
 
 Job status can be monitored in the [Cloud Console](https://console.cloud.google.com/mlengine) or streamed  directly to our terminal with `gcloud ml-engine jobs stream-logs jobname`.
 
 ```{bash, eval = F}
-gcloud ml-engine jobs submit training 'fer2013' --region europe-west1 \
+gcloud ml-engine jobs submit training 'jobname' --region europe-west1 \
                            --scale-tier 'basic-gpu' \
                            --package-path trainer/ \
                            --staging-bucket 'gs://bucketname' \
@@ -224,7 +224,7 @@ gcloud ml-engine jobs submit training 'fer2013' --region europe-west1 \
                            ...
 ```
 
-I have experimented with all flavors of transfer learning for this task, and got the best result with fine tuning the last convulational block only. The worst result came from training just the classification layer. This makes sense as a dataset of cropped gray faces is too different from your regular ImageNet picture for feature extraction to be sufficient. But neither is updating all the weights necessary.
+I have experimented with all flavors of transfer learning for this task, and got the best results with fine tuning the last convulational block only. The worst result came from training just the classification layer. This makes sense as a dataset of cropped gray faces is too different from your regular ImageNet picture for feature extraction to be sufficient. But neither is updating all the weights necessary.
 
 
 ```{r, eval = TRUE, echo = FALSE}
@@ -240,7 +240,7 @@ kable_styling()
 
 ## Inference and beyond
 
-There is a myriad of options to serve a TensorFlow model. Either way, the checkpoint files we saved will need to be transformed. They are useful for restoring model state, but not suited for inference just yet. Weights of the model need to be frozen, training nodes stripped, constants folded (values like batch norms), and overall, we need optimize the model for inference. For an in-depth discussion of these transformations, check out [Lukman Ramsey's awesome article on Medium](https://medium.com/google-cloud/optimizing-tensorflow-models-for-serving-959080e9ddbf), here I will solely focus on implementation.  
+There is a myriad of options to serve a TensorFlow model. Either way, the checkpoint files we saved will need to be transformed. They are useful for restoring model state, but not suited for inference just yet. Weights of the model need to be frozen, training nodes stripped, constants folded (values like batch norms), and overall, we need optimize the model for inference. For an in-depth discussion of these transformations, check out [Lukman Ramsey's awesome article on Medium](https://medium.com/google-cloud/optimizing-tensorflow-models-for-serving-959080e9ddbf); here I will solely focus on implementation.  
 
 ```{python, eval = F}
 from tensorflow.python.tools import optimize_for_inference_lib

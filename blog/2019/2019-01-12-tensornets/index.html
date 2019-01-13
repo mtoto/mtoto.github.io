@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-13%2020%3a10%3a08.372044%20%2b0100%20CET%20m%3d%2b0.388118569">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-13%2020%3a10%3a08.372044%20%2b0100%20CET%20m%3d%2b0.388118569">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-13%2020%3a10%3a08.372044%20%2b0100%20CET%20m%3d%2b0.388118569">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-13%2020%3a54%3a01.209662%20%2b0100%20CET%20m%3d%2b0.432671471">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-13%2020%3a54%3a01.209662%20%2b0100%20CET%20m%3d%2b0.432671471">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-13%2020%3a54%3a01.209662%20%2b0100%20CET%20m%3d%2b0.432671471">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-13%2020%3a10%3a08.372044%20%2b0100%20CET%20m%3d%2b0.388118569">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-13%2020%3a54%3a01.209662%20%2b0100%20CET%20m%3d%2b0.432671471">
     
 
 
@@ -275,7 +275,7 @@ with tf.Session() as sess:
         sess.run(train, feed_dict={inputs: x, outputs: y})</code></pre>
 <p>If you have seen TensorFlow code, this looks quite straightforward. However, there is a few gotchas when implementing this IRL. As mentioned, transfer learning has different flavors, the above being an example of fine-tuning the entire network. That is to say all updates are going to be backpropagated to all layers. If we wish to freeze some layers, we can pass the list of weights we do want to train to the <code>minimize()</code> method of the optimizer: <code>.minimize(loss,var_list=train_list)</code>.</p>
 <p>Secondly, keep in mind that the input tensor size is fixed, so we’ll need to reshape our images to fit <code>224*224*3</code>. The output tensor shape on the other hand can be changed to equal the number of classes in our specific use case.</p>
-<p>Thirdly, we need to set the <code>is_training=</code> flag to <code>True</code> during training and to <code>False</code> during testing. Under the hood, this points to the argument of the same name for the batch normalization layers. This layer is responsible for normalizing activation layers based on the statistics of each batch during training.</p>
+<p>Thirdly, we need to set the <code>is_training=</code> flag to <code>True</code> during training and to <code>False</code> during testing. Under the hood, this points to the argument of the same name for the batch normalization layers. These layers are responsible for normalizing activation layers based on the statistics of each batch during training.</p>
 <p>However, during test time not only do we need to turn it off, we also need the global statistics (<code>moving_mean</code> and <code>moving_variance</code>) from all batches to use as constants. Somewhat strangely, these values <a href="https://github.com/tensorflow/tensorflow/blob/a6d8ffae097d0132989ae4688d224121ec6d8f35/tensorflow/contrib/layers/python/layers/layers.py#L200">don’t get updated during training by default</a>, and we are left with the statistics of the last batch. This needs to be fixed.</p>
 <p>Incorporating these points results in a more realistic scenario:</p>
 <pre class="python"><code>inputs = tf.placeholder(tf.float32, [None, 224, 224, 3])
@@ -291,7 +291,7 @@ accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name=&quot;accuracy
 train_list = model.get_weights() # get list of weights
 update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS) # update batch stats during training
 with tf.control_dependencies(update_ops):               # only train last &quot;block&quot;
-    train = tf.train.AdamOptimizer(1e-5).minimize(loss, var_list[520:]) 
+    train = tf.train.AdamOptimizer(1e-5).minimize(loss, train_list[520:]) 
  
 with tf.Session() as sess:
     sess.run(model.pretrained())
@@ -305,9 +305,9 @@ with tf.Session() as sess:
 </div>
 <div id="preprocessing-with-the-dataset-api" class="section level2">
 <h2>Preprocessing with the Dataset API</h2>
-<p>A common way to feed data in TensorFlow is with <code>feed_dict</code>. Training data is usually loaded as numpy arrays and reshaped to <code>(batch_size*pixel*pixel*channel)</code>, which is the shape of the placeholder. If your data doesn’t fit into memory, you are out of luck and will be forced to write <em>a lot</em> of boilerplate code for I/O. Besides the verbosity, this approach tends to be slower as computation ends up waiting for new data.</p>
+<p>A common way to feed data in TensorFlow is with <code>feed_dict</code>. Training data is usually loaded as numpy arrays and reshaped to <code>(batch_size*pixel*pixel*channel)</code>, the shape of the placeholder. If your data doesn’t fit into memory, you are out of luck and will be forced to write <em>a lot</em> of boilerplate code for I/O. Besides the verbosity, this approach tends to be slower as computation ends up waiting for new data.</p>
 <p>The Dataset API aims to provide a unifying framework for loading, transforming and consuming data. The main advantage is loading data batch per batch, while the preprocessing steps for the following batch are simultaneously performed in the background. The result is lower memory footprint, and a continuous stream of preprocessed training data to the accelerator with no idle time.</p>
-<p>For the purpose of this post, I took on the fer2013 dataset from the Kaggle competition <a href="https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data">Facial Expression Recognition Challenge</a> from six years ago. The training data consists of 28.709 grayscale images with 48*48 pixel resolution. The target column is an integer indicating one of the 7 emotions, and the pixels column is a space separated string of 2.304 pixels. A rather unusual format for image data if you ask me. To get an idea though, here is three pictures from the dataset:</p>
+<p>For the purpose of this post, I took on the fer2013 dataset from the Kaggle competition <a href="https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data">Facial Expression Recognition Challenge</a> from six years ago. The training data consists of 28.709 grayscale images with 48*48 pixel resolution. The target column is an integer indicating one of the 7 emotions, and the pixels column is a space separated string of 2.304 pixels. A rather unusual format for image data if you ask me. To get an idea though, here is two pictures from the dataset:</p>
 <p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/fer1.png" /> <img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/fer2.png" /></p>
 <p>With the Dataset API, we can load data from many sources including numpy arrays, tensors, text files, csv’s or even folders. In addition, dataset objects come with a handful handy methods for data preparation.</p>
 <ul>
@@ -326,7 +326,7 @@ with tf.Session() as sess:
         .repeat() \
         .batch(32) \
         .prefetch(1)</code></pre>
-<p>The <code>parse_csv()</code> defines how get from the aforementioned .csv file to tensor. This can be written using TensorFlow functions too.</p>
+<p>The function <code>parse_csv()</code> defines how get from the aforementioned .csv file to tensors. This can be written using TensorFlow functions too.</p>
 <pre class="python"><code>CSV_COLUMNS=[&#39;emotion&#39;, &#39;pixels&#39;]
 CSV_COLUMN_DEFAULTS=[[0],[&#39;&#39;]]
  
@@ -361,7 +361,7 @@ validation_init_op=iterator.make_initializer(valid_dataset)
 # And now this works:
 # model = nets.DenseNet169(x, is_training=is_train, classes=7)
 # loss = tf.losses.softmax_cross_entropy(y, model)</code></pre>
-<p>Running <code>sess.run(training_init_op)</code> before training and <code>sess.run(validation_init_op)</code> before testing ensures that we are loading the right dataset. Defining data preparation this way, we can get rid of the <code>feed_dict</code> mechanism for data ingestion and can plug the values from <code>iterator.get_next()</code> straight into the graph instead. Last but not least, we should also checkpoint the model’s progress <code>tf.train.Saver()</code>.</p>
+<p>Running <code>sess.run(training_init_op)</code> before training and <code>sess.run(validation_init_op)</code> before testing ensures that we are loading the right dataset. Doing data preparation this way, we get rid of the <code>feed_dict</code> mechanism for data ingestion and can plug the values from <code>iterator.get_next()</code> straight into the graph instead. Last but not least, we should also checkpoint the model’s progress with <code>tf.train.Saver()</code>.</p>
 <pre class="python"><code>with tf.Session() as sess:
        
        sess.run(training_init_op)
@@ -386,9 +386,9 @@ validation_init_op=iterator.make_initializer(valid_dataset)
 <div id="to-the-cloud-and-back" class="section level2">
 <h2>To the cloud and back</h2>
 <p>I could <em>in theory</em> train this on my Macbook Air - perhaps with a batch size of 1 - but why torment my machine when I can outsource the job to Google. Submitting TensorFlow programs to the Cloud ML Engine is easy (and cheap) enough with the <code>gcloud command-line tool</code>. It is recommended to upload your training and validation data to Google Cloud Storage first. Then, by parametrising the trainer program, you can supply these as additional arguments when submitting the job.</p>
-<p>You also need to select a region, resource type, the package-path of your trainer program and the module’s name, a staging bucket on GCS and the path to the tarballs of packages that you need.</p>
+<p>You also need to select a region, resource type, the package-path of your trainer program and the module’s name, a staging bucket on GCS and the path to the tarballs of packages that you need <a href="https://cloud.google.com/ml-engine/docs/tensorflow/runtime-version-list">besides the defaults</a>.</p>
 <p>Job status can be monitored in the <a href="https://console.cloud.google.com/mlengine">Cloud Console</a> or streamed directly to our terminal with <code>gcloud ml-engine jobs stream-logs jobname</code>.</p>
-<pre class="bash"><code>gcloud ml-engine jobs submit training &#39;fer2013&#39; --region europe-west1 \
+<pre class="bash"><code>gcloud ml-engine jobs submit training &#39;jobname&#39; --region europe-west1 \
                            --scale-tier &#39;basic-gpu&#39; \
                            --package-path trainer/ \
                            --staging-bucket &#39;gs://bucketname&#39; \
@@ -400,7 +400,7 @@ validation_init_op=iterator.make_initializer(valid_dataset)
                            --train-file &#39;gs://bucket name/train.csv&#39; \
                            --eval-file &#39;gs://bucket name/valid.csv&#39; \
                            ...</code></pre>
-<p>I have experimented with all flavors of transfer learning for this task, and got the best result with fine tuning the last convulational block only. The worst result came from training just the classification layer. This makes sense as a dataset of cropped gray faces is too different from your regular ImageNet picture for feature extraction to be sufficient. But neither is updating all the weights necessary.</p>
+<p>I have experimented with all flavors of transfer learning for this task, and got the best results with fine tuning the last convulational block only. The worst result came from training just the classification layer. This makes sense as a dataset of cropped gray faces is too different from your regular ImageNet picture for feature extraction to be sufficient. But neither is updating all the weights necessary.</p>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -454,7 +454,7 @@ Feature Extraction
 </div>
 <div id="inference-and-beyond" class="section level2">
 <h2>Inference and beyond</h2>
-<p>There is a myriad of options to serve a TensorFlow model. Either way, the checkpoint files we saved will need to be transformed. They are useful for restoring model state, but not suited for inference just yet. Weights of the model need to be frozen, training nodes stripped, constants folded (values like batch norms), and overall, we need optimize the model for inference. For an in-depth discussion of these transformations, check out <a href="https://medium.com/google-cloud/optimizing-tensorflow-models-for-serving-959080e9ddbf">Lukman Ramsey’s awesome article on Medium</a>, here I will solely focus on implementation.</p>
+<p>There is a myriad of options to serve a TensorFlow model. Either way, the checkpoint files we saved will need to be transformed. They are useful for restoring model state, but not suited for inference just yet. Weights of the model need to be frozen, training nodes stripped, constants folded (values like batch norms), and overall, we need optimize the model for inference. For an in-depth discussion of these transformations, check out <a href="https://medium.com/google-cloud/optimizing-tensorflow-models-for-serving-959080e9ddbf">Lukman Ramsey’s awesome article on Medium</a>; here I will solely focus on implementation.</p>
 <pre class="python"><code>from tensorflow.python.tools import optimize_for_inference_lib
 import tensorflow.tools.graph_transforms as graph_transforms
 from tensorflow.python.platform import gfile
