@@ -14,7 +14,7 @@
 <meta property="og:title" content="Parallelizing R code on Kubernetes" />
 <meta property="og:description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Kubernetes who? The hype around kubernetes is real, but likely also justified. Kubernetes is an open-source tool that facilitates deployment of jobs and services onto computer clusters. It provides different patterns for different type of workloads, be it API servers, databases or running batch jobs. Not only makes kubernetes running workloads and services easy, it also keeps them running." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://tamaszilagyi.com/blog/2018/2018-08-06-kubernetes-parallel/" /><meta property="article:published_time" content="2018-08-07T22:13:14-05:00"/>
+<meta property="og:url" content="/blog/2018/2018-08-06-kubernetes-parallel/" /><meta property="article:published_time" content="2018-08-07T22:13:14-05:00"/>
 <meta property="article:modified_time" content="2018-08-07T22:13:14-05:00"/>
 
 
@@ -24,7 +24,7 @@
      Parallelizing R code on Kubernetes 
 
 </title>
-<link rel="canonical" href="http://tamaszilagyi.com/blog/2018/2018-08-06-kubernetes-parallel/">
+<link rel="canonical" href="../../../blog/2018/2018-08-06-kubernetes-parallel/">
 
 
 
@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2018-11-17%2012%3a40%3a35.145252%20%2b0100%20CET%20m%3d%2b0.438261937">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2018-11-17%2012%3a40%3a35.145252%20%2b0100%20CET%20m%3d%2b0.438261937">
-    <link rel="stylesheet" href="../../../css/main.css?t=2018-11-17%2012%3a40%3a35.145252%20%2b0100%20CET%20m%3d%2b0.438261937">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-13%2019%3a36%3a10.793709%20%2b0100%20CET%20m%3d%2b0.384968826">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-13%2019%3a36%3a10.793709%20%2b0100%20CET%20m%3d%2b0.384968826">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-13%2019%3a36%3a10.793709%20%2b0100%20CET%20m%3d%2b0.384968826">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2018-11-17%2012%3a40%3a35.145252%20%2b0100%20CET%20m%3d%2b0.438261937">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-13%2019%3a36%3a10.793709%20%2b0100%20CET%20m%3d%2b0.384968826">
     
 
 
@@ -102,7 +102,7 @@
                     
                 
                 
-                <a href="../../../"><img class="avatar" src="../../../img/profile_pic.png" srcset="http://tamaszilagyi.com/img/profile_pic.png 1x"></a>
+                <a href="../../../"><img class="avatar" src="../../../img/profile_pic.png" srcset="../../../img/profile_pic.png 1x"></a>
             
             <a href="../../../"><div class="name">Tamas Szilagyi</div></a>
             
@@ -111,11 +111,11 @@
             <nav>
                 <ul>
                     
-                        <li class="nav-"><a href="http://tamaszilagyi.com/about/about"><span>About</span></a></li>
+                        <li class="nav-"><a href="../../../about/about"><span>About</span></a></li>
                     
-                        <li class="nav-"><a href="http://tamaszilagyi.com/blog/"><span>Blog</span></a></li>
+                        <li class="nav-"><a href="../../../blog/"><span>Blog</span></a></li>
                     
-                        <li class="nav-"><a href="http://tamaszilagyi.com/consulting/consulting"><span>Consulting</span></a></li>
+                        <li class="nav-"><a href="../../../consulting/consulting"><span>Consulting</span></a></li>
                     
                 </ul>
             </nav>
@@ -170,8 +170,8 @@
 
         
             
-        <link rel="stylesheet" href="http://tamaszilagyi.com/css/github-gist.css" rel="stylesheet" id="theme-stylesheet">
-        <script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+        <link rel="stylesheet" href="../../../css/github-gist.css" rel="stylesheet" id="theme-stylesheet">
+        <script src="../../../js/highlight.pack.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
             
 
@@ -213,7 +213,7 @@
 
 </div>
 
-                    <div class="initials"><a href="http://tamaszilagyi.com/"></a></div>
+                    <div class="initials"><a href="../../../"></a></div>
                 </div>
                 <div class="meta">
                     

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Tamas Szilagyi">
+<meta name="description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  They grow up so fast It’s been at least a year since I last dabbled in TensorFlow, and one year is helluva long time, or to say the ecosystem has been evolving at furious speed. The general trend has been towards higher-level abstractions, be it building models, defining data pipelines or serving predictions.">
+
+<meta property="og:title" content="Transfer Learning with Tensornets and Dataset API" />
+<meta property="og:description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  They grow up so fast It’s been at least a year since I last dabbled in TensorFlow, and one year is helluva long time, or to say the ecosystem has been evolving at furious speed. The general trend has been towards higher-level abstractions, be it building models, defining data pipelines or serving predictions." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/blog/2019/2019-01-12-tensornets/" /><meta property="article:published_time" content="2019-01-14T23:15:14-05:00"/>
+<meta property="article:modified_time" content="2019-01-14T23:15:14-05:00"/>
+
+
+<title>
+
+
+     Transfer Learning with Tensornets and Dataset API 
+
+</title>
+<link rel="canonical" href="../../../blog/2019/2019-01-12-tensornets/">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-13%2019%3a36%3a10.7929%20%2b0100%20CET%20m%3d%2b0.384160359">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-13%2019%3a36%3a10.7929%20%2b0100%20CET%20m%3d%2b0.384160359">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-13%2019%3a36%3a10.7929%20%2b0100%20CET%20m%3d%2b0.384160359">
+    
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-13%2019%3a36%3a10.7929%20%2b0100%20CET%20m%3d%2b0.384160359">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="../../../img/ts.png"
+
+>
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+                
+                
+                
+                
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                
+                <a href="../../../"><img class="avatar" src="../../../img/profile_pic.png" srcset="../../../img/profile_pic.png 1x"></a>
+            
+            <a href="../../../"><div class="name">Tamas Szilagyi</div></a>
+            
+              <h3 class="self-intro">Coding with Data</h3>
+            
+            <nav>
+                <ul>
+                    
+                        <li class="nav-"><a href="../../../about/about"><span>About</span></a></li>
+                    
+                        <li class="nav-"><a href="../../../blog/"><span>Blog</span></a></li>
+                    
+                        <li class="nav-"><a href="../../../consulting/consulting"><span>Consulting</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/mtoto" target="_blank" rel="noopener"><img class="icon" src="../../../img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/tudosgar" target="_blank" rel="noopener"><img class="icon" src="../../../img/twitter.svg" alt="twitter" /></a>
+        
+
+	
+
+        
+
+        
+
+        
+            <a href="//linkedin.com/in/tszilagyi" target="_blank" rel="noopener"><img class="icon" src="../../../img/linkedin.svg" alt="linkedin" /></a>
+        
+            
+        
+            <a href="//stackoverflow.com/users/4964651/mtoto?tab=profile" target="_blank" rel="noopener"><img class="icon" src="../../../img/stackoverflow.svg" alt="stackoverflow" /></a>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+            <a href="//soundcloud.com/tamas-szilagyi" target="_blank" rel="noopener"><img class="icon" src="../../../img/soundcloud.svg" alt="soundcloud" /></a>
+        
+
+        
+            <a href="mailto:tszilagyi@outlook.com"><img class="icon" src="../../../img/email.svg" alt="email" /></a>
+        
+
+        
+
+        
+            
+        <link rel="stylesheet" href="../../../css/github-gist.css" rel="stylesheet" id="theme-stylesheet">
+        <script src="../../../js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+            
+
+
+        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+        
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            // Center justify equations in code and markdown cells. Elsewhere
+            // we use CSS to left justify single line equations in code cells.
+            displayAlign: 'center',
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}},
+                linebreaks: { automatic: true }
+            }
+        });
+        </script>
+
+            
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Transfer Learning with Tensornets and Dataset API
+
+</div>
+
+                    <div class="initials"><a href="../../../"></a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Mon Jan 14 2019 23:15:14 -0500'>Jan 14, 2019</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>11 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <script src="../../../rmarkdown-libs/kePrint/kePrint.js"></script>
+
+
+<style type="text/css">
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+</style>
+<div id="they-grow-up-so-fast" class="section level2">
+<h2>They grow up so fast</h2>
+<p>It’s been at least a year since I last dabbled in TensorFlow, and one year is helluva long time, or to say the ecosystem has been evolving at furious speed. The general trend has been towards higher-level abstractions, be it building models, defining data pipelines or serving predictions. Then there is the relentless community-driven development, spawning many useful extensions to the official library. Yet, using TensorFlow still has a bit of going down into the trenches feel to it compared to fitting a model in sci-kit learn.</p>
+<p>What started as casual browsing of the official documentation, lead to a strong urge to try out some of the new tools. In particular, I was eager to implement data ingestion and transformation using the relatively new <a href="https://www.tensorflow.org/guide/datasets">Dataset API</a>. And secondly, I was looking for an easy way to do <em>Transfer Learning</em>, and found the <a href="https://github.com/taehoonlee/tensornets">tensornets</a> library which has many available models and a seemingly easy-to-use syntax.</p>
+</div>
+<div id="transfer-learning-101" class="section level2">
+<h2>Transfer Learning 101</h2>
+<p>Transfer learning is the practice of taking pre-trained models and re-purposing them for a new task without having to retrain the entire network from scratch. One area this approach has been proven extremely effective in is object detection. We can take a network trained on tens of millions of images to predict hundreds of different objects, and modify it to fit our use case.</p>
+<p>There are two main flavors of transfer learning: feature extraction and fine-tuning. In case of the former, we remove the last fully-connected layer and treat the rest of the network as a fixed feature extractor. In other words, we freeze the previously learned weights and only train the last layer outputting class probabilities.</p>
+<p>In case of fine-tuning, not only do we retrain the classifier at the end of the network, but also the previous layers. You can fine-tune the last couple of layers or the entire network. The choice depends on the similarity of your dataset to what the network was originally trained on, and how much data and patience you have.</p>
+</div>
+<div id="and-now-tensornets" class="section level2">
+<h2>And now, Tensornets</h2>
+<p>There is a wide range of pre-trained model to choose from for object detection. Thanks to extensive research in the area performance have been skyrocketing. The latest models can detect 1,000 different objects in a regular picture with 95% accuracy.</p>
+<p>For this particular project I picked dense convolutional networks (DenseNets in short), for no obvious reason other than being the example on <a href="https://github.com/taehoonlee/tensornets/#Examples">tensornets’ GitHub repo</a>. But now that we here: DenseNets are like convolutional networks with the main difference that each layer serves as an input to all subsequent layers. With regular CNN’s each layer is only connected to the following one. According to the <a href="https://arxiv.org/pdf/1608.06993.pdf">paper from 2016</a>:</p>
+<blockquote>
+<p>Densenets have several compelling advantages: they alleviate the vanishing-gradient
+problem, strengthen feature propagation, encourage feature reuse, and substantially reduce the number of parameters. <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+</blockquote>
+<p><img src="densenet.png" /></p>
+<p>And here is the architecture of the different densenets.</p>
+<p><img src="dense_table.png" /></p>
+<p>Doing transfer learning with DenseNets is as easy as the below according to the package README.</p>
+<pre class="python"><code>import tensorflow as tf
+import tensornets as nets
+ 
+inputs = tf.placeholder(tf.float32, [None, 224, 224, 3])
+outputs = tf.placeholder(tf.float32, [None, 7]) # nr of classes 
+model = nets.DenseNet169(inputs, is_training=True, classes=7)
+ 
+loss = tf.losses.softmax_cross_entropy(outputs, model)
+train = tf.train.AdamOptimizer(learning_rate=1e-5).minimize(loss)
+ 
+with tf.Session() as sess:
+    sess.run(model.pretrained())
+    for (x, y) in your_data:  # the NHWC and one-hot format
+        sess.run(train, feed_dict={inputs: x, outputs: y})</code></pre>
+<p>If you have ever seen TensorFlow code, this looks quite straightforward. However, there is a few gotchas when implementing this IRL. As mentioned, transfer learning has different flavors, the above being an example of fine-tuning the entire network. That is to say all updates are going to be backpropagated to all layers. If we wish to freeze some layers, we can pass the list of weights we do want to train to the <code>minimize()</code> method of the optimizer: <code>.minimize(loss,var_list=train_list)</code>.</p>
+<p>Secondly, keep in mind that the input tensor size is fixed, so we’ll need to reshape our images to fit <code>224*224*3</code>. The output tensor shape on the other hand can be changed to equal the number of classes in our specific use case.</p>
+<p>Thirdly, we need to set the <code>is_training=</code> flag to <code>True</code> during training and to <code>False</code> during testing. Under the hood, this points to the argument of the same name for the batch normalization layers. This layer is responsible for normalizing activation layers based on the statistics of each batch during training. However, during test time not only do we need to turn it off, we also need the global statistics (<code>moving_mean</code> and <code>moving_variance</code>) from all batches to use as constants. Somewhat strangely, these values <a href="https://github.com/tensorflow/tensorflow/blob/a6d8ffae097d0132989ae4688d224121ec6d8f35/tensorflow/contrib/layers/python/layers/layers.py#L200">don’t get updated during training by default</a>, and we are left with the statistics of the last batch. This needs to be fixed.</p>
+<p>Incorporating these points results in a more realistic scenario:</p>
+<pre class="python"><code>inputs = tf.placeholder(tf.float32, [None, 224, 224, 3])
+outputs = tf.placeholder(tf.float32, [None, 7]) # nr of classes 
+is_train = tf.placeholder_with_default(False, shape=(), name=&quot;is_train&quot;) # placeholder for is_training
+ 
+model = nets.DenseNet169(inputs, is_training=is_train, classes=7)
+loss = tf.losses.softmax_cross_entropy(outputs, model)
+ 
+correct_pred = tf.equal(tf.argmax(model, 1), tf.argmax(outputs, 1))
+accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name=&quot;accuracy&quot;)
+ 
+train_list = model.get_weights() # get list of weights
+update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS) # update batch stats during training
+with tf.control_dependencies(update_ops):               # only train last &quot;block&quot;
+    train = tf.train.AdamOptimizer(1e-5).minimize(loss, var_list[520:]) 
+ 
+with tf.Session() as sess:
+    sess.run(model.pretrained())
+     
+    for epoch in range(10):
+       for (x, y) in your_data:  
+           # run training
+           sess.run(train, feed_dict={inputs: x, outputs: y, is_train: True})
+       # run testing           
+       sess.run(accuracy, feed_dict={inputs: x, outputs: y, is_train: False}) # use global stats for batch norm</code></pre>
+</div>
+<div id="preprocessing-with-the-dataset-api" class="section level2">
+<h2>Preprocessing with the Dataset API</h2>
+<p>A common way to feed data in TensorFlow is with <code>feed_dict</code>. Training data is usually loaded as numpy arrays and reshaped to <code>(batch_size*pixel*pixel*channel)</code>, which is the shape of the placeholder. If your data doesn’t fit into memory, you are out of luck and will be forced to write <em>a lot</em> of boilerplate code for I/O. Besides the verbosity, this approach tends to be slower as computation ends up waiting for new data.</p>
+<p>The Dataset API aims to provide a unifying framework for loading, transforming and consuming data. The main advantage is loading data batch per batch, while the preprocessing steps for the following batch are simultaneously performed in the background. The result is lower memory footprint, and a continuous stream of preprocessed training data to the accelerator with no idle time.</p>
+<p>For the purpose of this post, I took on the fer2013 dataset from the Kaggle competition <a href="https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data">Facial Expression Recognition Challenge</a> from six years ago. The training data consists of 28.709 grayscale images with 48*48 pixel resolution. The target column is an integer indicating one of the 7 emotions, and the pixels column is a space separated string of 2.304 pixels. A rather unusual format for image data if you ask me. To get an idea though, here is three pictures from the dataset:</p>
+<p><img src="fer1.png" title="title-1" /> <img src="fer2.png" title="Angry" /></p>
+<p>With the Dataset API, we can load data from many sources including numpy arrays, tensors, text files, csv’s or even folders. In addition, dataset objects come with a handful handy methods for data preparation.</p>
+<ul>
+<li><code>.skip()</code>: Most datasets have a header row to be ignored.</li>
+<li><code>.map()</code>: Map a parse function reshape the dataset to the correct format.</li>
+<li><code>.shuffle()</code>: Shuffle the data at each iteration to prevent overfitting.</li>
+<li><code>.repeat()</code>: Repeat the action each iteration.</li>
+<li><code>.batch()</code>: How many examples to put in each batch.</li>
+<li><code>.prefetch()</code>: How many batches to prefetch for preprocessing.</li>
+</ul>
+<p>Using the last method, preprocessing and model execution will overlap. While the GPU is performing training step <strong>n</strong>, the CPU will preparing the data for step <strong>n+1</strong>. This way the GPU is never idle and is constantly fed with new data.</p>
+<pre class="python"><code>train_dataset=tf.data.TextLineDataset(&quot;path/to/train.csv&quot;) \
+        .skip(1) \
+        .map(util.parse_csv) \
+        .shuffle(30000) \
+        .repeat() \
+        .batch(32) \
+        .prefetch(1)</code></pre>
+<p>The <code>parse_csv()</code> defines how get from the aforementioned .csv file to tensor. This can be written using TensorFlow functions too.</p>
+<pre class="python"><code>CSV_COLUMNS=[&#39;emotion&#39;, &#39;pixels&#39;]
+CSV_COLUMN_DEFAULTS=[[0],[&#39;&#39;]]
+ 
+def parse_csv(inputs):
+    row_columns=tf.expand_dims(inputs, -1)
+    columns=tf.decode_csv(row_columns, 
+                          record_defaults=CSV_COLUMN_DEFAULTS, 
+                          field_delim=&#39;,&#39;)
+    features=dict(zip(CSV_COLUMNS, columns))
+     
+    y=features[&#39;emotion&#39;]
+    y=tf.one_hot(y, depth = 7) 
+    y=tf.reshape(y, [7])
+ 
+    x=features[&#39;pixels&#39;]
+    x=tf.string_split(x) 
+    x=tf.sparse_tensor_to_dense(x, default_value=&#39;0&#39;) # tf.string_split() outputs a sparse matrix
+    x=tf.string_to_number(x)
+    x=tf.reshape(x, [48,48,1]) # add channel dimension
+    x=tf.image.grayscale_to_rgb(x) # replicate this dimension to get 3 identical channels
+    x=tf.image.resize_images(x, [224,224]) # resize image to 224*224
+ 
+    return x, y</code></pre>
+<p>To access this data, we need to define an <code>Iterator</code>. TensorFlow provides a couple of alternatives: Initializable, Reinitializable, One-shot and Feedable. If you want to use both the training as well as the testing data in the same session, the recommended way is the reinitializable iterator. It enables switching between datasets during the same session. Lastly, the iterator has a <code>get_next()</code> method that yields, well, the next batch.</p>
+<pre class="python"><code>iterator=tf.data.Iterator.from_structure(train_dataset.output_types, 
+                                         train_dataset.output_shapes)
+x, y=iterator.get_next()
+ 
+training_init_op=iterator.make_initializer(train_dataset)
+validation_init_op=iterator.make_initializer(valid_dataset)
+ 
+# And now this works:
+# model = nets.DenseNet169(x, is_training=is_train, classes=7)
+# loss = tf.losses.softmax_cross_entropy(y, model)</code></pre>
+<p>Running <code>sess.run(training_init_op)</code> before training and <code>sess.run(validation_init_op)</code> before testing ensures that we are loading the right dataset. Defining data preparation this way, we can get rid of the <code>feed_dict</code> mechanism for data ingestion and can plug the values from <code>iterator.get_next()</code> straight into the graph instead. Last but not least, we should also checkpoint the model’s progress <code>tf.train.Saver()</code>.</p>
+<pre class="python"><code>with tf.Session() as sess:
+       
+       sess.run(training_init_op)
+       sess.run(validation_init_op)
+       sess.run(model.pretrained())
+       saver = tf.train.Saver()
+       
+       for epoch in range(hparams.num_epochs):
+             for _ in range(897): # 28709 / 32
+                 sess.run(train, {is_train: True})
+             l = sess.run(loss, {is_train: True})
+             print(&quot;Epoch: {}, loss: {:.2f}&quot;.format(epoch, l))
+             # re-initialize the iterator, but this time with validation data
+             sess.run(validation_init_op)
+             avg_acc = 0
+             for _ in range(224): # 7178 / 32
+                 acc = sess.run(accuracy, {is_train: False})
+                 avg_acc += acc
+             print(&quot;Average validation set accuracy is {:.2f}%&quot;.format(avg_acc / 224 * 100))
+             saver.save(sess, &quot;gs://path/to/ckpt/file&quot; + &quot;{}.ckpt&quot;.format(epoch))</code></pre>
+</div>
+<div id="to-the-cloud-and-back" class="section level2">
+<h2>To the cloud and back</h2>
+<p>I could <em>in theory</em> train this on my Macbook Air - perhaps with a batch size of 1 - but why torment my machine when I can outsource the job to Google. Submitting TensorFlow programs to the Cloud ML Engine is easy (and cheap) enough with the <code>gcloud command-line tool</code>. It is recommended to upload your training and validation data to Google Cloud Storage first. Then, by parametrising the trainer program, you can supply these as additional arguments when submitting the job.</p>
+<p>You also need to select a region, resource type, the package-path of your trainer program and the module’s name, a staging bucket on GCS and the path to the tarballs of packages that you need.</p>
+<p>Job status can be monitored in the <a href="https://console.cloud.google.com/mlengine">Cloud Console</a> or streamed directly to our terminal with <code>gcloud ml-engine jobs stream-logs jobname</code>.</p>
+<pre class="bash"><code>gcloud ml-engine jobs submit training &#39;fer2013&#39; --region europe-west1 \
+                           --scale-tier &#39;basic-gpu&#39; \
+                           --package-path trainer/ \
+                           --staging-bucket &#39;gs://bucketname&#39; \
+                           --runtime-version 1.9 \
+                           --module-name trainer.task \
+                           --python-version 3.5 \
+                           --packages deps/Cython-0.29.2.tar.gz,deps/tensornets-0.3.6.tar.gz \
+                           -- \
+                           --train-file &#39;gs://bucket name/train.csv&#39; \
+                           --eval-file &#39;gs://bucket name/valid.csv&#39; \
+                           ...</code></pre>
+<p>I have experimented with all flavors of transfer learning for this task, and got the best result with fine tuning the last convulational block only. The worst result came from training just the classification layer. This makes sense as a dataset of cropped gray faces is too different from your regular ImageNet picture for feature extraction to be sufficient. But neither is updating all the weights necessary.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-weight: bold;">
+Type
+</th>
+<th style="text-align:left;font-weight: bold;">
+Accuracy
+</th>
+<th style="text-align:left;font-weight: bold;">
+Time
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Finetuning Full Network
+</td>
+<td style="text-align:left;">
+93%
+</td>
+<td style="text-align:left;">
+2:39h
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Fine Tuning Last Block
+</td>
+<td style="text-align:left;">
+93%
+</td>
+<td style="text-align:left;">
+1:22h
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Feature Extraction
+</td>
+<td style="text-align:left;">
+29%
+</td>
+<td style="text-align:left;">
+1:08h
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="inference-and-beyond" class="section level2">
+<h2>Inference and beyond</h2>
+<p>There is a myriad of options to serve a TensorFlow model. Either way, the checkpoint files we saved will need to be transformed. They are useful for restoring model state, but not suited for inference just yet. Weights of the model need to be frozen, training nodes stripped, constants folded (values like batch norms), and overall, we need optimize the model for inference. For an in-depth discussion of these transformations, check out <a href="https://medium.com/google-cloud/optimizing-tensorflow-models-for-serving-959080e9ddbf">Lukman Ramsey’s awesome article on Medium</a>, here I will solely focus on implementation.</p>
+<pre class="python"><code>from tensorflow.python.tools import optimize_for_inference_lib
+import tensorflow.tools.graph_transforms as graph_transforms
+from tensorflow.python.platform import gfile
+ 
+with tf.Session() as sess:
+        saver = tf.train.Saver()
+        saver.restore(sess, &quot;path/to/saved_model/model.ckpt&quot;)
+        # freeze         
+        frozen_graph_def = tf.graph_util.convert_variables_to_constants(
+            sess, 
+            tf.get_default_graph().as_graph_def(),
+            [&quot;densenet169/probs&quot;])
+        # transform
+        tr_graph_def=graph_transforms.TransformGraph(frozen_graph_def,
+                              inputs=[&quot;IteratorGetNext&quot;],
+                              outputs=[&quot;densenet169/probs&quot;],
+                              transforms=[&quot;strip_unused_nodes&quot;,
+                              &quot;fold_constants&quot;, &quot;fold_batch_norms&quot;, 
+                              &quot;fold_old_batch_norms&quot;, &quot;sort_by_execution_order&quot;])
+        # optimize
+        opt_graph_def = optimize_for_inference_lib.optimize_for_inference(
+            tr_graph_def, [&quot;IteratorGetNext&quot;], [&quot;densenet169/probs&quot;],
+        tf.float32.as_datatype_enum)
+        
+        with tf.gfile.GFile(&quot;frozen_graph.pb&quot;, &quot;wb&quot;) as f:
+            f.write(opt_graph_def.SerializeToString())</code></pre>
+<p>The result is a .pb file, a protocol buffer in binary format encapsulating the graph definition and the weights. This file is conveniently compatible with the latest version of <code>OpenCV</code> the popular library for computer vision through the function <code>cv2.dnn.readNetFromTensorflow()</code>. A simple program to test the model with a webcam could be as follows:</p>
+<pre class="python"><code>import numpy as np
+import cv2
+ 
+cap = cv2.VideoCapture(0) # 0 is the webcam device
+face_cascade = cv2.CascadeClassifier(&quot;face_default.xml&quot;) # cascade file to identify face
+net = cv2.dnn.readNetFromTensorflow(&quot;/path/to/frozen_graph.pb&quot;) # read pb file
+emotions = {0: &quot;Angry&quot;,1: &quot;Disgust&quot;,2: &quot;Fear&quot;,3: &quot;Happy&quot;,4: &quot;Sad&quot;,5: &quot;Surprise&quot;,6: &quot;Neutral&quot;}
+   
+while(True):
+    ret, frame = cap.read()
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # turn to gray
+    faces = face_cascade.detectMultiScale(frame, 1.3, 5) # detect face
+    
+    for (x,y,w,h) in faces:
+        cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
+        detected_face = gray[int(y):int(y+h), int(x):int(x+w)]# crop detected face
+        detected_face = cv2.resize(detected_face, (48, 48)) # resize to 48*48 first to ruin quality
+        detected_face = cv2.resize(detected_face, (224, 224)) # resize to 224*224 
+        grayd = cv2.cvtColor(detected_face, cv2.COLOR_GRAY2BGR) # make it 3 channels again
+        im = np.expand_dims(grayd, axis=0)
+        
+        net.setInput(im.transpose(0, 3, 1, 2), name = &quot;IteratorGetNext&quot;)
+        dnn_out = net.forward(&quot;densenet169/probs&quot;)
+        
+        max_index = np.argmax(dnn_out[0])
+        emotion = emotions[max_index]
+        
+        cv2.putText(frame, emotion, (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2)
+        
+    cv2.imshow(&#39;frame&#39;, frame)  # Display the resulting frame
+    if cv2.waitKey(1) &amp; 0xFF == ord(&#39;q&#39;):
+        break
+        
+cap.release()
+cv2.destroyAllWindows()</code></pre>
+<p>Running this, the detected expression is displayed above the bounding box for your face.</p>
+<p><img src="emotins.png" title="webcam" /></p>
+</div>
+<div id="thats-all-folks" class="section level2">
+<h2>That’s all folks</h2>
+<p>Despite the evolution towards high-level API’s, training a modern neural network remains an involved affair. After all, complex models inevitably need more supervision. On the bright side, bleeding edge technology in computer vision or natural language processing is now at the fingertips of the anyone willing to get their hands dirty, and that’s pretty awesome.</p>
+<p>For a fully fledged example of what this post described, see the <a href="https://github.com/mtoto/transfer-learning-tensornets">related repo on my GitHub</a>.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>G. Huang, Z. Liu , L.vd. Maaten and K.Q. Weinberger. Densely Connected Convolutional Networks, 2016 <a href="https://arxiv.org/pdf/1608.06993.pdf" class="uri">https://arxiv.org/pdf/1608.06993.pdf</a><a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+
+                <br>
+                
+                  <div class="tags">
+                    <strong>Tags:</strong>
+                  
+                    <a href="../../../tags/tensorflow">TensorFlow</a>
+                  
+                    <a href="../../../tags/python">Python</a>
+                  
+                  </div>
+                  <br />
+                
+                <p class="back-to-posts"><a href="../../../blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "tamas-blog" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-97386385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/r.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+

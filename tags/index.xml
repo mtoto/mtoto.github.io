@@ -2,237 +2,246 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/</link>
+    <link>/tags/</link>
     <description>Recent content in Tags on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 09 Nov 2017 21:00:30 -0500</lastBuildDate>
     
-	<atom:link href="http://tamaszilagyi.com/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Ai</title>
-      <link>http://tamaszilagyi.com/tags/ai/</link>
+      <link>/tags/ai/</link>
       <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/ai/</guid>
+      <guid>/tags/ai/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Async</title>
-      <link>http://tamaszilagyi.com/tags/async/</link>
+      <link>/tags/async/</link>
       <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/async/</guid>
+      <guid>/tags/async/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Blogdown</title>
-      <link>http://tamaszilagyi.com/tags/blogdown/</link>
+      <link>/tags/blogdown/</link>
       <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/blogdown/</guid>
+      <guid>/tags/blogdown/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Caret</title>
-      <link>http://tamaszilagyi.com/tags/caret/</link>
+      <link>/tags/caret/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/caret/</guid>
+      <guid>/tags/caret/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Dalex</title>
-      <link>http://tamaszilagyi.com/tags/dalex/</link>
+      <link>/tags/dalex/</link>
       <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/dalex/</guid>
+      <guid>/tags/dalex/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Deep Learning</title>
-      <link>http://tamaszilagyi.com/tags/deep-learning/</link>
+      <link>/tags/deep-learning/</link>
       <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/deep-learning/</guid>
+      <guid>/tags/deep-learning/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Docker</title>
-      <link>http://tamaszilagyi.com/tags/docker/</link>
+      <link>/tags/docker/</link>
       <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/docker/</guid>
+      <guid>/tags/docker/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Github Pages</title>
-      <link>http://tamaszilagyi.com/tags/github-pages/</link>
+      <link>/tags/github-pages/</link>
       <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/github-pages/</guid>
+      <guid>/tags/github-pages/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Golang</title>
-      <link>http://tamaszilagyi.com/tags/golang/</link>
+      <link>/tags/golang/</link>
       <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/golang/</guid>
+      <guid>/tags/golang/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Google Cloud Platfrom</title>
-      <link>http://tamaszilagyi.com/tags/google-cloud-platfrom/</link>
+      <link>/tags/google-cloud-platfrom/</link>
       <pubDate>Tue, 07 Aug 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/google-cloud-platfrom/</guid>
+      <guid>/tags/google-cloud-platfrom/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Hue</title>
-      <link>http://tamaszilagyi.com/tags/hue/</link>
+      <link>/tags/hue/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/hue/</guid>
+      <guid>/tags/hue/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Kubernetes</title>
-      <link>http://tamaszilagyi.com/tags/kubernetes/</link>
+      <link>/tags/kubernetes/</link>
       <pubDate>Tue, 07 Aug 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/kubernetes/</guid>
+      <guid>/tags/kubernetes/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Luigi</title>
-      <link>http://tamaszilagyi.com/tags/luigi/</link>
+      <link>/tags/luigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/luigi/</guid>
+      <guid>/tags/luigi/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Nats</title>
-      <link>http://tamaszilagyi.com/tags/nats/</link>
+      <link>/tags/nats/</link>
       <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/nats/</guid>
+      <guid>/tags/nats/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Neural Network</title>
-      <link>http://tamaszilagyi.com/tags/neural-network/</link>
+      <link>/tags/neural-network/</link>
       <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/neural-network/</guid>
+      <guid>/tags/neural-network/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Python</title>
-      <link>http://tamaszilagyi.com/tags/python/</link>
-      <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
+      <link>/tags/python/</link>
+      <pubDate>Mon, 14 Jan 2019 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/python/</guid>
+      <guid>/tags/python/</guid>
       <description></description>
     </item>
     
     <item>
       <title>R</title>
-      <link>http://tamaszilagyi.com/tags/r/</link>
+      <link>/tags/r/</link>
       <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/r/</guid>
+      <guid>/tags/r/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Rvest</title>
-      <link>http://tamaszilagyi.com/tags/rvest/</link>
+      <link>/tags/rvest/</link>
       <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/rvest/</guid>
+      <guid>/tags/rvest/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Shiny</title>
-      <link>http://tamaszilagyi.com/tags/shiny/</link>
+      <link>/tags/shiny/</link>
       <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/shiny/</guid>
+      <guid>/tags/shiny/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Spotify</title>
-      <link>http://tamaszilagyi.com/tags/spotify/</link>
+      <link>/tags/spotify/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/spotify/</guid>
+      <guid>/tags/spotify/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tensorflow</title>
+      <link>/tags/tensorflow/</link>
+      <pubDate>Mon, 14 Jan 2019 23:15:14 -0500</pubDate>
+      
+      <guid>/tags/tensorflow/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Testthat</title>
-      <link>http://tamaszilagyi.com/tags/testthat/</link>
+      <link>/tags/testthat/</link>
       <pubDate>Tue, 16 Jan 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/testthat/</guid>
+      <guid>/tags/testthat/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Text2vec</title>
-      <link>http://tamaszilagyi.com/tags/text2vec/</link>
+      <link>/tags/text2vec/</link>
       <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/text2vec/</guid>
+      <guid>/tags/text2vec/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tidytext</title>
-      <link>http://tamaszilagyi.com/tags/tidytext/</link>
+      <link>/tags/tidytext/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/tidytext/</guid>
+      <guid>/tags/tidytext/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tidyverse</title>
-      <link>http://tamaszilagyi.com/tags/tidyverse/</link>
+      <link>/tags/tidyverse/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/tidyverse/</guid>
+      <guid>/tags/tidyverse/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Travis Ci</title>
-      <link>http://tamaszilagyi.com/tags/travis-ci/</link>
+      <link>/tags/travis-ci/</link>
       <pubDate>Tue, 16 Jan 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/tags/travis-ci/</guid>
+      <guid>/tags/travis-ci/</guid>
       <description></description>
     </item>
     

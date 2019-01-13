@@ -14,7 +14,7 @@
 <meta property="og:title" content="Self-learning Hue Lights" />
 <meta property="og:description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  The rise of the API Rich API interfaces are one of the main ingredients of today’s smart devices. They are by definition built for interconnectivity and there is an active community of developers creating apps as microservices on top of them. Philips Hue is no exception with it’s wide variety of apps available to users." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://tamaszilagyi.com/blog/2017/2017-05-14-hue/" /><meta property="article:published_time" content="2017-08-30T23:15:14-05:00"/>
+<meta property="og:url" content="/blog/2017/2017-05-14-hue/" /><meta property="article:published_time" content="2017-08-30T23:15:14-05:00"/>
 <meta property="article:modified_time" content="2017-08-30T23:15:14-05:00"/>
 
 
@@ -24,7 +24,7 @@
      Self-learning Hue Lights 
 
 </title>
-<link rel="canonical" href="http://tamaszilagyi.com/blog/2017/2017-05-14-hue/">
+<link rel="canonical" href="../../../blog/2017/2017-05-14-hue/">
 
 
 
@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2018-11-17%2012%3a40%3a35.164286%20%2b0100%20CET%20m%3d%2b0.457295002">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2018-11-17%2012%3a40%3a35.164286%20%2b0100%20CET%20m%3d%2b0.457295002">
-    <link rel="stylesheet" href="../../../css/main.css?t=2018-11-17%2012%3a40%3a35.164286%20%2b0100%20CET%20m%3d%2b0.457295002">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-13%2019%3a36%3a10.801411%20%2b0100%20CET%20m%3d%2b0.392670926">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-13%2019%3a36%3a10.801411%20%2b0100%20CET%20m%3d%2b0.392670926">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-13%2019%3a36%3a10.801411%20%2b0100%20CET%20m%3d%2b0.392670926">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2018-11-17%2012%3a40%3a35.164286%20%2b0100%20CET%20m%3d%2b0.457295002">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-13%2019%3a36%3a10.801411%20%2b0100%20CET%20m%3d%2b0.392670926">
     
 
 
@@ -102,7 +102,7 @@
                     
                 
                 
-                <a href="../../../"><img class="avatar" src="../../../img/profile_pic.png" srcset="http://tamaszilagyi.com/img/profile_pic.png 1x"></a>
+                <a href="../../../"><img class="avatar" src="../../../img/profile_pic.png" srcset="../../../img/profile_pic.png 1x"></a>
             
             <a href="../../../"><div class="name">Tamas Szilagyi</div></a>
             
@@ -111,11 +111,11 @@
             <nav>
                 <ul>
                     
-                        <li class="nav-"><a href="http://tamaszilagyi.com/about/about"><span>About</span></a></li>
+                        <li class="nav-"><a href="../../../about/about"><span>About</span></a></li>
                     
-                        <li class="nav-"><a href="http://tamaszilagyi.com/blog/"><span>Blog</span></a></li>
+                        <li class="nav-"><a href="../../../blog/"><span>Blog</span></a></li>
                     
-                        <li class="nav-"><a href="http://tamaszilagyi.com/consulting/consulting"><span>Consulting</span></a></li>
+                        <li class="nav-"><a href="../../../consulting/consulting"><span>Consulting</span></a></li>
                     
                 </ul>
             </nav>
@@ -170,8 +170,8 @@
 
         
             
-        <link rel="stylesheet" href="http://tamaszilagyi.com/css/github-gist.css" rel="stylesheet" id="theme-stylesheet">
-        <script src="http://tamaszilagyi.com/js/highlight.pack.js"></script>
+        <link rel="stylesheet" href="../../../css/github-gist.css" rel="stylesheet" id="theme-stylesheet">
+        <script src="../../../js/highlight.pack.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
             
 
@@ -213,7 +213,7 @@
 
 </div>
 
-                    <div class="initials"><a href="http://tamaszilagyi.com/"></a></div>
+                    <div class="initials"><a href="../../../"></a></div>
                 </div>
                 <div class="meta">
                     
@@ -354,10 +354,10 @@ gbmFit &lt;- train(y ~ ., data = training,
 table(preds, testing$y)</code></pre>
 <pre><code>##         
 ## preds     dim  mid bright zero
-##   dim     100  209     31  370
-##   mid      63  100      6  123
-##   bright   18   40      0    2
-##   zero     39   94     28 4249</code></pre>
+##   dim      80  153     10  216
+##   mid      63  139     29   65
+##   bright   19   51      0   11
+##   zero     58  100     26 4452</code></pre>
 <p>Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.</p>
 <p><img src="../../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.</p>

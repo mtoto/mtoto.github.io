@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Travis Ci on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/travis-ci/</link>
+    <link>/tags/travis-ci/</link>
     <description>Recent content in Travis Ci on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 16 Jan 2018 22:13:14 -0500</lastBuildDate>
     
-	<atom:link href="http://tamaszilagyi.com/tags/travis-ci/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/travis-ci/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Dockerized Shiny App development</title>
-      <link>http://tamaszilagyi.com/blog/2018/2018-01-16-shiny_docker/</link>
+      <link>/blog/2018/2018-01-16-shiny_docker/</link>
       <pubDate>Tue, 16 Jan 2018 22:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/2018/2018-01-16-shiny_docker/</guid>
+      <guid>/blog/2018/2018-01-16-shiny_docker/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Getting on the Docker (container) ship Containers are everywhere, including the realms of data science. You can think of them as small self-contained environments, encapsulating an application and its dependencies. If that sounds a lot like a virtual machine, you are not entirely wrong. But unlike VM’s, containers run on the host system’s kernel and the processes inside can only see and access their immediate surroundings.</description>
     </item>
     

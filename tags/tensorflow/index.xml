@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tensorflow on Coding with Data</title>
+    <link>/tags/tensorflow/</link>
+    <description>Recent content in Tensorflow on Coding with Data</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 14 Jan 2019 23:15:14 -0500</lastBuildDate>
+    
+	<atom:link href="/tags/tensorflow/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Transfer Learning with Tensornets and Dataset API</title>
+      <link>/blog/2019/2019-01-12-tensornets/</link>
+      <pubDate>Mon, 14 Jan 2019 23:15:14 -0500</pubDate>
+      
+      <guid>/blog/2019/2019-01-12-tensornets/</guid>
+      <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  They grow up so fast It’s been at least a year since I last dabbled in TensorFlow, and one year is helluva long time, or to say the ecosystem has been evolving at furious speed. The general trend has been towards higher-level abstractions, be it building models, defining data pipelines or serving predictions.</description>
+    </item>
+    
+  </channel>
+</rss>
