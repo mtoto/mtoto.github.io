@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-13%2019%3a53%3a12.188371%20%2b0100%20CET%20m%3d%2b0.562098664">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-13%2019%3a53%3a12.188371%20%2b0100%20CET%20m%3d%2b0.562098664">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-13%2019%3a53%3a12.188371%20%2b0100%20CET%20m%3d%2b0.562098664">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-13%2020%3a10%3a08.372044%20%2b0100%20CET%20m%3d%2b0.388118569">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-13%2020%3a10%3a08.372044%20%2b0100%20CET%20m%3d%2b0.388118569">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-13%2020%3a10%3a08.372044%20%2b0100%20CET%20m%3d%2b0.388118569">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-13%2019%3a53%3a12.188371%20%2b0100%20CET%20m%3d%2b0.562098664">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-13%2020%3a10%3a08.372044%20%2b0100%20CET%20m%3d%2b0.388118569">
     
 
 
@@ -252,11 +252,11 @@ pre code, pre, code {
 <p>There is a wide range of pre-trained model to choose from for object detection. Thanks to extensive research in the area performance have been skyrocketing. The latest models can detect 1,000 different objects in a regular picture with 95% accuracy.</p>
 <p>For this particular project I picked dense convolutional networks (DenseNets in short), for no obvious reason other than being the example on <a href="https://github.com/taehoonlee/tensornets/#Examples">tensornets’ GitHub repo</a>. But now that we here: DenseNets are like convolutional networks with the main difference that each layer serves as an input to all subsequent layers. With regular CNN’s each layer is only connected to the following one. According to the <a href="https://arxiv.org/pdf/1608.06993.pdf">paper from 2016</a>:</p>
 <blockquote>
-<p>Densenets have several compelling advantages: they alleviate the vanishing-gradient
+<p>DenseNets have several compelling advantages: they alleviate the vanishing-gradient
 problem, strengthen feature propagation, encourage feature reuse, and substantially reduce the number of parameters. <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
 </blockquote>
 <p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/densenet.png" /></p>
-<p>And here is the architecture of the different densenets.</p>
+<p>And here is the architecture of the different DenseNets.</p>
 <p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/dense_table.png" /></p>
 <p>Doing transfer learning with DenseNets is as easy as the below according to the package README.</p>
 <pre class="python"><code>import tensorflow as tf
@@ -273,9 +273,10 @@ with tf.Session() as sess:
     sess.run(model.pretrained())
     for (x, y) in your_data:  # the NHWC and one-hot format
         sess.run(train, feed_dict={inputs: x, outputs: y})</code></pre>
-<p>If you have ever seen TensorFlow code, this looks quite straightforward. However, there is a few gotchas when implementing this IRL. As mentioned, transfer learning has different flavors, the above being an example of fine-tuning the entire network. That is to say all updates are going to be backpropagated to all layers. If we wish to freeze some layers, we can pass the list of weights we do want to train to the <code>minimize()</code> method of the optimizer: <code>.minimize(loss,var_list=train_list)</code>.</p>
+<p>If you have seen TensorFlow code, this looks quite straightforward. However, there is a few gotchas when implementing this IRL. As mentioned, transfer learning has different flavors, the above being an example of fine-tuning the entire network. That is to say all updates are going to be backpropagated to all layers. If we wish to freeze some layers, we can pass the list of weights we do want to train to the <code>minimize()</code> method of the optimizer: <code>.minimize(loss,var_list=train_list)</code>.</p>
 <p>Secondly, keep in mind that the input tensor size is fixed, so we’ll need to reshape our images to fit <code>224*224*3</code>. The output tensor shape on the other hand can be changed to equal the number of classes in our specific use case.</p>
-<p>Thirdly, we need to set the <code>is_training=</code> flag to <code>True</code> during training and to <code>False</code> during testing. Under the hood, this points to the argument of the same name for the batch normalization layers. This layer is responsible for normalizing activation layers based on the statistics of each batch during training. However, during test time not only do we need to turn it off, we also need the global statistics (<code>moving_mean</code> and <code>moving_variance</code>) from all batches to use as constants. Somewhat strangely, these values <a href="https://github.com/tensorflow/tensorflow/blob/a6d8ffae097d0132989ae4688d224121ec6d8f35/tensorflow/contrib/layers/python/layers/layers.py#L200">don’t get updated during training by default</a>, and we are left with the statistics of the last batch. This needs to be fixed.</p>
+<p>Thirdly, we need to set the <code>is_training=</code> flag to <code>True</code> during training and to <code>False</code> during testing. Under the hood, this points to the argument of the same name for the batch normalization layers. This layer is responsible for normalizing activation layers based on the statistics of each batch during training.</p>
+<p>However, during test time not only do we need to turn it off, we also need the global statistics (<code>moving_mean</code> and <code>moving_variance</code>) from all batches to use as constants. Somewhat strangely, these values <a href="https://github.com/tensorflow/tensorflow/blob/a6d8ffae097d0132989ae4688d224121ec6d8f35/tensorflow/contrib/layers/python/layers/layers.py#L200">don’t get updated during training by default</a>, and we are left with the statistics of the last batch. This needs to be fixed.</p>
 <p>Incorporating these points results in a more realistic scenario:</p>
 <pre class="python"><code>inputs = tf.placeholder(tf.float32, [None, 224, 224, 3])
 outputs = tf.placeholder(tf.float32, [None, 7]) # nr of classes 
@@ -499,8 +500,8 @@ while(True):
         detected_face = gray[int(y):int(y+h), int(x):int(x+w)]# crop detected face
         detected_face = cv2.resize(detected_face, (48, 48)) # resize to 48*48 first to ruin quality
         detected_face = cv2.resize(detected_face, (224, 224)) # resize to 224*224 
-        grayd = cv2.cvtColor(detected_face, cv2.COLOR_GRAY2BGR) # make it 3 channels again
-        im = np.expand_dims(grayd, axis=0)
+        gray3c = cv2.cvtColor(detected_face, cv2.COLOR_GRAY2BGR) # make it 3 channels again
+        im = np.expand_dims(gray3c, axis=0)
         
         net.setInput(im.transpose(0, 3, 1, 2), name = &quot;IteratorGetNext&quot;)
         dnn_out = net.forward(&quot;densenet169/probs&quot;)
