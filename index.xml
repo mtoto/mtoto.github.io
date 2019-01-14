@@ -21,6 +21,15 @@
     </item>
     
     <item>
+      <title>Transfer Learning with Tensornets and Dataset API</title>
+      <link>/blog/2019/2019-01-14-tensornets/</link>
+      <pubDate>Mon, 14 Jan 2019 23:15:14 -0500</pubDate>
+      
+      <guid>/blog/2019/2019-01-14-tensornets/</guid>
+      <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  They grow up so fast It’s been at least a year since I last dabbled in TensorFlow, and the ecosystem seems to have grown a lot. The general trend is towards higher-level abstractions for building models, defining data pipelines or serving predictions. Then there is also the relentless community-driven development, spawning many useful extensions to the official library.</description>
+    </item>
+    
+    <item>
       <title>Lightweight streaming analytics with NATS</title>
       <link>/blog/2018/2018-09-17-nats-shiny/</link>
       <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>

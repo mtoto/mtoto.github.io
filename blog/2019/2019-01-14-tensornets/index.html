@@ -14,7 +14,7 @@
 <meta property="og:title" content="Transfer Learning with Tensornets and Dataset API" />
 <meta property="og:description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  They grow up so fast It’s been at least a year since I last dabbled in TensorFlow, and the ecosystem seems to have grown a lot. The general trend is towards higher-level abstractions for building models, defining data pipelines or serving predictions. Then there is also the relentless community-driven development, spawning many useful extensions to the official library." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="/blog/2019/2019-01-12-tensornets/" /><meta property="article:published_time" content="2019-01-14T23:15:14-05:00"/>
+<meta property="og:url" content="/blog/2019/2019-01-14-tensornets/" /><meta property="article:published_time" content="2019-01-14T23:15:14-05:00"/>
 <meta property="article:modified_time" content="2019-01-14T23:15:14-05:00"/>
 
 
@@ -24,7 +24,7 @@
      Transfer Learning with Tensornets and Dataset API 
 
 </title>
-<link rel="canonical" href="../../../blog/2019/2019-01-12-tensornets/">
+<link rel="canonical" href="../../../blog/2019/2019-01-14-tensornets/">
 
 
 
@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-14%2019%3a58%3a15.96169%20%2b0100%20CET%20m%3d%2b0.403018057">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-14%2019%3a58%3a15.96169%20%2b0100%20CET%20m%3d%2b0.403018057">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-14%2019%3a58%3a15.96169%20%2b0100%20CET%20m%3d%2b0.403018057">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-14%2019%3a58%3a15.965121%20%2b0100%20CET%20m%3d%2b0.406449245">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-14%2019%3a58%3a15.965121%20%2b0100%20CET%20m%3d%2b0.406449245">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-14%2019%3a58%3a15.965121%20%2b0100%20CET%20m%3d%2b0.406449245">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-14%2019%3a58%3a15.96169%20%2b0100%20CET%20m%3d%2b0.403018057">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-14%2019%3a58%3a15.965121%20%2b0100%20CET%20m%3d%2b0.406449245">
     
 
 
@@ -374,8 +374,6 @@ validation_init_op=iterator.make_initializer(valid_dataset)
        for epoch in range(hparams.num_epochs):
              for _ in range(897): # 28709 / 32
                  sess.run(train, {is_train: True})
-             l=sess.run(loss, {is_train: True})
-             print(&quot;Epoch: {}, loss: {:.2f}&quot;.format(epoch, l))
              # re-initialize the iterator, but this time with validation data
              sess.run(validation_init_op)
              for _ in range(224): # 7178 / 32
@@ -404,7 +402,7 @@ validation_init_op=iterator.make_initializer(valid_dataset)
 </div>
 <div id="inference-and-beyond" class="section level2">
 <h2>Inference and beyond</h2>
-<p>There is a myriad of options to serve a TensorFlow model. Either way, the checkpoint files we saved will need to be transformed. They are useful for restoring model state, but not suited for inference just yet. Weights of the model need to be frozen, training nodes stripped, constants folded (values like batch norms), and overall, we need optimize the model for inference. For an in-depth discussion of these transformations, check out <a href="https://medium.com/google-cloud/optimizing-tensorflow-models-for-serving-959080e9ddbf">Lukman Ramsey’s awesome article on Medium</a>; here I will solely focus on implementation.</p>
+<p>Once trained, there is a myriad of options to serve a TensorFlow model. Either way, the checkpoint files we saved will need to be transformed. They are useful for restoring model state, but not suited for inference just yet. Weights of the model need to be frozen, training nodes stripped, constants folded (values like batch norms), and overall, we need optimize the model for inference. For an in-depth discussion of these transformations, check out <a href="https://medium.com/google-cloud/optimizing-tensorflow-models-for-serving-959080e9ddbf">Lukman Ramsey’s awesome article on Medium</a>; here I will solely focus on implementation.</p>
 <pre class="python"><code>from tensorflow.python.tools import optimize_for_inference_lib
 import tensorflow.tools.graph_transforms as graph_transforms
 from tensorflow.python.platform import gfile
