@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-13%2021%3a09%3a46.783321%20%2b0100%20CET%20m%3d%2b0.431089942">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-13%2021%3a09%3a46.783321%20%2b0100%20CET%20m%3d%2b0.431089942">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-13%2021%3a09%3a46.783321%20%2b0100%20CET%20m%3d%2b0.431089942">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-14%2017%3a59%3a23.849126%20%2b0100%20CET%20m%3d%2b0.591582943">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-14%2017%3a59%3a23.849126%20%2b0100%20CET%20m%3d%2b0.591582943">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-14%2017%3a59%3a23.849126%20%2b0100%20CET%20m%3d%2b0.591582943">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-13%2021%3a09%3a46.783321%20%2b0100%20CET%20m%3d%2b0.431089942">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-14%2017%3a59%3a23.849126%20%2b0100%20CET%20m%3d%2b0.591582943">
     
 
 
@@ -354,10 +354,10 @@ gbmFit &lt;- train(y ~ ., data = training,
 table(preds, testing$y)</code></pre>
 <pre><code>##         
 ## preds     dim  mid bright zero
-##   dim      85  189     21  338
-##   mid      56  106     17  207
-##   bright   42   69      0   39
-##   zero     37   79     27 4160</code></pre>
+##   dim      92  201     31  333
+##   mid      65   99      6  118
+##   bright   20   51      0   10
+##   zero     43   92     28 4283</code></pre>
 <p>Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.</p>
 <p><img src="../../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.</p>

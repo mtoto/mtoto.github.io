@@ -9,10 +9,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="referrer" content="no-referrer">
 <meta name="author" content="Tamas Szilagyi">
-<meta name="description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  They grow up so fast It’s been at least a year since I last dabbled in TensorFlow, and one year is helluva long time, or to say the ecosystem has been evolving at furious speed. The general trend has been towards higher-level abstractions, be it building models, defining data pipelines or serving predictions.">
+<meta name="description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  They grow up so fast It’s been at least a year since I last dabbled in TensorFlow, and the ecosystem seems to have grown a lot. The general trend is towards higher-level abstractions for building models, defining data pipelines or serving predictions. Then there is also the relentless community-driven development, spawning many useful extensions to the official library.">
 
 <meta property="og:title" content="Transfer Learning with Tensornets and Dataset API" />
-<meta property="og:description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  They grow up so fast It’s been at least a year since I last dabbled in TensorFlow, and one year is helluva long time, or to say the ecosystem has been evolving at furious speed. The general trend has been towards higher-level abstractions, be it building models, defining data pipelines or serving predictions." />
+<meta property="og:description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  They grow up so fast It’s been at least a year since I last dabbled in TensorFlow, and the ecosystem seems to have grown a lot. The general trend is towards higher-level abstractions for building models, defining data pipelines or serving predictions. Then there is also the relentless community-driven development, spawning many useful extensions to the official library." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/blog/2019/2019-01-12-tensornets/" /><meta property="article:published_time" content="2019-01-14T23:15:14-05:00"/>
 <meta property="article:modified_time" content="2019-01-14T23:15:14-05:00"/>
@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-13%2021%3a09%3a46.768957%20%2b0100%20CET%20m%3d%2b0.416725752">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-13%2021%3a09%3a46.768957%20%2b0100%20CET%20m%3d%2b0.416725752">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-13%2021%3a09%3a46.768957%20%2b0100%20CET%20m%3d%2b0.416725752">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-14%2017%3a59%3a23.817172%20%2b0100%20CET%20m%3d%2b0.559629256">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-14%2017%3a59%3a23.817172%20%2b0100%20CET%20m%3d%2b0.559629256">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-14%2017%3a59%3a23.817172%20%2b0100%20CET%20m%3d%2b0.559629256">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-13%2021%3a09%3a46.768957%20%2b0100%20CET%20m%3d%2b0.416725752">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-14%2017%3a59%3a23.817172%20%2b0100%20CET%20m%3d%2b0.559629256">
     
 
 
@@ -225,10 +225,7 @@
                 </div>
             </div>
             <div class="markdown">
-                <script src="../../../rmarkdown-libs/kePrint/kePrint.js"></script>
-
-
-<style type="text/css">
+                <style type="text/css">
 pre code, pre, code {
   white-space: pre !important;
   overflow-x: scroll !important;
@@ -238,8 +235,8 @@ pre code, pre, code {
 </style>
 <div id="they-grow-up-so-fast" class="section level2">
 <h2>They grow up so fast</h2>
-<p>It’s been at least a year since I last dabbled in TensorFlow, and one year is helluva long time, or to say the ecosystem has been evolving at furious speed. The general trend has been towards higher-level abstractions, be it building models, defining data pipelines or serving predictions. Then there is the relentless community-driven development, spawning many useful extensions to the official library. Yet, using TensorFlow still has a bit of going down into the trenches feel to it compared to fitting a model in sci-kit learn.</p>
-<p>What started as casual browsing of the official documentation, lead to a strong urge to try out some of the new tools. In particular, I was eager to implement data ingestion and transformation using the relatively new <a href="https://www.tensorflow.org/guide/datasets">Dataset API</a>. And secondly, I was looking for an easy way to do <em>Transfer Learning</em>, and found the <a href="https://github.com/taehoonlee/tensornets">tensornets</a> library which has many available models and a seemingly easy-to-use syntax.</p>
+<p>It’s been at least a year since I last dabbled in TensorFlow, and the ecosystem seems to have grown a lot. The general trend is towards higher-level abstractions for building models, defining data pipelines or serving predictions. Then there is also the relentless community-driven development, spawning many useful extensions to the official library. Yet, using TensorFlow still has a bit of going down into the trenches feel to it compared to fitting your regular ML model in sci-kit learn.</p>
+<p>In this post, we will try out a few of the new tools to see how fast we can build a transfer learning model in native TensorFlow. In particular, we will look at the relatively new <a href="https://www.tensorflow.org/guide/datasets">Dataset API</a> for data ingestion and transformation; and secondly, use <a href="https://github.com/taehoonlee/tensornets">tensornets</a> for transfer learning. The library has many pretrained models available and a seemingly easy-to-use syntax.</p>
 </div>
 <div id="transfer-learning-101" class="section level2">
 <h2>Transfer Learning 101</h2>
@@ -249,7 +246,7 @@ pre code, pre, code {
 </div>
 <div id="and-now-tensornets" class="section level2">
 <h2>And now, Tensornets</h2>
-<p>There is a wide range of pre-trained models to choose from for object detection. Thanks to extensive research in the area performance have been skyrocketing. The latest models can detect 1,000 different objects in a regular picture with 95% accuracy.</p>
+<p>There is a long list of pre-trained models to choose from for object detection. Thanks to extensive research in the area performance have been skyrocketing. The latest models can detect 1,000 different objects in a regular picture with 95% accuracy.</p>
 <p>For this particular project I picked dense convolutional networks (DenseNets in short), for no obvious reason other than being the example on <a href="https://github.com/taehoonlee/tensornets/#Examples">tensornets’ GitHub repo</a>. But now that we here: DenseNets are like convolutional networks with the main difference that each layer serves as an input to all subsequent layers. With regular CNN’s each layer is only connected to the following one. According to the <a href="https://arxiv.org/pdf/1608.06993.pdf">paper from 2016</a>:</p>
 <blockquote>
 <p>DenseNets have several compelling advantages: they alleviate the vanishing-gradient
@@ -262,54 +259,59 @@ problem, strengthen feature propagation, encourage feature reuse, and substantia
 <pre class="python"><code>import tensorflow as tf
 import tensornets as nets
  
-inputs = tf.placeholder(tf.float32, [None, 224, 224, 3])
-outputs = tf.placeholder(tf.float32, [None, 7]) # nr of classes 
-model = nets.DenseNet169(inputs, is_training=True, classes=7)
+inputs=tf.placeholder(tf.float32, [None, 224, 224, 3])
+outputs=tf.placeholder(tf.float32, [None, 7]) # nr of classes 
+model=nets.DenseNet169(inputs, is_training=True, classes=7)
  
-loss = tf.losses.softmax_cross_entropy(outputs, model)
-train = tf.train.AdamOptimizer(learning_rate=1e-5).minimize(loss)
+loss=tf.losses.softmax_cross_entropy(outputs, model)
+train=tf.train.AdamOptimizer(learning_rate=1e-5).minimize(loss)
  
 with tf.Session() as sess:
     sess.run(model.pretrained())
     for (x, y) in your_data:  # the NHWC and one-hot format
         sess.run(train, feed_dict={inputs: x, outputs: y})</code></pre>
-<p>If you have seen TensorFlow code, this looks quite straightforward. However, there is a few gotchas when implementing this IRL. As mentioned, transfer learning has different flavors, the above being an example of fine-tuning the entire network. That is to say all updates are going to be backpropagated to all layers. If we wish to freeze some layers, we can pass the list of weights we do want to train to the <code>minimize()</code> method of the optimizer: <code>.minimize(loss,var_list=train_list)</code>.</p>
+<p>If you have seen TensorFlow code, this looks quite straightforward. However, there is a few gotchas when implementing this IRL. Transfer learning has different flavors, and the above is an example of fine-tuning the entire network. That is to say all updates are going to be backpropagated to all layers. If we wish to freeze some layers, we can pass the list of weights we do want to train to the <code>minimize()</code> method of the optimizer: <code>.minimize(loss,var_list=train_list)</code>.</p>
 <p>Secondly, keep in mind that the input tensor size is fixed, so we’ll need to reshape our images to fit <code>224*224*3</code>. The output tensor shape on the other hand can be changed to equal the number of classes in our specific use case.</p>
-<p>Thirdly, we need to set the <code>is_training=</code> flag to <code>True</code> during training and to <code>False</code> during testing. Under the hood, this points to the argument of the same name for the batch normalization layers. These layers are responsible for normalizing activation layers based on the statistics of each batch during training.</p>
+<p>Thirdly, we need to set the <code>is_training=</code> flag to <code>True</code> during training and to <code>False</code> during testing. Under the hood, this points to the argument of the same name for the batch normalization layers. These layers are responsible for normalizing activations based on the statistics of each batch during training.</p>
 <p>However, during test time not only do we need to turn it off, we also need the global statistics (<code>moving_mean</code> and <code>moving_variance</code>) from all batches to use as constants. Somewhat strangely, these values <a href="https://github.com/tensorflow/tensorflow/blob/a6d8ffae097d0132989ae4688d224121ec6d8f35/tensorflow/contrib/layers/python/layers/layers.py#L200">don’t get updated during training by default</a>, and we are left with the statistics of the last batch. This needs to be fixed.</p>
-<p>Incorporating these points results in a more realistic scenario:</p>
-<pre class="python"><code>inputs = tf.placeholder(tf.float32, [None, 224, 224, 3])
-outputs = tf.placeholder(tf.float32, [None, 7]) # nr of classes 
-is_train = tf.placeholder_with_default(False, shape=(), name=&quot;is_train&quot;) # placeholder for is_training
+<p>Hence, a more realistic scenario including both training and testing ops would look something like this:</p>
+<pre class="python"><code>inputs=tf.placeholder(tf.float32, [None, 224, 224, 3])
+outputs=tf.placeholder(tf.float32, [None, 7]) # nr of classes 
+is_train=tf.placeholder_with_default(False, shape=(), name=&quot;is_train&quot;) # placeholder for is_training
  
-model = nets.DenseNet169(inputs, is_training=is_train, classes=7)
-loss = tf.losses.softmax_cross_entropy(outputs, model)
+model=nets.DenseNet169(inputs, is_training=is_train, classes=7)
+train_list=model.get_weights() # get list of weights
+loss=tf.losses.softmax_cross_entropy(outputs, model)
+  
+accuracy, accuracy_op=tf.metrics.accuracy(tf.argmax(outputs, 1),tf.argmax(inputs,1)) # local vars
  
-correct_pred = tf.equal(tf.argmax(model, 1), tf.argmax(outputs, 1))
-accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name=&quot;accuracy&quot;)
- 
-train_list = model.get_weights() # get list of weights
-update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS) # update batch stats during training
+update_ops=tf.get_collection(tf.GraphKeys.UPDATE_OPS) # update batch stats during training
 with tf.control_dependencies(update_ops):               # only train last &quot;block&quot;
-    train = tf.train.AdamOptimizer(1e-5).minimize(loss, train_list[520:]) 
+    train=tf.train.AdamOptimizer(1e-5).minimize(loss, train_list[520:]) 
+  
+init_op=tf.global_variables_initializer()
+local_init_op=tf.local_variables_initializer()
  
 with tf.Session() as sess:
+    sess.run(init_op)
+    sess.run(local_init_op)
     sess.run(model.pretrained())
      
     for epoch in range(10):
-       for (x, y) in your_data:  
+       for (x, y) in train_data:  
            # run training
            sess.run(train, feed_dict={inputs: x, outputs: y, is_train: True})
-       # run testing           
-       sess.run(accuracy, feed_dict={inputs: x, outputs: y, is_train: False}) # use global stats for batch norm</code></pre>
+       for (x, y) in test_data:
+           # run testing 
+           sess.run(accuracy_op, feed_dict={inputs: x, outputs: y, is_train: False}) # use global stats for batch norm</code></pre>
 </div>
 <div id="preprocessing-with-the-dataset-api" class="section level2">
 <h2>Preprocessing with the Dataset API</h2>
-<p>A common way to feed data in TensorFlow is with <code>feed_dict</code>. Training data is usually loaded as numpy arrays and reshaped to <code>(batch_size*pixel*pixel*channel)</code>, the shape of the placeholder. If your data doesn’t fit into memory, you are out of luck and will be forced to write <em>a lot</em> of boilerplate code for I/O. Besides the verbosity, this approach tends to be slower as computation ends up waiting for new data.</p>
+<p>A common way to feed data in TensorFlow is with <code>feed_dict</code>. Training data is first loaded as numpy arrays and reshaped to <code>(batch_size*pixel*pixel*channel)</code>, the shape of the placeholder. If your data doesn’t fit into memory, you are out of luck and will be forced to write <em>a lot</em> of boilerplate code for I/O. Besides the verbosity, this approach tends to be slower as computation ends up waiting for new data.</p>
 <p>The Dataset API aims to provide a unifying framework for loading, transforming and consuming data. The main advantage is loading data batch per batch, while the preprocessing steps for the following batch are simultaneously performed in the background. The result is lower memory footprint, and a continuous stream of preprocessed training data to the accelerator with no idle time.</p>
-<p>For the purpose of this post, I took on the fer2013 dataset from the Kaggle competition <a href="https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data">Facial Expression Recognition Challenge</a> from six years ago. The training data consists of 28.709 grayscale images with 48*48 pixel resolution. The target column is an integer indicating one of the 7 emotions, and the pixels column is a space separated string of 2.304 pixels. A rather unusual format for image data if you ask me. To get an idea though, here is two pictures from the dataset:</p>
+<p>For the purpose of this post, I chose the fer2013 dataset from the Kaggle competition <a href="https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data">Facial Expression Recognition Challenge</a> from six years ago. The training data consists of 28.709 grayscale images with 48*48 pixel resolution. The target column is an integer indicating one of the 7 emotions, and the pixels column is a space separated string of 2.304 pixels. A rather unusual format for image data if you ask me. To get an idea though, here is two pictures from the dataset:</p>
 <p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/fer1.png" /> <img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/fer2.png" /></p>
-<p>With the Dataset API, we can load data from many sources including numpy arrays, tensors, text files, csv’s or even folders. In addition, dataset objects come with a handful handy methods for data preparation.</p>
+<p>With the Dataset API, we can load data from many sources including numpy arrays, tensors, text files, csv’s or even folders. In addition, dataset objects come with a handful of nifty methods for data preparation.</p>
 <ul>
 <li><code>.skip()</code>: Most datasets have a header row to be ignored.</li>
 <li><code>.map()</code>: Map a parse function reshape the dataset to the correct format.</li>
@@ -350,7 +352,7 @@ def parse_csv(inputs):
     x=tf.image.resize_images(x, [224,224]) # resize image to 224*224
  
     return x, y</code></pre>
-<p>To access this data, we need to define an <code>Iterator</code>. TensorFlow provides a couple of alternatives: Initializable, Reinitializable, One-shot and Feedable. If you want to use both the training as well as the testing data in the same session, the recommended way is the reinitializable iterator. It enables switching between datasets during the same session. Lastly, the iterator has a <code>get_next()</code> method that yields, well, the next batch.</p>
+<p>To access this data, we need to define an <code>Iterator</code>. TensorFlow provides a couple of alternatives: Initializable, Reinitializable, One-shot and Feedable. If you want to use both the training as well as the testing data in the same session, the reinitializable iterator is recommended. It enables switching between datasets during the same session. Lastly, the iterator has a <code>get_next()</code> method that yields, well, the next batch.</p>
 <pre class="python"><code>iterator=tf.data.Iterator.from_structure(train_dataset.output_types, 
                                          train_dataset.output_shapes)
 x, y=iterator.get_next()
@@ -363,29 +365,28 @@ validation_init_op=iterator.make_initializer(valid_dataset)
 # loss = tf.losses.softmax_cross_entropy(y, model)</code></pre>
 <p>Running <code>sess.run(training_init_op)</code> before training and <code>sess.run(validation_init_op)</code> before testing ensures that we are loading the right dataset. Doing data preparation this way, we get rid of the <code>feed_dict</code> mechanism for data ingestion and can plug the values from <code>iterator.get_next()</code> straight into the graph. Last but not least, we should also checkpoint the model’s progress with <code>tf.train.Saver()</code>.</p>
 <pre class="python"><code>with tf.Session() as sess:
-       
+       sess.run(init_op)
+       sess.run(local_init_op)
        sess.run(training_init_op)
-       sess.run(validation_init_op)
        sess.run(model.pretrained())
        saver = tf.train.Saver()
-       
+        
        for epoch in range(hparams.num_epochs):
              for _ in range(897): # 28709 / 32
                  sess.run(train, {is_train: True})
-             l = sess.run(loss, {is_train: True})
+             l=sess.run(loss, {is_train: True})
              print(&quot;Epoch: {}, loss: {:.2f}&quot;.format(epoch, l))
              # re-initialize the iterator, but this time with validation data
              sess.run(validation_init_op)
-             avg_acc = 0
              for _ in range(224): # 7178 / 32
-                 acc = sess.run(accuracy, {is_train: False})
-                 avg_acc += acc
-             print(&quot;Average validation set accuracy is {:.2f}%&quot;.format(avg_acc / 224 * 100))
+                 sess.run(accuracy_op, {is_train: False})
+                  
+             print(&quot;Accumulated validation accuracy is {:.2f}%&quot;.format(sess.run(accuracy)*100))
              saver.save(sess, &quot;gs://path/to/ckpt/file&quot; + &quot;{}.ckpt&quot;.format(epoch))</code></pre>
 </div>
 <div id="to-the-cloud-and-back" class="section level2">
 <h2>To the cloud and back</h2>
-<p>I could <em>in theory</em> train this on my Macbook Air - perhaps with a batch size of 1 - but why torment my machine when I can outsource the job to Google. Submitting TensorFlow programs to the Cloud ML Engine is easy (and cheap) enough with the <code>gcloud command-line tool</code>. It is recommended to upload your training and validation data to Google Cloud Storage first. Then, by parametrising the trainer program, you can supply these as additional arguments when submitting the job.</p>
+<p>I could <em>in theory</em> train this on my Macbook Air - perhaps with a batch size of 1 - but why torment my machine when I can outsource the job to Google. Submitting TensorFlow programs to the Cloud ML Engine is easy (and cheap) enough with the <code>gcloud command-line tool</code>. Your training and validation data needs to be uploaded to Google Cloud Storage first. Then, by parametrising the trainer program, you can supply these as additional arguments when submitting the job.</p>
 <p>You also need to select a region, resource type, the package-path of your trainer program and the module’s name, a staging bucket on GCS and the path to the tarballs of packages that you need <a href="https://cloud.google.com/ml-engine/docs/tensorflow/runtime-version-list">besides the defaults</a>.</p>
 <p>Job status can be monitored in the <a href="https://console.cloud.google.com/mlengine">Cloud Console</a> or streamed directly to our terminal with <code>gcloud ml-engine jobs stream-logs jobname</code>.</p>
 <pre class="bash"><code>gcloud ml-engine jobs submit training &#39;jobname&#39; --region europe-west1 \
@@ -400,57 +401,6 @@ validation_init_op=iterator.make_initializer(valid_dataset)
                            --train-file &#39;gs://bucket name/train.csv&#39; \
                            --eval-file &#39;gs://bucket name/valid.csv&#39; \
                            ...</code></pre>
-<p>I have experimented with all flavors of transfer learning for this task, and got the best results with fine tuning the last convulational block only. The worst result came from training just the classification layer. This makes sense as a dataset of cropped gray faces is too different from your regular ImageNet picture for feature extraction to be sufficient. But neither is updating all the weights necessary.</p>
-<table class="table" style="margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;font-weight: bold;">
-Type
-</th>
-<th style="text-align:left;font-weight: bold;">
-Accuracy
-</th>
-<th style="text-align:left;font-weight: bold;">
-Time
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Finetuning Full Network
-</td>
-<td style="text-align:left;">
-93%
-</td>
-<td style="text-align:left;">
-2:39h
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Fine Tuning Last Block
-</td>
-<td style="text-align:left;">
-93%
-</td>
-<td style="text-align:left;">
-1:22h
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Feature Extraction
-</td>
-<td style="text-align:left;">
-29%
-</td>
-<td style="text-align:left;">
-1:08h
-</td>
-</tr>
-</tbody>
-</table>
 </div>
 <div id="inference-and-beyond" class="section level2">
 <h2>Inference and beyond</h2>
@@ -485,34 +435,34 @@ with tf.Session() as sess:
 <pre class="python"><code>import numpy as np
 import cv2
  
-cap = cv2.VideoCapture(0) # 0 is the webcam device
-face_cascade = cv2.CascadeClassifier(&quot;face_default.xml&quot;) # cascade file to identify face
-net = cv2.dnn.readNetFromTensorflow(&quot;/path/to/frozen_graph.pb&quot;) # read pb file
-emotions = {0: &quot;Angry&quot;,1: &quot;Disgust&quot;,2: &quot;Fear&quot;,3: &quot;Happy&quot;,4: &quot;Sad&quot;,5: &quot;Surprise&quot;,6: &quot;Neutral&quot;}
+cap=cv2.VideoCapture(0) # 0 is the webcam device
+face_cascade=cv2.CascadeClassifier(&quot;face_default.xml&quot;) # cascade file to identify face
+net=cv2.dnn.readNetFromTensorflow(&quot;/path/to/frozen_graph.pb&quot;) # read pb file
+emotions={0: &quot;Angry&quot;,1: &quot;Disgust&quot;,2: &quot;Fear&quot;,3: &quot;Happy&quot;,4: &quot;Sad&quot;,5: &quot;Surprise&quot;,6: &quot;Neutral&quot;}
    
 while(True):
-    ret, frame = cap.read()
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # turn to gray
-    faces = face_cascade.detectMultiScale(frame, 1.3, 5) # detect face
+    ret, frame=cap.read()
+    gray=cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # turn to gray
+    faces=face_cascade.detectMultiScale(frame, 1.3, 5) # detect face
     
     for (x,y,w,h) in faces:
         cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
-        detected_face = gray[int(y):int(y+h), int(x):int(x+w)]# crop detected face
-        detected_face = cv2.resize(detected_face, (48, 48)) # resize to 48*48 first to ruin quality
-        detected_face = cv2.resize(detected_face, (224, 224)) # resize to 224*224 
-        gray3c = cv2.cvtColor(detected_face, cv2.COLOR_GRAY2BGR) # make it 3 channels again
-        im = np.expand_dims(gray3c, axis=0)
+        detected_face=gray[int(y):int(y+h), int(x):int(x+w)]# crop detected face
+        detected_face=cv2.resize(detected_face, (48, 48)) # resize to 48*48 first to ruin quality
+        detected_face=cv2.resize(detected_face, (224, 224)) # resize to 224*224 
+        gray3c=cv2.cvtColor(detected_face, cv2.COLOR_GRAY2BGR) # make it 3 channels again
+        im=np.expand_dims(gray3c, axis=0)
         
-        net.setInput(im.transpose(0, 3, 1, 2), name = &quot;IteratorGetNext&quot;)
-        dnn_out = net.forward(&quot;densenet169/probs&quot;)
+        net.setInput(im.transpose(0, 3, 1, 2), name=&quot;IteratorGetNext&quot;)
+        dnn_out=net.forward(&quot;densenet169/probs&quot;)
         
-        max_index = np.argmax(dnn_out[0])
-        emotion = emotions[max_index]
+        max_index=np.argmax(dnn_out[0])
+        emotion=emotions[max_index]
         
         cv2.putText(frame, emotion, (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2)
         
     cv2.imshow(&#39;frame&#39;, frame)  # Display the resulting frame
-    if cv2.waitKey(1) &amp; 0xFF == ord(&#39;q&#39;):
+    if cv2.waitKey(1) &amp; 0xFF==ord(&#39;q&#39;):
         break
         
 cap.release()
