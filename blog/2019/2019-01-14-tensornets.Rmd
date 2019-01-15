@@ -63,7 +63,7 @@ with tf.Session() as sess:
         sess.run(train, feed_dict={inputs: x, outputs: y})
 ```
 
-If you have seen TensorFlow code, this looks quite straightforward. However, there is a few gotchas when implementing this IRL. Transfer learning has different flavors, and the above is an example of fine-tuning the entire network. That is to say all updates are going to be backpropagated to all layers. If we wish to freeze some layers, we can pass the list of weights we do want to train to the `minimize()` method of the optimizer: `.minimize(loss,var_list=train_list)`.
+If you have seen TensorFlow code, this looks quite straightforward. However, there is a few gotchas when implementing this IRL. Transfer learning has different flavors, and the above is an example of fine-tuning the entire network. That is to say, all updates are going to be backpropagated to all layers. If we wish to freeze some layers, we can pass the list of weights we do want to train to the `minimize()` method of the optimizer: `.minimize(loss,var_list=train_list)`.
 
 Secondly, keep in mind that the input tensor size is fixed, so we'll need to reshape our images to fit `224*224*3`. The output tensor shape on the other hand can be changed to equal the number of classes in our specific use case. 
 
@@ -108,7 +108,7 @@ with tf.Session() as sess:
 
 ## Preprocessing with the Dataset API
 
-A common way to feed data in TensorFlow is with `feed_dict`. Training data is first loaded as numpy arrays and reshaped to `(batch_size*pixel*pixel*channel)`, the shape of the placeholder. If your data doesn't fit into memory, you are out of luck and will be forced to write *a lot* of boilerplate code for I/O. Besides the verbosity, this approach tends to be slower as computation ends up waiting for new data.
+A common way to feed data in TensorFlow is with `feed_dict`. Training data is first loaded as numpy arrays and reshaped to `(batch_size*pixel*pixel*channel)` - the shape of the placeholder. If your data doesn't fit into memory, you are out of luck and will be forced to write *a lot* of boilerplate code for I/O. Besides the verbosity, this approach tends to be slower as computation ends up waiting for new data.
 
 The Dataset API aims to provide a unifying framework for loading, transforming and consuming data. The main advantage is loading data batch per batch, while the preprocessing steps for the following batch are simultaneously performed in the background. The result is lower memory footprint, and a continuous stream of preprocessed training data to the accelerator with no idle time. 
 
@@ -236,7 +236,7 @@ import tensorflow.tools.graph_transforms as graph_transforms
 from tensorflow.python.platform import gfile
  
 with tf.Session() as sess:
-        saver = tf.train.Saver()
+        saver=tf.train.Saver()
         saver.restore(sess, "path/to/saved_model/model.ckpt")
         # freeze         
         frozen_graph_def = tf.graph_util.convert_variables_to_constants(

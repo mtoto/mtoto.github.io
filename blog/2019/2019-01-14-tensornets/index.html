@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-14%2020%3a25%3a21.74637%20%2b0100%20CET%20m%3d%2b0.370238645">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-14%2020%3a25%3a21.74637%20%2b0100%20CET%20m%3d%2b0.370238645">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-14%2020%3a25%3a21.74637%20%2b0100%20CET%20m%3d%2b0.370238645">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-01-15%2010%3a24%3a22.796007%20%2b0100%20CET%20m%3d%2b0.375312912">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-01-15%2010%3a24%3a22.796007%20%2b0100%20CET%20m%3d%2b0.375312912">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-01-15%2010%3a24%3a22.796007%20%2b0100%20CET%20m%3d%2b0.375312912">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-14%2020%3a25%3a21.74637%20%2b0100%20CET%20m%3d%2b0.370238645">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-01-15%2010%3a24%3a22.796007%20%2b0100%20CET%20m%3d%2b0.375312912">
     
 
 
@@ -270,7 +270,7 @@ with tf.Session() as sess:
     sess.run(model.pretrained())
     for (x, y) in your_data:  # the NHWC and one-hot format
         sess.run(train, feed_dict={inputs: x, outputs: y})</code></pre>
-<p>If you have seen TensorFlow code, this looks quite straightforward. However, there is a few gotchas when implementing this IRL. Transfer learning has different flavors, and the above is an example of fine-tuning the entire network. That is to say all updates are going to be backpropagated to all layers. If we wish to freeze some layers, we can pass the list of weights we do want to train to the <code>minimize()</code> method of the optimizer: <code>.minimize(loss,var_list=train_list)</code>.</p>
+<p>If you have seen TensorFlow code, this looks quite straightforward. However, there is a few gotchas when implementing this IRL. Transfer learning has different flavors, and the above is an example of fine-tuning the entire network. That is to say, all updates are going to be backpropagated to all layers. If we wish to freeze some layers, we can pass the list of weights we do want to train to the <code>minimize()</code> method of the optimizer: <code>.minimize(loss,var_list=train_list)</code>.</p>
 <p>Secondly, keep in mind that the input tensor size is fixed, so we’ll need to reshape our images to fit <code>224*224*3</code>. The output tensor shape on the other hand can be changed to equal the number of classes in our specific use case.</p>
 <p>Thirdly, we need to set the <code>is_training=</code> flag to <code>True</code> during training and to <code>False</code> during testing. Under the hood, this points to the argument of the same name for the batch normalization layers. These layers are responsible for normalizing activations based on the statistics of each batch during training.</p>
 <p>However, during test time not only do we need to turn it off, we also need the global statistics (<code>moving_mean</code> and <code>moving_variance</code>) from all batches to use as constants. Somewhat strangely, these values <a href="https://github.com/tensorflow/tensorflow/blob/a6d8ffae097d0132989ae4688d224121ec6d8f35/tensorflow/contrib/layers/python/layers/layers.py#L200">don’t get updated during training by default</a>, and we are left with the statistics of the last batch. This needs to be fixed.</p>
@@ -307,7 +307,7 @@ with tf.Session() as sess:
 </div>
 <div id="preprocessing-with-the-dataset-api" class="section level2">
 <h2>Preprocessing with the Dataset API</h2>
-<p>A common way to feed data in TensorFlow is with <code>feed_dict</code>. Training data is first loaded as numpy arrays and reshaped to <code>(batch_size*pixel*pixel*channel)</code>, the shape of the placeholder. If your data doesn’t fit into memory, you are out of luck and will be forced to write <em>a lot</em> of boilerplate code for I/O. Besides the verbosity, this approach tends to be slower as computation ends up waiting for new data.</p>
+<p>A common way to feed data in TensorFlow is with <code>feed_dict</code>. Training data is first loaded as numpy arrays and reshaped to <code>(batch_size*pixel*pixel*channel)</code> - the shape of the placeholder. If your data doesn’t fit into memory, you are out of luck and will be forced to write <em>a lot</em> of boilerplate code for I/O. Besides the verbosity, this approach tends to be slower as computation ends up waiting for new data.</p>
 <p>The Dataset API aims to provide a unifying framework for loading, transforming and consuming data. The main advantage is loading data batch per batch, while the preprocessing steps for the following batch are simultaneously performed in the background. The result is lower memory footprint, and a continuous stream of preprocessed training data to the accelerator with no idle time.</p>
 <p>For the purpose of this post, I chose the fer2013 dataset from the Kaggle competition <a href="https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data">Facial Expression Recognition Challenge</a> from six years ago. The training data consists of 28.709 grayscale images with 48*48 pixel resolution. The target column is an integer indicating one of the 7 emotions, and the pixels column is a space separated string of 2.304 pixels. A rather unusual format for image data if you ask me. To get an idea though, here is two pictures from the dataset:</p>
 <p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/fer1.png" /> <img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/fer2.png" /></p>
@@ -408,7 +408,7 @@ import tensorflow.tools.graph_transforms as graph_transforms
 from tensorflow.python.platform import gfile
  
 with tf.Session() as sess:
-        saver = tf.train.Saver()
+        saver=tf.train.Saver()
         saver.restore(sess, &quot;path/to/saved_model/model.ckpt&quot;)
         # freeze         
         frozen_graph_def = tf.graph_util.convert_variables_to_constants(
