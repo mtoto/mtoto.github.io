@@ -48,6 +48,15 @@
     </item>
     
     <item>
+      <title>Cloud</title>
+      <link>/tags/cloud/</link>
+      <pubDate>Sun, 10 Feb 2019 23:15:14 -0500</pubDate>
+      
+      <guid>/tags/cloud/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Dalex</title>
       <link>/tags/dalex/</link>
       <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
@@ -71,6 +80,15 @@
       <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
       
       <guid>/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Gcp</title>
+      <link>/tags/gcp/</link>
+      <pubDate>Sun, 10 Feb 2019 23:15:14 -0500</pubDate>
+      
+      <guid>/tags/gcp/</guid>
       <description></description>
     </item>
     
@@ -149,7 +167,7 @@
     <item>
       <title>Python</title>
       <link>/tags/python/</link>
-      <pubDate>Mon, 14 Jan 2019 23:15:14 -0500</pubDate>
+      <pubDate>Sun, 10 Feb 2019 23:15:14 -0500</pubDate>
       
       <guid>/tags/python/</guid>
       <description></description>
