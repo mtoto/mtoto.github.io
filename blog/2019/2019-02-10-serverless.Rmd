@@ -153,7 +153,7 @@ The transfer job can be scheduled either from the command-line or [in the UI](ht
 bq mk --transfer_config \
 --target_dataset=mydataset \
 --display_name='My Transfer' \
---data_source=google_cloud_storage --params="{'data_path_template":"gs://raw-data/311data_{run_time-24h|\"%Y%m%d\"}.json","destination_table_name_template":"DATA","file_format":"JSON"}' 
+--data_source=google_cloud_storage --params='{"data_path_template":"gs://raw-data/311data_{run_time-24h|\"%Y%m%d\"}.json","destination_table_name_template":"DATA","file_format":"JSON"}' 
 ```
 
 The neat thing is that we can parametrise which files to transfer using custom logic based on `run_time` or `run_date`. The following snippet means that only json files stamped with yesterday's date will be loaded on each run: `311data_{run_time-24h|"%Y%m%d"}.json`. We can also provide additional parameters to ignore unknown fields, or delete objects from Google Storage once the job completed succesfully.

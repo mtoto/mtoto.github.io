@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-02-07%2013%3a29%3a26.55055%20%2b0100%20CET%20m%3d%2b0.664267957">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-02-07%2013%3a29%3a26.55055%20%2b0100%20CET%20m%3d%2b0.664267957">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-02-07%2013%3a29%3a26.55055%20%2b0100%20CET%20m%3d%2b0.664267957">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-02-07%2020%3a47%3a08.971203%20%2b0100%20CET%20m%3d%2b0.735267707">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-02-07%2020%3a47%3a08.971203%20%2b0100%20CET%20m%3d%2b0.735267707">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-02-07%2020%3a47%3a08.971203%20%2b0100%20CET%20m%3d%2b0.735267707">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-02-07%2013%3a29%3a26.55055%20%2b0100%20CET%20m%3d%2b0.664267957">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-02-07%2020%3a47%3a08.971203%20%2b0100%20CET%20m%3d%2b0.735267707">
     
 
 
@@ -328,7 +328,7 @@ gsutil iam ch serviceAccount:cloud-funcs@project-name.iam.gserviceaccount.com:ob
 <pre class="bash"><code>bq mk --transfer_config \
 --target_dataset=mydataset \
 --display_name=&#39;My Transfer&#39; \
---data_source=google_cloud_storage --params=&quot;{&#39;data_path_template&quot;:&quot;gs://raw-data/311data_{run_time-24h|\&quot;%Y%m%d\&quot;}.json&quot;,&quot;destination_table_name_template&quot;:&quot;DATA&quot;,&quot;file_format&quot;:&quot;JSON&quot;}&#39; </code></pre>
+--data_source=google_cloud_storage --params=&#39;{&quot;data_path_template&quot;:&quot;gs://raw-data/311data_{run_time-24h|\&quot;%Y%m%d\&quot;}.json&quot;,&quot;destination_table_name_template&quot;:&quot;DATA&quot;,&quot;file_format&quot;:&quot;JSON&quot;}&#39; </code></pre>
 <p>The neat thing is that we can parametrise which files to transfer using custom logic based on <code>run_time</code> or <code>run_date</code>. The following snippet means that only json files stamped with yesterday’s date will be loaded on each run: <code>311data_{run_time-24h|&quot;%Y%m%d&quot;}.json</code>. We can also provide additional parameters to ignore unknown fields, or delete objects from Google Storage once the job completed succesfully.</p>
 </div>
 
