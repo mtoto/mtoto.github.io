@@ -14,8 +14,8 @@
 <meta property="og:title" content="Serverless data ingestion into BigQuery" />
 <meta property="og:description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Rely on the infra For a recent project I needed to find an efficient way to extract data from API’s and load the response into a database residing in the cloud. It’s a fairly common use case, as most online platforms expose data via callable API’s. My personal goal was to introduce as little tooling and code as possible." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="/blog/2019/2019-02-10-serverless/" /><meta property="article:published_time" content="2019-02-10T23:15:14-05:00"/>
-<meta property="article:modified_time" content="2019-02-10T23:15:14-05:00"/>
+<meta property="og:url" content="/blog/2019/2019-02-10-serverless/" /><meta property="article:published_time" content="2019-02-07T23:15:14-05:00"/>
+<meta property="article:modified_time" content="2019-02-07T23:15:14-05:00"/>
 
 
 <title>
@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-02-07%2012%3a52%3a33.361499%20%2b0100%20CET%20m%3d%2b0.590822574">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-02-07%2012%3a52%3a33.361499%20%2b0100%20CET%20m%3d%2b0.590822574">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-02-07%2012%3a52%3a33.361499%20%2b0100%20CET%20m%3d%2b0.590822574">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-02-07%2013%3a04%3a03.116746%20%2b0100%20CET%20m%3d%2b0.747784970">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-02-07%2013%3a04%3a03.116746%20%2b0100%20CET%20m%3d%2b0.747784970">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-02-07%2013%3a04%3a03.116746%20%2b0100%20CET%20m%3d%2b0.747784970">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-02-07%2012%3a52%3a33.361499%20%2b0100%20CET%20m%3d%2b0.590822574">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-02-07%2013%3a04%3a03.116746%20%2b0100%20CET%20m%3d%2b0.747784970">
     
 
 
@@ -217,7 +217,7 @@
                 </div>
                 <div class="meta">
                     
-                    <div class="date" title='Sun Feb 10 2019 23:15:14 -0500'>Feb 10, 2019</div>
+                    <div class="date" title='Thu Feb 7 2019 23:15:14 -0500'>Feb 7, 2019</div>
                     
                     
 		    <div class="reading-time"><div class="middot"></div>6 minutes read</div>
@@ -318,7 +318,7 @@ gsutil iam ch serviceAccount:cloud-funcs@project-name.iam.gserviceaccount.com:ob
 --trigger-topic cron-311 \
 --set-env-vars SECRET_BUCKET=secrets-bucket,STORAGE_BUCKET=raw-data</code></pre>
 <p>Now we can head over to the <a href="https://console.cloud.google.com/cloudscheduler">Cloud Scheduler</a> and create the trigger job:</p>
-<p><img src="../schedule.png" /></p>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/schedule.png" /></p>
 </div>
 <div id="cloud-storage-transfer-to-bigquery" class="section level2">
 <h2>Cloud Storage Transfer to BigQuery</h2>
@@ -329,7 +329,7 @@ gsutil iam ch serviceAccount:cloud-funcs@project-name.iam.gserviceaccount.com:ob
 --target_dataset=mydataset \
 --display_name=&#39;My Transfer&#39; \
 --data_source=google_cloud_storage --params=&quot;{&#39;data_path_template&quot;:&quot;gs://raw-data/311data_{run_time-24h|\&quot;%Y%m%d\&quot;}.json&quot;,&quot;destination_table_name_template&quot;:&quot;DATA&quot;,&quot;file_format&quot;:&quot;JSON&quot;}&#39; </code></pre>
-<p>The neat thing is that we can parametrise which files to transfer using custom logic based on <code>run_time</code> or <code>run_date</code>. The following snippet means that only json files stamped with yesterday’s date will be loaded on each run: <code>311data_{run_time-24h|&quot;%Y%m%d&quot;}.json</code>. We can also provide additional parameters to ignore unknown fields, or delete objects from Google storage once the job completed succesfully.</p>
+<p>The neat thing is that we can parametrise which files to transfer using custom logic based on <code>run_time</code> or <code>run_date</code>. The following snippet means that only json files stamped with yesterday’s date will be loaded on each run: <code>311data_{run_time-24h|&quot;%Y%m%d&quot;}.json</code>. We can also provide additional parameters to ignore unknown fields, or delete objects from Google Storage once the job completed succesfully.</p>
 </div>
 
                 <br>

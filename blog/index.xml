@@ -6,7 +6,7 @@
     <description>Recent content in Blog on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 10 Feb 2019 23:15:14 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 07 Feb 2019 23:15:14 -0500</lastBuildDate>
     
 	<atom:link href="/blog/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>Serverless data ingestion into BigQuery</title>
       <link>/blog/2019/2019-02-10-serverless/</link>
-      <pubDate>Sun, 10 Feb 2019 23:15:14 -0500</pubDate>
+      <pubDate>Thu, 07 Feb 2019 23:15:14 -0500</pubDate>
       
       <guid>/blog/2019/2019-02-10-serverless/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Rely on the infra For a recent project I needed to find an efficient way to extract data from API’s and load the response into a database residing in the cloud. It’s a fairly common use case, as most online platforms expose data via callable API’s. My personal goal was to introduce as little tooling and code as possible.</description>

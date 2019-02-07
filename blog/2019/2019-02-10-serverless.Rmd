@@ -1,7 +1,7 @@
 ---
 title: "Serverless data ingestion into BigQuery"
 author: "Tamas Szilagyi"
-date: 2019-02-10T23:15:14-05:00
+date: 2019-02-07T23:15:14-05:00
 categories: ["Python"]
 tags: ["GCP", "Cloud", "Python"]
 output: html_document
@@ -138,7 +138,8 @@ gcloud alpha functions deploy fetch_and_write --runtime python37 \
 
 Now we can head over to the [Cloud Scheduler](https://console.cloud.google.com/cloudscheduler) and create the trigger job:
 
-![](../schedule.png)
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/schedule.png
+)
 
 ## Cloud Storage Transfer to BigQuery
 
@@ -155,4 +156,4 @@ bq mk --transfer_config \
 --data_source=google_cloud_storage --params="{'data_path_template":"gs://raw-data/311data_{run_time-24h|\"%Y%m%d\"}.json","destination_table_name_template":"DATA","file_format":"JSON"}' 
 ```
 
-The neat thing is that we can parametrise which files to transfer using custom logic based on `run_time` or `run_date`. The following snippet means that only json files stamped with yesterday's date will be loaded on each run: `311data_{run_time-24h|"%Y%m%d"}.json`. We can also provide additional parameters to ignore unknown fields, or delete objects from Google storage once the job completed succesfully.
+The neat thing is that we can parametrise which files to transfer using custom logic based on `run_time` or `run_date`. The following snippet means that only json files stamped with yesterday's date will be loaded on each run: `311data_{run_time-24h|"%Y%m%d"}.json`. We can also provide additional parameters to ignore unknown fields, or delete objects from Google Storage once the job completed succesfully.
