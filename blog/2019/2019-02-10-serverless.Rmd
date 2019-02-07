@@ -67,13 +67,13 @@ Like most API's, Socrata requires authentication (`APPTOKEN`, `USERNAME`, `PASSW
 
 ## Check yo privilege!
 
-The naive approach is to supply secrets as environment variables when deploying the function. But this is no bueno because your tokens and passwords are now exposed in broad daylight in the function's environment. 
+The naive approach is to supply secrets as environment variables during deployment. But this is no bueno because your tokens and passwords are now exposed in broad daylight in the function's environment. 
 
 A better option is to encrypt your secret variables. This works fine, except that your cloud function now needs to know how to decrypt them. This can be accomplished with key management services like [Cloud KMS](https://cloud.google.com/kms/), however the cost is additional complexity.
 
 A third option is to save the secrets to a separate storage bucket, seal it off and grant exclusive privilege to the service account operating your cloud function. Objects on GCS are encrypted at rest by default and access can be tightly controlled by IAM roles. This is a good approach to go with.
 
-When you [enable cloud functions in the console](https://console.cloud.google.com/functions), a new service account is automatically created. Using the development (or alpha) version of gcloud commands, we can choose to associate a different service account with the cloud functions (see under *Deployment*). This account needs to have the relevant roles assigned for privileged access.
+When you [enable cloud functions in the console](https://console.cloud.google.com/functions), a new service account is automatically created. Using the development (or alpha) version of gcloud commands, we can also choose to associate a different service account with the cloud functions (see under *Deployment*). Either way, this service account needs to have the relevant roles assigned for privileged access.
 
 ```{bash}
 # create bucket for secrets.json
@@ -89,7 +89,7 @@ gsutil iam ch serviceAccount:cloud-funcs@project-name.iam.gserviceaccount.com:le
 gsutil iam ch serviceAccount:cloud-funcs@project-name.iam.gserviceaccount.com:legacyObjectReader gs://secrets-bucket/secrets.json
 ```
 
-Now our cloud function will be able to read the `secrets.json` file in the secrets bucket, and retrieve the variables necessary for authentication during run time. A simple Python function to do the job could like this:
+Now our cloud function will be able to read the `secrets.json` file from the secrets bucket, and retrieve the variables necessary for authentication during run time. A simple Python function to do the job could like this:
 
 ```{python}
 def load_creds():
@@ -115,7 +115,7 @@ gsutil iam ch serviceAccount:cloud-funcs@project-name.iam.gserviceaccount.com:ob
 
 ## Deployment
 
-The second thing to decide before deploying serverless functions, is how to trigger them. On GCP, the two options are http requests or Pub/Sub messages, the latter being the default messaging system on Google Cloud. Since we want to schedule function runs with daily frequency, the [recommended approach](https://cloud.google.com/scheduler/docs/tut-pub-sub) is to create a Pub/Sub topic (for example `gcloud pubsub topics create cron-topic`) and periodically publish messages using Cloud Scheduler. This requires slight refactoring of the Python function though.
+The second thing to decide before deploying serverless functions, is how to trigger them. On GCP, the two options are http requests or Pub/Sub messages; the latter being the default messaging system on Google Cloud. Since we want to schedule function runs with daily frequency, the [recommended approach](https://cloud.google.com/scheduler/docs/tut-pub-sub) is to create a Pub/Sub topic (for example `gcloud pubsub topics create cron-311`) and periodically publish messages using Cloud Scheduler. This requires slight refactoring of the Python function though.
 
 ```{python}
 def fetch_and_write(data, context):

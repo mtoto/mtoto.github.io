@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-02-07%2013%3a14%3a15.124788%20%2b0100%20CET%20m%3d%2b0.427277933">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-02-07%2013%3a14%3a15.124788%20%2b0100%20CET%20m%3d%2b0.427277933">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-02-07%2013%3a14%3a15.124788%20%2b0100%20CET%20m%3d%2b0.427277933">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-02-07%2013%3a29%3a26.55055%20%2b0100%20CET%20m%3d%2b0.664267957">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-02-07%2013%3a29%3a26.55055%20%2b0100%20CET%20m%3d%2b0.664267957">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-02-07%2013%3a29%3a26.55055%20%2b0100%20CET%20m%3d%2b0.664267957">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-02-07%2013%3a14%3a15.124788%20%2b0100%20CET%20m%3d%2b0.427277933">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-02-07%2013%3a29%3a26.55055%20%2b0100%20CET%20m%3d%2b0.664267957">
     
 
 
@@ -271,10 +271,10 @@ def fetch_and_write(data, context):
 </div>
 <div id="check-yo-privilege" class="section level2">
 <h2>Check yo privilege!</h2>
-<p>The naive approach is to supply secrets as environment variables when deploying the function. But this is no bueno because your tokens and passwords are now exposed in broad daylight in the function’s environment.</p>
+<p>The naive approach is to supply secrets as environment variables during deployment. But this is no bueno because your tokens and passwords are now exposed in broad daylight in the function’s environment.</p>
 <p>A better option is to encrypt your secret variables. This works fine, except that your cloud function now needs to know how to decrypt them. This can be accomplished with key management services like <a href="https://cloud.google.com/kms/">Cloud KMS</a>, however the cost is additional complexity.</p>
 <p>A third option is to save the secrets to a separate storage bucket, seal it off and grant exclusive privilege to the service account operating your cloud function. Objects on GCS are encrypted at rest by default and access can be tightly controlled by IAM roles. This is a good approach to go with.</p>
-<p>When you <a href="https://console.cloud.google.com/functions">enable cloud functions in the console</a>, a new service account is automatically created. Using the development (or alpha) version of gcloud commands, we can choose to associate a different service account with the cloud functions (see under <em>Deployment</em>). This account needs to have the relevant roles assigned for privileged access.</p>
+<p>When you <a href="https://console.cloud.google.com/functions">enable cloud functions in the console</a>, a new service account is automatically created. Using the development (or alpha) version of gcloud commands, we can also choose to associate a different service account with the cloud functions (see under <em>Deployment</em>). Either way, this service account needs to have the relevant roles assigned for privileged access.</p>
 <pre class="bash"><code># create bucket for secrets.json
 gsutil mb gs://secrets-bucket 
 # set default access control to private
@@ -286,7 +286,7 @@ gcloud iam service-accounts create cloud-funcs
 # add read bucket/object roles to service account
 gsutil iam ch serviceAccount:cloud-funcs@project-name.iam.gserviceaccount.com:legacyBucketReader gs://secrets-bucket 
 gsutil iam ch serviceAccount:cloud-funcs@project-name.iam.gserviceaccount.com:legacyObjectReader gs://secrets-bucket/secrets.json</code></pre>
-<p>Now our cloud function will be able to read the <code>secrets.json</code> file in the secrets bucket, and retrieve the variables necessary for authentication during run time. A simple Python function to do the job could like this:</p>
+<p>Now our cloud function will be able to read the <code>secrets.json</code> file from the secrets bucket, and retrieve the variables necessary for authentication during run time. A simple Python function to do the job could like this:</p>
 <pre class="python"><code>def load_creds():
     blob = storage_client.get_bucket(SECRET_BUCKET) \
         .get_blob(&#39;secrets.json&#39;) \
@@ -305,7 +305,7 @@ gsutil iam ch serviceAccount:cloud-funcs@project-name.iam.gserviceaccount.com:ob
 </div>
 <div id="deployment" class="section level2">
 <h2>Deployment</h2>
-<p>The second thing to decide before deploying serverless functions, is how to trigger them. On GCP, the two options are http requests or Pub/Sub messages, the latter being the default messaging system on Google Cloud. Since we want to schedule function runs with daily frequency, the <a href="https://cloud.google.com/scheduler/docs/tut-pub-sub">recommended approach</a> is to create a Pub/Sub topic (for example <code>gcloud pubsub topics create cron-topic</code>) and periodically publish messages using Cloud Scheduler. This requires slight refactoring of the Python function though.</p>
+<p>The second thing to decide before deploying serverless functions, is how to trigger them. On GCP, the two options are http requests or Pub/Sub messages; the latter being the default messaging system on Google Cloud. Since we want to schedule function runs with daily frequency, the <a href="https://cloud.google.com/scheduler/docs/tut-pub-sub">recommended approach</a> is to create a Pub/Sub topic (for example <code>gcloud pubsub topics create cron-311</code>) and periodically publish messages using Cloud Scheduler. This requires slight refactoring of the Python function though.</p>
 <pre class="python"><code>def fetch_and_write(data, context):
     action = base64.b64decode(data[&#39;data&#39;]).decode(&#39;utf-8&#39;) # retrieve pubsub message
     # ...
