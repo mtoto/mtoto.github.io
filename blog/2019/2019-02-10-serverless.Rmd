@@ -20,7 +20,7 @@ pre code, pre, code {
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
-## Rely on the infra
+## Least effort required
 
 For a recent project I needed to find an efficient way to extract data from API's and load the response into a database residing in the cloud. It's a fairly common use case, as most online platforms expose data via callable API's. My personal goal was to introduce as little tooling and code as possible. After all, that's the whole idea behind managed cloud services.
 

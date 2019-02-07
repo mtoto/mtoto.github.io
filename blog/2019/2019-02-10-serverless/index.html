@@ -9,10 +9,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="referrer" content="no-referrer">
 <meta name="author" content="Tamas Szilagyi">
-<meta name="description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Rely on the infra For a recent project I needed to find an efficient way to extract data from API’s and load the response into a database residing in the cloud. It’s a fairly common use case, as most online platforms expose data via callable API’s. My personal goal was to introduce as little tooling and code as possible.">
+<meta name="description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Least effort required For a recent project I needed to find an efficient way to extract data from API’s and load the response into a database residing in the cloud. It’s a fairly common use case, as most online platforms expose data via callable API’s. My personal goal was to introduce as little tooling and code as possible.">
 
 <meta property="og:title" content="Serverless data ingestion into BigQuery" />
-<meta property="og:description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Rely on the infra For a recent project I needed to find an efficient way to extract data from API’s and load the response into a database residing in the cloud. It’s a fairly common use case, as most online platforms expose data via callable API’s. My personal goal was to introduce as little tooling and code as possible." />
+<meta property="og:description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Least effort required For a recent project I needed to find an efficient way to extract data from API’s and load the response into a database residing in the cloud. It’s a fairly common use case, as most online platforms expose data via callable API’s. My personal goal was to introduce as little tooling and code as possible." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/blog/2019/2019-02-10-serverless/" /><meta property="article:published_time" content="2019-02-07T23:15:14-05:00"/>
 <meta property="article:modified_time" content="2019-02-07T23:15:14-05:00"/>
@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-02-07%2013%3a04%3a03.116746%20%2b0100%20CET%20m%3d%2b0.747784970">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-02-07%2013%3a04%3a03.116746%20%2b0100%20CET%20m%3d%2b0.747784970">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-02-07%2013%3a04%3a03.116746%20%2b0100%20CET%20m%3d%2b0.747784970">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-02-07%2013%3a14%3a15.124788%20%2b0100%20CET%20m%3d%2b0.427277933">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-02-07%2013%3a14%3a15.124788%20%2b0100%20CET%20m%3d%2b0.427277933">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-02-07%2013%3a14%3a15.124788%20%2b0100%20CET%20m%3d%2b0.427277933">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-02-07%2013%3a04%3a03.116746%20%2b0100%20CET%20m%3d%2b0.747784970">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-02-07%2013%3a14%3a15.124788%20%2b0100%20CET%20m%3d%2b0.427277933">
     
 
 
@@ -233,8 +233,8 @@ pre code, pre, code {
   word-wrap: initial !important;
 }
 </style>
-<div id="rely-on-the-infra" class="section level2">
-<h2>Rely on the infra</h2>
+<div id="least-effort-required" class="section level2">
+<h2>Least effort required</h2>
 <p>For a recent project I needed to find an efficient way to extract data from API’s and load the response into a database residing in the cloud. It’s a fairly common use case, as most online platforms expose data via callable API’s. My personal goal was to introduce as little tooling and code as possible. After all, that’s the whole idea behind managed cloud services.</p>
 <p>Using Google Cloud Platform, I came up with the following: 1. Cloud Function periodically calls API and saves .json to storage bucket. 2. BigQuery Transfer automatically picks up and loads .json file into a database table.</p>
 <p>Sounds fairly simple, yeah. But unsurprisingly, there is a bit of configuration work along the way.</p>
