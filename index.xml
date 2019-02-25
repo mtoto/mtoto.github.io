@@ -126,8 +126,8 @@
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
       
       <guid>/about/about/</guid>
-      <description>I am a self-employed Data Scientist currently based in Amsterdam. My main area of expertise is digital analytics, however I have worked in a variety of industries such as advertising, aviation and most recently banking. I love solving business problems with data, discovering new insights and building scalable solutions.
-While I do have a slight preference for R, I am also familiar with SQL, Python and Apache Spark. I enjoy learning and experimenting with new technologies, which is what this blog is about.</description>
+      <description>I am a self-employed Data Scientist available for consulting on data analytics projects. My main area of expertise is digital analytics, however I have worked in a variety of industries such as online advertising, aviation and banking. I love solving business problems with data, discovering new insights and building scalable solutions.
+While I do have a slight preference for R, I am also familiar with SQL, Python and Apache Spark.</description>
     </item>
     
     <item>
@@ -137,7 +137,7 @@ While I do have a slight preference for R, I am also familiar with SQL, Python a
       
       <guid>/consulting/consulting/</guid>
       <description>I am available for consulting on all aspects of data analytics, including:
- Creating robust data pipelines for data of all sizes. Building interactive dashboards for all audiences. Implementing principled A/B testing workflows. Developing and analyzing models to solve business problems. Integrating predictive analytics into production systems. Communicating insights and results to stakeholders.  Please contact me for any inquiries.</description>
+ Creating robust data pipelines for data of all sizes. Building interactive dashboards for all audiences. Implementing principled A/B testing workflows. Developing and analyzing models to solve business problems. Integrating predictive analytics into production systems. Communicating insights and results to stakeholders.  Feel free to contact me with further inquiries!</description>
     </item>
     
   </channel>
