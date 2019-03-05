@@ -6,10 +6,20 @@
     <description>Recent content in Blog on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 07 Feb 2019 23:15:14 -0500</lastBuildDate>
+    <lastBuildDate>Tue, 05 Mar 2019 23:15:14 -0500</lastBuildDate>
     
 	<atom:link href="/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>No frills data warehousing with dbt</title>
+      <link>/blog/2019/2019-03-05-dbt/</link>
+      <pubDate>Tue, 05 Mar 2019 23:15:14 -0500</pubDate>
+      
+      <guid>/blog/2019/2019-03-05-dbt/</guid>
+      <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  ETL with ease Analytics databases more often than not contain a multitude of tables and views, depicting facts, dimensions or aggregate statistics. Responsibility for the underlying data pipelines traditionally belonged to Data Architects or Data Engineers. However modern tools like dbt are lowering the barrier to doing ETL.
+To use dbt, you only need to be familiar with SQL.</description>
+    </item>
     
     <item>
       <title>Serverless data ingestion into BigQuery</title>

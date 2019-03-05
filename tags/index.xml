@@ -50,7 +50,7 @@
     <item>
       <title>Cloud</title>
       <link>/tags/cloud/</link>
-      <pubDate>Thu, 07 Feb 2019 23:15:14 -0500</pubDate>
+      <pubDate>Tue, 05 Mar 2019 23:15:14 -0500</pubDate>
       
       <guid>/tags/cloud/</guid>
       <description></description>
@@ -86,7 +86,7 @@
     <item>
       <title>Gcp</title>
       <link>/tags/gcp/</link>
-      <pubDate>Thu, 07 Feb 2019 23:15:14 -0500</pubDate>
+      <pubDate>Tue, 05 Mar 2019 23:15:14 -0500</pubDate>
       
       <guid>/tags/gcp/</guid>
       <description></description>
@@ -206,6 +206,15 @@
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
       <guid>/tags/spotify/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sql</title>
+      <link>/tags/sql/</link>
+      <pubDate>Tue, 05 Mar 2019 23:15:14 -0500</pubDate>
+      
+      <guid>/tags/sql/</guid>
       <description></description>
     </item>
     

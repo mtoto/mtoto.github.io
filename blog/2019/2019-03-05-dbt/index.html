@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Tamas Szilagyi">
+<meta name="description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  ETL with ease Analytics databases more often than not contain a multitude of tables and views, depicting facts, dimensions or aggregate statistics. Responsibility for the underlying data pipelines traditionally belonged to Data Architects or Data Engineers. However modern tools like dbt are lowering the barrier to doing ETL.
+To use dbt, you only need to be familiar with SQL.">
+
+<meta property="og:title" content="No frills data warehousing with dbt" />
+<meta property="og:description" content="pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  ETL with ease Analytics databases more often than not contain a multitude of tables and views, depicting facts, dimensions or aggregate statistics. Responsibility for the underlying data pipelines traditionally belonged to Data Architects or Data Engineers. However modern tools like dbt are lowering the barrier to doing ETL.
+To use dbt, you only need to be familiar with SQL." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/blog/2019/2019-03-05-dbt/" /><meta property="article:published_time" content="2019-03-05T23:15:14-05:00"/>
+<meta property="article:modified_time" content="2019-03-05T23:15:14-05:00"/>
+
+
+<title>
+
+
+     No frills data warehousing with dbt 
+
+</title>
+<link rel="canonical" href="../../../blog/2019/2019-03-05-dbt/">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-05%2012%3a31%3a54.188449%20-0500%20EST%20m%3d%2b0.972552021">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-05%2012%3a31%3a54.188449%20-0500%20EST%20m%3d%2b0.972552021">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-05%2012%3a31%3a54.188449%20-0500%20EST%20m%3d%2b0.972552021">
+    
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-05%2012%3a31%3a54.188449%20-0500%20EST%20m%3d%2b0.972552021">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="../../../img/ts.png"
+
+>
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+                
+                
+                
+                
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                
+                <a href="../../../"><img class="avatar" src="../../../img/profile_pic.png" srcset="../../../img/profile_pic.png 1x"></a>
+            
+            <a href="../../../"><div class="name">Tamas Szilagyi</div></a>
+            
+              <h3 class="self-intro">Coding with Data</h3>
+            
+            <nav>
+                <ul>
+                    
+                        <li class="nav-"><a href="../../../about/about"><span>About</span></a></li>
+                    
+                        <li class="nav-"><a href="../../../blog/"><span>Blog</span></a></li>
+                    
+                        <li class="nav-"><a href="../../../consulting/consulting"><span>Consulting</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/mtoto" target="_blank" rel="noopener"><img class="icon" src="../../../img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/tudosgar" target="_blank" rel="noopener"><img class="icon" src="../../../img/twitter.svg" alt="twitter" /></a>
+        
+
+	
+
+        
+
+        
+
+        
+            <a href="//linkedin.com/in/tszilagyi" target="_blank" rel="noopener"><img class="icon" src="../../../img/linkedin.svg" alt="linkedin" /></a>
+        
+            
+        
+            <a href="//stackoverflow.com/users/4964651/mtoto?tab=profile" target="_blank" rel="noopener"><img class="icon" src="../../../img/stackoverflow.svg" alt="stackoverflow" /></a>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+            <a href="//soundcloud.com/tamas-szilagyi" target="_blank" rel="noopener"><img class="icon" src="../../../img/soundcloud.svg" alt="soundcloud" /></a>
+        
+
+        
+            <a href="mailto:tszilagyi@outlook.com"><img class="icon" src="../../../img/email.svg" alt="email" /></a>
+        
+
+        
+
+        
+            
+        <link rel="stylesheet" href="../../../css/github-gist.css" rel="stylesheet" id="theme-stylesheet">
+        <script src="../../../js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+            
+
+
+        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+        
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            // Center justify equations in code and markdown cells. Elsewhere
+            // we use CSS to left justify single line equations in code cells.
+            displayAlign: 'center',
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}},
+                linebreaks: { automatic: true }
+            }
+        });
+        </script>
+
+            
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    No frills data warehousing with dbt
+
+</div>
+
+                    <div class="initials"><a href="../../../"></a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Tue Mar 5 2019 23:15:14 EST'>Mar 5, 2019</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>7 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <style type="text/css">
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+</style>
+<div id="etl-with-ease" class="section level2">
+<h2>ETL with ease</h2>
+<p>Analytics databases more often than not contain a multitude of tables and views, depicting facts, dimensions or aggregate statistics. Responsibility for the underlying data pipelines traditionally belonged to Data Architects or Data Engineers. However modern tools like <a href="https://www.getdbt.com/about/">dbt</a> are lowering the barrier to doing ETL.</p>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/dbt.png" /></p>
+<p>To use dbt, you only need to be familiar with SQL. The package relies on the Python templating language Jinja to enable nifty features like dependency graphs, macros or schema tests. Upon compilation, everything is translated into pure SQL and run on the databases execution engine. It is quite fascinating really how much you can do with such a minimalist tool.</p>
+<p>In <a href="http://tamaszilagyi.com/blog/2019/2019-02-10-serverless/">a previous post</a> I talked about an approach to periodically load data from an API to BigQuery. Here, I’ll pick up from the BigQuery table containing daily response data from the <a href="https://data.cityofnewyork.us/Social-Services/311-Service-Requests-from-2010-to-Present/erm2-nwe9">311 Service Calls dataset</a> to illustrate dbt’s functionality. All the code from this post lives in a <a href="https://github.com/mtoto/cloud-sql-db/tree/master/dbt">subdirectory of the same GitHub repo</a>. Reading the previous post is by no means necessary to follow this one though.</p>
+</div>
+<div id="setting-up-a-dbt-project" class="section level2">
+<h2>Setting up a dbt project</h2>
+<p>The package can be installed using <code>pip install dbt</code>, and a new project initiated with <code>dbt init [project-name]</code>, creates a directory structure containing the essentials. Currently dbt only supports Postgres, Redshift, Snowflake and BigQuery; and we need to configure the connection in <code>~/.dbt/profiles.yml</code> first. For BigQuery, dbt needs to be able to create, modify or delete tables and views; that is to say it needs a service account with BigQuery admin roles attached. The downloaded .json file containing the required credentials can then be referenced inside profiles.yml under <code>keyfile:</code>.</p>
+<pre class="yaml"><code>311_data_pipelines: # name of profile
+  target: dev
+  outputs: 
+    dev:
+      type: bigquery
+      method: service-account
+      project: dbt-sql
+      schema: dev
+      threads: 2
+      keyfile: /Users/tamas/dbt.json # service account credentials
+    prod:
+      type: bigquery
+      method: service-account
+      project: dbt-sql
+      schema: analytics
+      threads: 2
+      keyfile: /Users/tamas/dbt.json # service account credentials</code></pre>
+<p>In addition, we can define different target schemas (for BigQuery this equals <em>datasets</em>) where tables and views are going to be materialized. It is recommended to have at least one dev environment besides the production tables for experimentation and prototyping.</p>
+<p>The other configuration file is <code>dbt-project.yml</code> in the project directory. This file contains default settings for the project we can leave as is for the most part. Profile and project name should be set though, and we should also define default behavior of our <em>models</em>, the core building block in dbt.</p>
+<pre class="yaml"><code>name: &#39;test_package&#39;
+version: &#39;0.0.1&#39;
+
+profile: &#39;311_data_pipelines&#39;
+
+source-paths: [&quot;models&quot;]
+analysis-paths: [&quot;analysis&quot;] 
+test-paths: [&quot;tests&quot;]
+data-paths: [&quot;data&quot;]
+macro-paths: [&quot;macros&quot;]
+
+target-path: &quot;target&quot;  # directory which will store compiled SQL files
+clean-targets:         # directories to be removed by `dbt clean`
+    - &quot;target&quot;
+    - &quot;dbt_modules&quot;
+
+models:
+  test_package:
+    base:
+      enabled: true # run by default</code></pre>
+</div>
+<div id="everything-is-a-select-statement" class="section level2">
+<h2><em>“Everything is a select statement”</em></h2>
+<p>Models in dbt terminology refer to a collection of .sql files residing inside <code>models/</code>. Each file contains a select statement with some jinja-like expressions sprinkled on top. By default, the SQL queries are materialized as views, but can also be tables or incremental (tables). The latter means inserting new rows instead of recalculating the entire table on each run. Below is an example of an incremental model based on the source dataset.</p>
+<pre class="sql"><code>{{ config(materialized=&#39;incremental&#39;) }}
+
+select 
+  datetime(created_date, &quot;America/New_York&quot;) as datetime_created,
+  date(created_date, &quot;America/New_York&quot;) as date_created,
+  time(created_date, &quot;America/New_York&quot;) as time_created,
+  unique_key as id,
+  agency,
+  agency_name,
+  complaint_type,
+  descriptor as complaint_description,
+  resolution_description,
+  incident_zip as zip_code,
+  coalesce(intersection_street_1, street_name) as street,
+  borough
+from `dbt-sql.311raw.data` --project_name.dataset.table
+
+{% if is_incremental() %}
+  where datetime(created_date, &quot;America/New_York&quot;) &gt; (select max(datetime_created) 
+                                                      from {{ this }})
+{% endif %}</code></pre>
+<p>Materialization is either defined in the sql file or set in <code>dbt-project.yml</code>. On incremental runs, we need to filter for new rows using the <code>is_incremental()</code> macro. Each new table bears the name of the corresponding .sql file.</p>
+<p>Creating new tables and views based on pre-existing objects implicitly builds a data pipeline. To chain together materlizations, we just reference other models with <code>ref()</code>. We could for example create a time-series of all noise complaints based on <code>clean_data</code>.</p>
+<pre class="sql"><code>{{ config(materialized=&#39;incremental&#39;) }}
+
+with clean_data as (
+  select *
+  from {{ ref(&#39;clean_data&#39;) }}
+)
+
+select 
+  date_created,
+  count(&quot;*&quot;) as all_complaints 
+from clean_data
+where complaint_type like &quot;Noise%&quot;
+
+{% if is_incremental() %}
+  and date_created &gt; (select max(date_created) from {{ this }})
+{% endif %}
+
+group by 1
+order by 1 asc</code></pre>
+<p>By referencing tables this way, we define casual relationships making up a DAG.</p>
+<p>Models can be run from the command line using <code>dbt compile</code> and <code>dbt run</code>. The former compiles all the jinja magic into actual SQL queries. The incremental models are for example expanded into a combination of merge, insert and delete statements depending on the backend. The <code>dbt run</code> command runs all enabled models and materializes the results. <a href="https://docs.getdbt.com/reference#run">Additional flags</a> can be supplied to select or exclude specific models from running.</p>
+</div>
+<div id="macros" class="section level2">
+<h2>Macros</h2>
+<p>Not only can we use dbt’s built in macros, we can choose to write our own. This gives a lot of flexibility to abstract away unnecessary complexities. Like a rolling average function instead of a window statement:</p>
+<pre class="sql"><code>{% macro rolling_avg(value_col, time_col, nr_rows) %}
+
+  AVG( {{ value_col }} )
+  OVER(ORDER BY {{ time_col }}
+  ROWS BETWEEN {{ nr_rows }} PRECEDING AND CURRENT ROW) AS rolling_avg
+
+{% endmacro %}</code></pre>
+<p>Saving it as <code>rolling_avg.sql</code> inside the <code>macros/</code> directory, we can use it in any of our models.</p>
+<pre class="sql"><code>with noises as (
+  select *
+  from {{ ref(&#39;noise_complaints&#39;) }}
+)
+
+select date_created, residential, 
+       {{ rolling_avg(&#39;residential&#39;,&#39;date_created&#39;, 7) }}
+from noises</code></pre>
+</div>
+<div id="tests-and-docs" class="section level2">
+<h2>Tests and docs</h2>
+<p>One of my favorite features of dbt is its testing framework. We can run two kind of tests, schema tests and data tests. There are <a href="https://docs.getdbt.com/docs/testing">schema validation tests</a> included out of the box for uniqueness, missing values, relationships or accepted values.</p>
+<p>These tests are effectively macros, which we could just as well write ourselves. It is in fact possible to create a dbt package consisting of macros only. In this sense dbt encourages the development of utility packages that can be shared and reused. A good example is <a href="https://github.com/fishtown-analytics/dbt-utils">dbt-utils</a>, that among others contains some more tests. To use external packages, we need an extra <code>packages.yml</code> file in the package root directory to list dependencies.</p>
+<pre class="yaml"><code>packages:
+  - git: &quot;https://github.com/fishtown-analytics/dbt-utils.git&quot;</code></pre>
+<p>In each case schema tests need to be declared inside <code>schema.yml</code> in the <code>models/</code> directory.</p>
+<pre class="yaml"><code>version: 2
+
+models:
+  - name: clean_data
+    description: Cleaned up source data from the OpenData API.
+    tests: 
+      - dbt_utils.recency: # recency test from dbt-utils
+          datepart: day
+          field: datetime_created
+          interval: 1
+    
+    columns:      
+        - name: datetime_created
+          description: Timestamp complaint was created.
+          tests: 
+            - not_null # built-in missing value test</code></pre>
+<p>As for data tests, you’ll have to write your own. The idea is to have SQL queries that return results <em>in case of an error</em>. So let’s say we want to test equality of maximum dates between the clean_data and the noise_complaints tables. A <code>test_maxdate.sql</code> inside <code>test/</code> could look as follows.</p>
+<pre class="sql"><code>with clean as (
+
+    select max(date_created) as clean_date 
+    from  {{ ref(&#39;clean_data&#39;) }}
+
+),
+
+target as (
+
+    select max(date_created) as max_date
+    from {{ ref(&#39;noise_complaints&#39;) }}
+
+)
+
+select  * 
+from target
+full join clean
+on target.max_date = clean.clean_date
+where target.max_date IS NULL OR clean.clean_date IS NULL</code></pre>
+<p>The tests are run with <code>dbt test</code>, with additional flags for type of tests or specific models.</p>
+<p>Creating and deploying documentation is even easier with the commands <code>dbt docs generate</code> and <code>dbt docs serve</code>. Descriptions like in the above <a href="http://tamaszilagyi.com/blog/2019/2019-03-05-dbt/#tests-and-docs/">schema.yml</a> are optional, the static site will deploy with or without them. The result is an easy to navigate data dictionary that your teammates will thank you for. You can explore model schemas,</p>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/docs.png" /></p>
+<p>or finally inspect the created data pipelines.</p>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/dag.png" /></p>
+</div>
+<div id="scheduling" class="section level2">
+<h2>Scheduling?</h2>
+<p>While there is no native scheduling mechanism, dbt does provide a managed service called <a href="https://cloud.getdbt.com/">dbt Cloud that you can sign up for</a>. Besides scheduling jobs, you can view the logs of completed runs or render the documentation. The service is completely free of charge and is your best bet if you intend to use the dbt in production.</p>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/dag.png" /></p>
+<p>There is also an <a href="https://github.com/fishtown-analytics/airflow-sinter-operator">Airflow Operator</a> that works in conjunction with dbt Cloud. But since dbt is in essence a command line tool, you can also just use cron.</p>
+</div>
+
+                <br>
+                
+                  <div class="tags">
+                    <strong>Tags:</strong>
+                  
+                    <a href="../../../tags/gcp">GCP</a>
+                  
+                    <a href="../../../tags/cloud">Cloud</a>
+                  
+                    <a href="../../../tags/sql">SQL</a>
+                  
+                  </div>
+                  <br />
+                
+                <p class="back-to-posts"><a href="../../../blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "tamas-blog" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-97386385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/r.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+
