@@ -44,11 +44,11 @@ To use dbt, you only need to be familiar with SQL." />
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-05%2013%3a36%3a50.327707%20-0500%20EST%20m%3d%2b1.073826151">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-05%2013%3a36%3a50.327707%20-0500%20EST%20m%3d%2b1.073826151">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-05%2013%3a36%3a50.327707%20-0500%20EST%20m%3d%2b1.073826151">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-05%2014%3a02%3a27.089744%20-0500%20EST%20m%3d%2b1.160086351">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-05%2014%3a02%3a27.089744%20-0500%20EST%20m%3d%2b1.160086351">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-05%2014%3a02%3a27.089744%20-0500%20EST%20m%3d%2b1.160086351">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-05%2013%3a36%3a50.327707%20-0500%20EST%20m%3d%2b1.073826151">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-05%2014%3a02%3a27.089744%20-0500%20EST%20m%3d%2b1.160086351">
     
 
 
@@ -244,7 +244,7 @@ pre code, pre, code {
 </div>
 <div id="setting-up-a-dbt-project" class="section level2">
 <h2>Setting up a dbt project</h2>
-<p>The package can be installed using <code>pip install dbt</code>, and a new project initiated with <code>dbt init [project-name]</code>, creates a directory structure containing the essentials. Currently dbt only supports Postgres, Redshift, Snowflake and BigQuery; and we need to configure the connection in <code>~/.dbt/profiles.yml</code> first. For BigQuery, dbt needs to be able to create, modify or delete tables and views; that is to say it needs a service account with BigQuery admin roles attached. The downloaded .json file containing the required credentials can then be referenced inside profiles.yml under <code>keyfile:</code>.</p>
+<p>The package can be installed using <code>pip install dbt</code>, and a new project initiated with <code>dbt init [project-name]</code>, creating a directory structure containing the essentials. Currently dbt only supports Postgres, Redshift, Snowflake and BigQuery; and we need to configure the connection in <code>~/.dbt/profiles.yml</code> first. For BigQuery, dbt needs to be able to create, modify or delete tables and views; that is to say it needs a service account with BigQuery admin roles attached. The downloaded .json file containing the required credentials can then be referenced inside profiles.yml under <code>keyfile:</code>.</p>
 <pre class="yaml"><code>311_data_pipelines: # name of profile
   target: dev
   outputs: 
@@ -262,7 +262,7 @@ pre code, pre, code {
       schema: analytics
       threads: 2
       keyfile: /Users/tamas/dbt.json # service account credentials</code></pre>
-<p>In addition, we can define different target schemas (for BigQuery this equals <em>datasets</em>) where tables and views are going to be materialized. It is recommended to have at least one dev environment besides the production tables for experimentation and prototyping.</p>
+<p>In addition, we can define different target schemas (in BigQuery this equals <em>datasets</em>) where tables and views are going to be materialized. It is recommended to have at least one dev environment besides the production tables for experimentation and prototyping.</p>
 <p>The other configuration file is <code>dbt-project.yml</code> in the project directory. This file contains default settings for the project we can leave as is for the most part. Profile and project name should be set though, and we should also define default behavior of our <em>models</em>, the core building block in dbt.</p>
 <pre class="yaml"><code>name: &#39;test_package&#39;
 version: &#39;0.0.1&#39;
@@ -331,7 +331,7 @@ where complaint_type like &quot;Noise%&quot;
 group by 1
 order by 1 asc</code></pre>
 <p>By referencing tables this way, we define casual relationships making up a DAG.</p>
-<p>Models can be run from the command line using <code>dbt compile</code> and <code>dbt run</code>. The former compiles all the jinja magic into actual SQL queries. The incremental models are for example expanded into a combination of merge, insert and delete statements depending on the backend. The <code>dbt run</code> command runs all enabled models and materializes the results. <a href="https://docs.getdbt.com/reference#run">Additional flags</a> can be supplied to select or exclude specific models from running.</p>
+<p>Models can be run from the command line using <code>dbt compile</code> and <code>dbt run</code>. The former compiles all the jinja magic into actual SQL queries. The incremental models are for example expanded into a combination of merge, insert and delete statements depending on the database backend. The <code>dbt run</code> command runs all enabled models and materializes the results. <a href="https://docs.getdbt.com/reference#run">Additional flags</a> can be supplied to select or exclude specific models from running.</p>
 </div>
 <div id="macros" class="section level2">
 <h2>Macros</h2>
@@ -355,8 +355,8 @@ from noises</code></pre>
 </div>
 <div id="tests-and-docs" class="section level2">
 <h2>Tests and docs</h2>
-<p>One of my favorite features of dbt is its testing framework. We can run two kind of tests, schema tests and data tests. There are <a href="https://docs.getdbt.com/docs/testing">schema validation tests</a> included out of the box for uniqueness, missing values, relationships or accepted values.</p>
-<p>These tests are effectively macros, which we could just as well write ourselves. It is in fact possible to create a dbt package consisting of macros only. In this sense dbt encourages the development of utility packages that can be shared and reused. A good example is <a href="https://github.com/fishtown-analytics/dbt-utils">dbt-utils</a>, that among others contains some more tests. To use external packages, we need an extra <code>packages.yml</code> file in the package root directory to list dependencies.</p>
+<p>One of my favorite features of dbt is its testing framework. We can run two kind of tests, schema validation tests and data tests. There are <a href="https://docs.getdbt.com/docs/testing">schema tests</a> included out of the box for uniqueness, missing values, relationships or accepted values.</p>
+<p>These tests are effectively macros, which we could just as well write ourselves. It is in fact possible to create a dbt package consisting of macros only. In this sense dbt encourages the development of utility packages that can be shared and reused. A good example is <a href="https://github.com/fishtown-analytics/dbt-utils">dbt-utils</a>, that among others contains some more tests. To use external packages, we need an extra <code>packages.yml</code> file in the package root directory listing dependencies.</p>
 <pre class="yaml"><code>packages:
   - git: &quot;https://github.com/fishtown-analytics/dbt-utils.git&quot;</code></pre>
 <p>In each case schema tests need to be declared inside <code>schema.yml</code> in the <code>models/</code> directory.</p>
@@ -376,7 +376,7 @@ models:
           description: Timestamp complaint was created.
           tests: 
             - not_null # built-in missing value test</code></pre>
-<p>As for data tests, you’ll have to write your own. The idea is to have SQL queries that return results <em>in case of an error</em>. So let’s say we want to test equality of maximum dates between the clean_data and the noise_complaints tables. A <code>test_maxdate.sql</code> inside <code>test/</code> could look as follows.</p>
+<p>As for data tests, you’ll have to write your own. The idea is to have SQL queries that return results <em>in case of an error</em>. So let’s say we want to test equality of maximum dates between the <code>'clean_data'</code> and the <code>'noise_complaints tables'</code>. A <code>test_maxdate.sql</code> inside <code>test/</code> could look as follows.</p>
 <pre class="sql"><code>with clean as (
 
     select max(date_created) as clean_date 
