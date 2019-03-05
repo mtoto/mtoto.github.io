@@ -44,11 +44,11 @@ To use dbt, you only need to be familiar with SQL." />
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-05%2013%3a14%3a09.302959%20-0500%20EST%20m%3d%2b1.321862901">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-05%2013%3a14%3a09.302959%20-0500%20EST%20m%3d%2b1.321862901">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-05%2013%3a14%3a09.302959%20-0500%20EST%20m%3d%2b1.321862901">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-05%2013%3a24%3a18.547927%20-0500%20EST%20m%3d%2b0.995095906">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-05%2013%3a24%3a18.547927%20-0500%20EST%20m%3d%2b0.995095906">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-05%2013%3a24%3a18.547927%20-0500%20EST%20m%3d%2b0.995095906">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-05%2013%3a14%3a09.302959%20-0500%20EST%20m%3d%2b1.321862901">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-05%2013%3a24%3a18.547927%20-0500%20EST%20m%3d%2b0.995095906">
     
 
 
@@ -336,7 +336,7 @@ order by 1 asc</code></pre>
 <div id="macros" class="section level2">
 <h2>Macros</h2>
 <p>Not only can we use dbt’s built in macros, we can choose to write our own. This gives a lot of flexibility to abstract away unnecessary complexities. Like a rolling average function instead of a window statement:</p>
-<pre class="sql"><code>{% macr rolling_avg(value_col, time_col, nr_rows) %}
+<pre class="sql"><code>{% macro rolling_avg(value_col, time_col, nr_rows) %}
 
   AVG( {{ value_col }} )
   OVER(ORDER BY {{ time_col }}

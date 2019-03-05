@@ -145,14 +145,22 @@ Models can be run from the command line using `dbt compile` and `dbt run`. The f
 
 Not only can we use dbt's built in macros, we can choose to write our own. This gives a lot of flexibility to abstract away unnecessary complexities. Like a rolling average function instead of a window statement:
 
+```{sql,echo = FALSE }
+{% raw %}
+```
+
 ```{sql}
-{% macr rolling_avg(value_col, time_col, nr_rows) %}
+{% macro rolling_avg(value_col, time_col, nr_rows) %}
 
   AVG( {{ value_col }} )
   OVER(ORDER BY {{ time_col }}
   ROWS BETWEEN {{ nr_rows }} PRECEDING AND CURRENT ROW) AS rolling_avg
 
 {% endmacro %}
+```
+
+```{sql,echo = FALSE }
+{% endraw %}
 ```
 
 Saving it as `rolling_avg.sql` inside the `macros/` directory, we can use it in any of our models. 
