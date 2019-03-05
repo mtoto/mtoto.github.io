@@ -44,11 +44,11 @@ To use dbt, you only need to be familiar with SQL." />
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-05%2014%3a02%3a27.089744%20-0500%20EST%20m%3d%2b1.160086351">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-05%2014%3a02%3a27.089744%20-0500%20EST%20m%3d%2b1.160086351">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-05%2014%3a02%3a27.089744%20-0500%20EST%20m%3d%2b1.160086351">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-05%2014%3a09%3a18.007492%20-0500%20EST%20m%3d%2b1.118888351">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-05%2014%3a09%3a18.007492%20-0500%20EST%20m%3d%2b1.118888351">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-05%2014%3a09%3a18.007492%20-0500%20EST%20m%3d%2b1.118888351">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-05%2014%3a02%3a27.089744%20-0500%20EST%20m%3d%2b1.160086351">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-05%2014%3a09%3a18.007492%20-0500%20EST%20m%3d%2b1.118888351">
     
 
 
@@ -359,7 +359,7 @@ from noises</code></pre>
 <p>These tests are effectively macros, which we could just as well write ourselves. It is in fact possible to create a dbt package consisting of macros only. In this sense dbt encourages the development of utility packages that can be shared and reused. A good example is <a href="https://github.com/fishtown-analytics/dbt-utils">dbt-utils</a>, that among others contains some more tests. To use external packages, we need an extra <code>packages.yml</code> file in the package root directory listing dependencies.</p>
 <pre class="yaml"><code>packages:
   - git: &quot;https://github.com/fishtown-analytics/dbt-utils.git&quot;</code></pre>
-<p>In each case schema tests need to be declared inside <code>schema.yml</code> in the <code>models/</code> directory.</p>
+<p>In any case, schema tests need to be declared inside <code>schema.yml</code> in the <code>models/</code> directory.</p>
 <pre class="yaml"><code>version: 2
 
 models:

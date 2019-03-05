@@ -187,7 +187,7 @@ packages:
   - git: "https://github.com/fishtown-analytics/dbt-utils.git"
 ```
 
-In each case schema tests need to be declared inside `schema.yml` in the `models/` directory. 
+In any case, schema tests need to be declared inside `schema.yml` in the `models/` directory. 
 
 ```{yaml}
 version: 2
