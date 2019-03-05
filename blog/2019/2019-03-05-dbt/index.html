@@ -44,11 +44,11 @@ To use dbt, you only need to be familiar with SQL." />
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-05%2013%3a24%3a18.547927%20-0500%20EST%20m%3d%2b0.995095906">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-05%2013%3a24%3a18.547927%20-0500%20EST%20m%3d%2b0.995095906">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-05%2013%3a24%3a18.547927%20-0500%20EST%20m%3d%2b0.995095906">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-05%2013%3a36%3a50.327707%20-0500%20EST%20m%3d%2b1.073826151">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-05%2013%3a36%3a50.327707%20-0500%20EST%20m%3d%2b1.073826151">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-05%2013%3a36%3a50.327707%20-0500%20EST%20m%3d%2b1.073826151">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-05%2013%3a24%3a18.547927%20-0500%20EST%20m%3d%2b0.995095906">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-05%2013%3a36%3a50.327707%20-0500%20EST%20m%3d%2b1.073826151">
     
 
 
@@ -405,7 +405,7 @@ where target.max_date IS NULL OR clean.clean_date IS NULL</code></pre>
 <div id="scheduling" class="section level2">
 <h2>Scheduling?</h2>
 <p>While there is no native scheduling mechanism, dbt does provide a managed service called <a href="https://cloud.getdbt.com/">dbt Cloud that you can sign up for</a>. Besides scheduling jobs, you can view the logs of completed runs or render the documentation. The service is completely free of charge and is your best bet if you intend to use the dbt in production.</p>
-<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/dag.png" /></p>
+<p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/cloud.png" /></p>
 <p>There is also an <a href="https://github.com/fishtown-analytics/airflow-sinter-operator">Airflow Operator</a> that works in conjunction with dbt Cloud. But since dbt is in essence a command line tool, you can also just use cron.</p>
 </div>
 

@@ -247,6 +247,6 @@ or finally inspect the created data pipelines.
 
 While there is no native scheduling mechanism, dbt does provide a managed service called [dbt Cloud that you can sign up for](https://cloud.getdbt.com/). Besides scheduling jobs, you can view the logs of completed runs or render the documentation. The service is completely free of charge and is your best bet if you intend to use the dbt in production. 
 
-![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/dag.png)
+![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/cloud.png)
 
 There is also an [Airflow Operator](https://github.com/fishtown-analytics/airflow-sinter-operator) that works in conjunction with dbt Cloud. But since dbt is in essence a command line tool, you can also just use cron. 
