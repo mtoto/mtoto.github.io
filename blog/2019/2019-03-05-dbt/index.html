@@ -44,11 +44,11 @@ To use dbt, you only need to be familiar with SQL." />
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-05%2014%3a09%3a18.007492%20-0500%20EST%20m%3d%2b1.118888351">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-05%2014%3a09%3a18.007492%20-0500%20EST%20m%3d%2b1.118888351">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-05%2014%3a09%3a18.007492%20-0500%20EST%20m%3d%2b1.118888351">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-05%2014%3a14%3a54.453063%20-0500%20EST%20m%3d%2b1.071787306">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-05%2014%3a14%3a54.453063%20-0500%20EST%20m%3d%2b1.071787306">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-05%2014%3a14%3a54.453063%20-0500%20EST%20m%3d%2b1.071787306">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-05%2014%3a09%3a18.007492%20-0500%20EST%20m%3d%2b1.118888351">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-05%2014%3a14%3a54.453063%20-0500%20EST%20m%3d%2b1.071787306">
     
 
 
@@ -376,7 +376,7 @@ models:
           description: Timestamp complaint was created.
           tests: 
             - not_null # built-in missing value test</code></pre>
-<p>As for data tests, you’ll have to write your own. The idea is to have SQL queries that return results <em>in case of an error</em>. So let’s say we want to test equality of maximum dates between the <code>'clean_data'</code> and the <code>'noise_complaints tables'</code>. A <code>test_maxdate.sql</code> inside <code>test/</code> could look as follows.</p>
+<p>As for data tests, you’ll have to write your own. The idea is to have SQL queries that return results <em>in case of an error</em>. So let’s say we want to test equality of maximum dates between the <code>'clean_data'</code> and the <code>'noise_complaints'</code> tables. A <code>test_maxdate.sql</code> inside <code>test/</code> could look as follows.</p>
 <pre class="sql"><code>with clean as (
 
     select max(date_created) as clean_date 

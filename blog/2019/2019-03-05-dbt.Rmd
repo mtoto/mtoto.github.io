@@ -208,7 +208,7 @@ models:
             - not_null # built-in missing value test
 ```
 
-As for data tests, you'll have to write your own. The idea is to have SQL queries that return results *in case of an error*. So let's say we want to test equality of maximum dates between the `'clean_data'` and the `'noise_complaints tables'`. A `test_maxdate.sql` inside `test/` could look as follows.
+As for data tests, you'll have to write your own. The idea is to have SQL queries that return results *in case of an error*. So let's say we want to test equality of maximum dates between the `'clean_data'` and the `'noise_complaints'` tables. A `test_maxdate.sql` inside `test/` could look as follows.
 
 ```{sql}
 with clean as (
