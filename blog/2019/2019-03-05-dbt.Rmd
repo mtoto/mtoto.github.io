@@ -137,7 +137,7 @@ group by 1
 order by 1 asc
 ```
 
-By referencing tables this way, we define casual relationships making up a DAG. 
+By referencing tables this way, we define casual relationships making up a DAG.
 
 Models can be run from the command line using `dbt compile` and `dbt run`. The former compiles all the jinja magic into actual SQL queries. The incremental models are for example expanded into a combination of merge, insert and delete statements depending on the backend. The `dbt run` command runs all enabled models and materializes the results. [Additional flags](https://docs.getdbt.com/reference#run) can be supplied to select or exclude specific models from running. 
 
