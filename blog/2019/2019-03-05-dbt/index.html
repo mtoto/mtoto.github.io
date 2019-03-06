@@ -44,11 +44,11 @@ To use dbt, you only need to be familiar with SQL." />
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-05%2014%3a14%3a54.453063%20-0500%20EST%20m%3d%2b1.071787306">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-05%2014%3a14%3a54.453063%20-0500%20EST%20m%3d%2b1.071787306">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-05%2014%3a14%3a54.453063%20-0500%20EST%20m%3d%2b1.071787306">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-06%2012%3a38%3a24.090755%20-0500%20EST%20m%3d%2b0.530444035">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-06%2012%3a38%3a24.090755%20-0500%20EST%20m%3d%2b0.530444035">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-06%2012%3a38%3a24.090755%20-0500%20EST%20m%3d%2b0.530444035">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-05%2014%3a14%3a54.453063%20-0500%20EST%20m%3d%2b1.071787306">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-06%2012%3a38%3a24.090755%20-0500%20EST%20m%3d%2b0.530444035">
     
 
 
@@ -239,7 +239,7 @@ pre code, pre, code {
 <h2>ETL with ease</h2>
 <p>Analytics databases more often than not contain a multitude of tables and views, depicting facts, dimensions or aggregate statistics. Responsibility for the underlying data pipelines traditionally belonged to Data Architects or Data Engineers. However modern tools like <a href="https://www.getdbt.com/about/">dbt</a> are lowering the barrier to doing ETL.</p>
 <p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/dbt.png" /></p>
-<p>To use dbt, you only need to be familiar with SQL. The package relies on the Python templating language Jinja to enable nifty features like dependency graphs, macros or schema tests. Upon compilation, everything is translated into pure SQL and run on the databases execution engine. It is quite fascinating really how much you can do with such a minimalist tool.</p>
+<p>To use dbt, you only need to be familiar with SQL. The package relies on the Python templating language <a href="http://jinja.pocoo.org/">Jinja</a> to enable nifty features like dependency graphs, macros or schema tests. Upon compilation, everything is translated into pure SQL and run on the databases execution engine. It is quite fascinating really how much you can do with such a minimalist tool.</p>
 <p>In <a href="http://tamaszilagyi.com/blog/2019/2019-02-10-serverless/">a previous post</a> I talked about an approach to periodically load data from an API to BigQuery. Here, I’ll pick up from the BigQuery table containing daily response data from the <a href="https://data.cityofnewyork.us/Social-Services/311-Service-Requests-from-2010-to-Present/erm2-nwe9">311 Service Calls dataset</a> to illustrate dbt’s functionality. All the code from this post lives in a <a href="https://github.com/mtoto/cloud-sql-db/tree/master/dbt">subdirectory of the same GitHub repo</a>. Reading the previous post is by no means necessary to follow this one though.</p>
 </div>
 <div id="setting-up-a-dbt-project" class="section level2">
@@ -404,7 +404,7 @@ where target.max_date IS NULL OR clean.clean_date IS NULL</code></pre>
 </div>
 <div id="scheduling" class="section level2">
 <h2>Scheduling?</h2>
-<p>While there is no native scheduling mechanism, dbt does provide a managed service called <a href="https://cloud.getdbt.com/">dbt Cloud that you can sign up for</a>. Besides scheduling jobs, you can view the logs of completed runs or render the documentation. The service is completely free of charge and is your best bet if you intend to use the dbt in production.</p>
+<p>While there is no native scheduling mechanism, dbt does provide a managed service called <a href="https://cloud.getdbt.com/">dbt Cloud</a> you can sign up for. Besides scheduling jobs, you can view the logs of completed runs or render the documentation. The service is completely free of charge and is your best bet if you intend to use the dbt in production.</p>
 <p><img src="https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/cloud.png" /></p>
 <p>There is also an <a href="https://github.com/fishtown-analytics/airflow-sinter-operator">Airflow Operator</a> that works in conjunction with dbt Cloud. But since dbt is in essence a command line tool, you can also just use cron.</p>
 </div>

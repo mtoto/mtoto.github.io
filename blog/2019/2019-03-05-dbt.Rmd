@@ -26,7 +26,7 @@ Analytics databases more often than not contain a multitude of tables and views,
 
 ![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/dbt.png)
 
-To use dbt, you only need to be familiar with SQL. The package relies on the Python templating language Jinja to enable nifty features like dependency graphs, macros or schema tests. Upon compilation, everything is translated into pure SQL and run on the databases execution engine. It is quite fascinating really how much you can do with such a minimalist tool.
+To use dbt, you only need to be familiar with SQL. The package relies on the Python templating language [Jinja](http://jinja.pocoo.org/) to enable nifty features like dependency graphs, macros or schema tests. Upon compilation, everything is translated into pure SQL and run on the databases execution engine. It is quite fascinating really how much you can do with such a minimalist tool.
 
 In [a previous post](http://tamaszilagyi.com/blog/2019/2019-02-10-serverless/) I talked about an approach to periodically load data from an API to BigQuery. Here, I'll pick up from the BigQuery table containing daily response data from the [311 Service Calls dataset](https://data.cityofnewyork.us/Social-Services/311-Service-Requests-from-2010-to-Present/erm2-nwe9) to illustrate dbt's functionality. All the code from this post lives in a [subdirectory of the same GitHub repo](https://github.com/mtoto/cloud-sql-db/tree/master/dbt). Reading the previous post is by no means necessary to follow this one though.
 
@@ -245,7 +245,7 @@ or finally inspect the created data pipelines.
 
 ## Scheduling?
 
-While there is no native scheduling mechanism, dbt does provide a managed service called [dbt Cloud that you can sign up for](https://cloud.getdbt.com/). Besides scheduling jobs, you can view the logs of completed runs or render the documentation. The service is completely free of charge and is your best bet if you intend to use the dbt in production. 
+While there is no native scheduling mechanism, dbt does provide a managed service called [dbt Cloud](https://cloud.getdbt.com/) you can sign up for. Besides scheduling jobs, you can view the logs of completed runs or render the documentation. The service is completely free of charge and is your best bet if you intend to use the dbt in production. 
 
 ![](https://raw.githubusercontent.com/mtoto/mtoto.github.io/master/blog/2019/cloud.png)
 
