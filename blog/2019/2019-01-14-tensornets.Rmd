@@ -54,7 +54,7 @@ inputs=tf.placeholder(tf.float32, [None, 224, 224, 3])
 outputs=tf.placeholder(tf.float32, [None, 7]) # nr of classes 
 model=nets.DenseNet169(inputs, is_training=True, classes=7)
  
-loss=tf.losses.softmax_cross_entropy(outputs, model)
+loss=tf.losses.softmax_cross_entropy(outputs, model.logits)
 train=tf.train.AdamOptimizer(learning_rate=1e-5).minimize(loss)
  
 with tf.Session() as sess:
@@ -80,7 +80,7 @@ is_train=tf.placeholder_with_default(False, shape=(), name="is_train") # placeho
  
 model=nets.DenseNet169(inputs, is_training=is_train, classes=7)
 train_list=model.get_weights() # get list of weights
-loss=tf.losses.softmax_cross_entropy(outputs, model)
+loss=tf.losses.softmax_cross_entropy(outputs, model.logits)
   
 accuracy, accuracy_op=tf.metrics.accuracy(tf.argmax(outputs, 1),tf.argmax(inputs,1)) # local vars
  
@@ -178,7 +178,7 @@ validation_init_op=iterator.make_initializer(valid_dataset)
  
 # And now this works:
 # model = nets.DenseNet169(x, is_training=is_train, classes=7)
-# loss = tf.losses.softmax_cross_entropy(y, model)
+# loss = tf.losses.softmax_cross_entropy(y, model.logits)
 ```
 
 Running `sess.run(training_init_op)` before training and `sess.run(validation_init_op)` before testing ensures that we are loading the right dataset. Doing data preparation this way, we get rid of the `feed_dict` mechanism for data ingestion and can plug the values from `iterator.get_next()` straight into the graph. Last but not least, we should also checkpoint the model's progress with `tf.train.Saver()`.

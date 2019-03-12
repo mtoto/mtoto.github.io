@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-06%2012%3a38%3a24.103467%20-0500%20EST%20m%3d%2b0.543156239">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-06%2012%3a38%3a24.103467%20-0500%20EST%20m%3d%2b0.543156239">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-06%2012%3a38%3a24.103467%20-0500%20EST%20m%3d%2b0.543156239">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-12%2011%3a04%3a10.756174%20-0400%20EDT%20m%3d%2b0.880391916">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-12%2011%3a04%3a10.756174%20-0400%20EDT%20m%3d%2b0.880391916">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-12%2011%3a04%3a10.756174%20-0400%20EDT%20m%3d%2b0.880391916">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-06%2012%3a38%3a24.103467%20-0500%20EST%20m%3d%2b0.543156239">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-12%2011%3a04%3a10.756174%20-0400%20EDT%20m%3d%2b0.880391916">
     
 
 
@@ -263,7 +263,7 @@ inputs=tf.placeholder(tf.float32, [None, 224, 224, 3])
 outputs=tf.placeholder(tf.float32, [None, 7]) # nr of classes 
 model=nets.DenseNet169(inputs, is_training=True, classes=7)
  
-loss=tf.losses.softmax_cross_entropy(outputs, model)
+loss=tf.losses.softmax_cross_entropy(outputs, model.logits)
 train=tf.train.AdamOptimizer(learning_rate=1e-5).minimize(loss)
  
 with tf.Session() as sess:
@@ -281,7 +281,7 @@ is_train=tf.placeholder_with_default(False, shape=(), name=&quot;is_train&quot;)
  
 model=nets.DenseNet169(inputs, is_training=is_train, classes=7)
 train_list=model.get_weights() # get list of weights
-loss=tf.losses.softmax_cross_entropy(outputs, model)
+loss=tf.losses.softmax_cross_entropy(outputs, model.logits)
   
 accuracy, accuracy_op=tf.metrics.accuracy(tf.argmax(outputs, 1),tf.argmax(inputs,1)) # local vars
  
@@ -362,7 +362,7 @@ validation_init_op=iterator.make_initializer(valid_dataset)
  
 # And now this works:
 # model = nets.DenseNet169(x, is_training=is_train, classes=7)
-# loss = tf.losses.softmax_cross_entropy(y, model)</code></pre>
+# loss = tf.losses.softmax_cross_entropy(y, model.logits)</code></pre>
 <p>Running <code>sess.run(training_init_op)</code> before training and <code>sess.run(validation_init_op)</code> before testing ensures that we are loading the right dataset. Doing data preparation this way, we get rid of the <code>feed_dict</code> mechanism for data ingestion and can plug the values from <code>iterator.get_next()</code> straight into the graph. Last but not least, we should also checkpoint the model’s progress with <code>tf.train.Saver()</code>.</p>
 <pre class="python"><code>with tf.Session() as sess:
        sess.run(init_op)
