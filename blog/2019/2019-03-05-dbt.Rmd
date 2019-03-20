@@ -85,7 +85,7 @@ models:
 
 ## *"Everything is a select statement"*
 
-Models in dbt terminology refer to a collection of .sql files residing inside `models/`. Each file contains a select statement with some jinja-like expressions sprinkled on top. By default, the SQL queries are materialized as views, but can also be tables or incremental (tables). The latter means inserting new rows instead of recalculating the entire table on each run. Below is an example of an incremental model based on the source dataset.
+Models in dbt terminology refer to a collection of .sql files residing inside `models/`. Each file contains a select statement with some jinja-like expressions sprinkled on top. By default, the SQL queries are materialized as views, but can also be tables or incremental (tables). The latter means inserting new rows instead of recalculating the entire table on each run. Below is an example of an incremental model based on the source dataset. We'll save this file as `clean_data.sql`.
 
 ```{sql}
 {{ config(materialized='incremental') }}

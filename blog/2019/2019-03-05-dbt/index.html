@@ -44,11 +44,11 @@ To use dbt, you only need to be familiar with SQL." />
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-12%2011%3a33%3a45.239908%20-0400%20EDT%20m%3d%2b0.806408451">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-12%2011%3a33%3a45.239908%20-0400%20EDT%20m%3d%2b0.806408451">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-12%2011%3a33%3a45.239908%20-0400%20EDT%20m%3d%2b0.806408451">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-20%2013%3a51%3a42.640328%20-0400%20EDT%20m%3d%2b0.663993291">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-20%2013%3a51%3a42.640328%20-0400%20EDT%20m%3d%2b0.663993291">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-20%2013%3a51%3a42.640328%20-0400%20EDT%20m%3d%2b0.663993291">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-12%2011%3a33%3a45.239908%20-0400%20EDT%20m%3d%2b0.806408451">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-20%2013%3a51%3a42.640328%20-0400%20EDT%20m%3d%2b0.663993291">
     
 
 
@@ -287,7 +287,7 @@ models:
 </div>
 <div id="everything-is-a-select-statement" class="section level2">
 <h2><em>“Everything is a select statement”</em></h2>
-<p>Models in dbt terminology refer to a collection of .sql files residing inside <code>models/</code>. Each file contains a select statement with some jinja-like expressions sprinkled on top. By default, the SQL queries are materialized as views, but can also be tables or incremental (tables). The latter means inserting new rows instead of recalculating the entire table on each run. Below is an example of an incremental model based on the source dataset.</p>
+<p>Models in dbt terminology refer to a collection of .sql files residing inside <code>models/</code>. Each file contains a select statement with some jinja-like expressions sprinkled on top. By default, the SQL queries are materialized as views, but can also be tables or incremental (tables). The latter means inserting new rows instead of recalculating the entire table on each run. Below is an example of an incremental model based on the source dataset. We’ll save this file as <code>clean_data.sql</code>.</p>
 <pre class="sql"><code>{{ config(materialized=&#39;incremental&#39;) }}
 
 select 
