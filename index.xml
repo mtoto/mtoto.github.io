@@ -136,7 +136,7 @@ To use dbt, you only need to be familiar with SQL.</description>
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
       
       <guid>/about/about/</guid>
-      <description>I am a self-employed Data Scientist available for consulting on data analytics projects. My main area of expertise is digital analytics, however I have worked in a variety of industries such as online advertising, aviation and banking. I love solving business problems with data, discovering new insights and building scalable solutions.
+      <description>I am a self-employed Data Scientist available for consulting on data analytics projects. My main area of expertise is digital analytics, however I have worked on projects in a variety of industries such as online media, e-commerce, travel and banking. I love solving business problems with data, discovering new insights and building scalable solutions.
 While I do have a slight preference for R, I am also familiar with SQL, Python and Apache Spark.</description>
     </item>
     
@@ -146,8 +146,18 @@ While I do have a slight preference for R, I am also familiar with SQL, Python a
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
       
       <guid>/consulting/consulting/</guid>
-      <description>I am available for consulting on all aspects of data analytics, including:
- Creating robust data pipelines for data of all sizes. Building interactive dashboards for all audiences. Implementing principled A/B testing workflows. Developing and analyzing models to solve business problems. Integrating predictive analytics into production systems. Communicating insights and results to stakeholders.  Feel free to contact me with further inquiries!</description>
+      <description>Available from April! Currently in NYC. I consult both small and large business on all aspects of data analytics, including:
+ Creating robust data pipelines for data of all sizes. Building interactive dashboards for all audiences. Implementing principled A/B testing workflows. Developing and analyzing models to solve business problems. Integrating predictive analytics into production systems. Communicating insights and results to stakeholders.  Feel free to contact me for any questions!</description>
+    </item>
+    
+    <item>
+      <title>Speaking</title>
+      <link>/speaking/speaking/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/speaking/speaking/</guid>
+      <description> I regularly speak at conferences and meetups about analytics workflows, new technologies in the data space, and more. If you’re interested in having me speak at your event, please contact me at tamas[at]outlook.com.
+Selected Talks  Using Docker containers in R amsteRdam meetup 2018. Robust Data Pipelines with drake and Docker eRum 2018. Building Data Products at Home: Self-learning Hue Lights Budapest BI Conf 2017.  </description>
     </item>
     
   </channel>

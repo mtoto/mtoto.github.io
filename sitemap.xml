@@ -251,6 +251,15 @@
   </url>
   
   <url>
+    <loc>/speaking/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/speaking/speaking/</loc>
+  </url>
+  
+  <url>
     <loc>/tags/spotify/</loc>
     <lastmod>2017-07-22T21:13:14-05:00</lastmod>
     <priority>0</priority>

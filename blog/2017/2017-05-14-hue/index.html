@@ -42,11 +42,11 @@
 
 
     
-    <link rel="stylesheet" href="../../../css/reset.css?t=2019-03-27%2021%3a44%3a28.067184%20-0400%20EDT%20m%3d%2b0.447743668">
-    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-03-27%2021%3a44%3a28.067184%20-0400%20EDT%20m%3d%2b0.447743668">
-    <link rel="stylesheet" href="../../../css/main.css?t=2019-03-27%2021%3a44%3a28.067184%20-0400%20EDT%20m%3d%2b0.447743668">
+    <link rel="stylesheet" href="../../../css/reset.css?t=2019-04-04%2015%3a53%3a19.530065%20-0400%20EDT%20m%3d%2b0.424697038">
+    <link rel="stylesheet" href="../../../css/pygments.css?t=2019-04-04%2015%3a53%3a19.530065%20-0400%20EDT%20m%3d%2b0.424697038">
+    <link rel="stylesheet" href="../../../css/main.css?t=2019-04-04%2015%3a53%3a19.530065%20-0400%20EDT%20m%3d%2b0.424697038">
     
-        <link rel="stylesheet" href="../../../css/override.css?t=2019-03-27%2021%3a44%3a28.067184%20-0400%20EDT%20m%3d%2b0.447743668">
+        <link rel="stylesheet" href="../../../css/override.css?t=2019-04-04%2015%3a53%3a19.530065%20-0400%20EDT%20m%3d%2b0.424697038">
     
 
 
@@ -102,7 +102,7 @@
                     
                 
                 
-                <a href="../../../"><img class="avatar" src="../../../img/profile_pic.png" srcset="../../../img/profile_pic.png 1x"></a>
+                <a href="../../../"><img class="avatar" src="../../../img/ts.png" srcset="../../../img/ts.png 1x"></a>
             
             <a href="../../../"><div class="name">Tamas Szilagyi</div></a>
             
@@ -116,6 +116,8 @@
                         <li class="nav-"><a href="../../../blog/"><span>Blog</span></a></li>
                     
                         <li class="nav-"><a href="../../../consulting/consulting"><span>Consulting</span></a></li>
+                    
+                        <li class="nav-"><a href="../../../speaking/speaking"><span>Speaking</span></a></li>
                     
                 </ul>
             </nav>
@@ -354,10 +356,10 @@ gbmFit &lt;- train(y ~ ., data = training,
 table(preds, testing$y)</code></pre>
 <pre><code>##         
 ## preds     dim  mid bright zero
-##   dim     118  211     31  419
-##   mid      73  136      6  141
+##   dim     113  195     19  431
+##   mid      81  144     17  124
 ##   bright    0    0      0    0
-##   zero     29   96     28 4184</code></pre>
+##   zero     26  104     29 4189</code></pre>
 <p>Most mistakes are made trying to classify bright and mid. The model gets 0 bright values right and only manages to do so correctly 14% of the time for mid. But when do errors happen? To dig a little deeper let’s look at the previous histogram of categories by hour again for the test set, but now with the predictions overlaid on top.</p>
 <p><img src="../../../blog/2017/2017-05-14-hue_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Bright values were always going be hard to guess, but the model at least comes close in terms of hours, but off on the exact days. The majority of misclassification comes from overzealously predicting dim in the evening and around midnight, when it should really be either mid or zero. That looks like a workable scenario for me.</p>

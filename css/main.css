@@ -173,26 +173,26 @@ section.header .content {
   align-items: center;
 }
 section.header .avatar {
-  border-radius: 50%;
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
-  max-width: 50px;
+/*  border-radius: 50%;*/
+/*  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);*/
+  max-width: 70px;
 }
 section.header .name {
-  font-size: 18px;
-  font-family: 'Raleway', 'Helvetica Neue', 'Arial', sans-serif;
+  font-size: 22px;
+  font-family: 'Open Sans', 'Helvetica Neue', 'Arial', sans-serif;
   letter-spacing: -0.005rem;
   font-weight: 700;
   color: #333;
-  text-transform: uppercase;
+  text-transform: none;
   color: #555;
 }
 section.header h3.self-intro {
   font-size: 1em;
-  font-family: 'Raleway', 'Helvetica Neue', 'Arial', sans-serif;
+  font-family: 'Open Sans', 'Helvetica Neue', 'Arial', sans-serif;
   letter-spacing: -0.005rem;
   font-weight: 700;
   color: #333;
-  font-weight: 400;
+  font-weight: 600;
   color: #555;
   margin-bottom: 1rem;
 }
@@ -200,7 +200,7 @@ section.header nav {
   font-size: 14px;
   margin-bottom: 16px;
   text-transform: uppercase;
-  font-family: 'Raleway', 'Helvetica Neue', 'Arial', sans-serif;
+  font-family: 'Open Sans', 'Helvetica Neue', 'Arial', sans-serif;
 }
 section.header nav ul {
   list-style: none;
@@ -351,7 +351,7 @@ section.main .content .title-container {
 section.main .content .title-container .initials {
   display: none;
   font-size: 18px;
-  font-family: 'Raleway', 'Helvetica Neue', 'Arial', sans-serif;
+  font-family: 'Open Sans', 'Helvetica Neue', 'Arial', sans-serif;
   letter-spacing: -0.005rem;
   font-weight: 700;
   color: #333;
@@ -371,11 +371,11 @@ section.main .content .title-container .initials a:hover {
 }
 section.main .content .page-heading {
   font-size: 18px;
-  font-family: 'Raleway', 'Helvetica Neue', 'Arial', sans-serif;
+  font-family: 'Open Sans', 'Helvetica Neue', 'Arial', sans-serif;
   letter-spacing: -0.005rem;
   font-weight: 700;
   color: #333;
-  text-transform: uppercase;
+  text-transform: none;
   margin-bottom: 16px;
 }
 section.main .content .front-matter .page-heading {
