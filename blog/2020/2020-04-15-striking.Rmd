@@ -155,7 +155,7 @@ One way to deal with differences between weight divisions is to to compare the s
 
 We can further break down the calculation into either positional (distance, clinch or ground) or target based (head, body or leg) averages, and multiply them by the matching attempts, to get a more accurate estimate of expected strikes. We can visualize the correlation between the two by plotting the expected versus the actual strikes landed by each fighter per fight. 
 
-To illustrate how this metric scores behaves, I am going highligh four fights where the winner surpassed expected strikes by a large margin. 
+To illustrate how this metric behaves, I am going highlight four fights where the winner surpassed expected strikes by a large margin. 
 
 ```{r}
 ufc_stats <- ufc_stats %>% 
@@ -238,7 +238,7 @@ ggplot(melted, aes(expected_strikes, significant_strikes_landed)) +
   scale_fill_brewer(palette="Paired")
 ```
 
-Plotting the three different flavors of expected significant strikes, the positional version seems the most consistent, as it over- or under-estimates the number of significant strikes the least out of the three. Note that a fighter doesn't per se need to top this chart along the y-axis - this is rather typical for volume strikers, instead what matters is the distance to the left of the regression line.
+Plotting the three different flavors of expected significant strikes, the positional version seems the most consistent, as it over- or under-estimates the number of significant strikes the least. Note that a fighter doesn't per se need to top this chart along the y-axis - this is rather typical for volume strikers, instead what matters is the distance to the left of the regression line.
 
 ## Striking efficiency and beyond
 
@@ -289,11 +289,9 @@ ggplot(fighter_eff, aes(x=lwr,
 
 ```
 
-What's cool about this plot is that besides ranking fighters according to their average efficiency, we also get a measure of how consistently the fighter has performed. Looking at the plot from both angles, Anderson Silva's numbers immediately jump out. Not only is he the 4th most efficient striker of all times, in his prime 95% of fights would likely finish with him having achieved over 1.22 efficiency. This is incredible. What's also telling is that the top spots are all filled by currently active fighters, a sure sigh that there has never been a better time for Mixed Martian Arts. The UFC roster is packed with talent right now as far as the I can see.
+What's cool about this plot is that besides ranking fighters according to their average efficiency, we also get a measure of how consistently the fighter has performed. Looking at the plot from both angles, Anderson Silva's numbers immediately jump out. Not only is he the 4th most efficient striker of all times, in his prime 95% of fights would likely finish with him having achieved over 1.22 efficiency. This is incredible. What's also telling is that the top spots are all filled by currently active fighters, a sure sign that there has never been a better time for Mixed Martian Arts. The UFC roster is packed with talent right now as far as the I can see.
 
-It is important to note that this metric is by no means perfect or captures striking ability to its fullest. For one, most knockout artists will have a hard time delivering good numbers for this metric. Their strength is in power, not always accuracy. Similarly, you can be the most efficient striker in the world, if you get caught with the perfect shot your hard earned fight stats won't be worth a dime. And this is the beauty of the fight game, anything can happen to anyone at any time. 
-
+It is important to note that this metric is by no means perfect or captures striking ability to its fullest. For one, most knockout artists will have a hard time delivering good numbers for this metric. Their strength is in power, not always accuracy. Similarly, you can be the most efficient striker in the world, if you get caught with the perfect shot, your hard earned fight stats won't be worth a dime. And this is the beauty of the fight game, anything can happen to anyone at any time. 
 *This post originally appeared as a vignette from the [ufc.stats](https://github.com/mtoto/ufc.stats) package, and is available at https://tamaszilagyi.com/ufc.stats/articles/2020-04-15-striking.html/*
-
 
 [^1]: Kun, Reed, and Crigger, Kelly. Fightnomics. Graybeard Publising, 2013. 

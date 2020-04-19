@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Ai on Coding with Data</title>
-    <link>/tags/ai/</link>
+    <link>http://tamaszilagyi.com/tags/ai/</link>
     <description>Recent content in Ai on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 09 Nov 2017 21:00:30 -0500</lastBuildDate>
     
-	<atom:link href="/tags/ai/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://tamaszilagyi.com/tags/ai/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>An animated neuRal net implementation</title>
-      <link>/blog/2017/2017-11-11-animated_net/</link>
+      <link>http://tamaszilagyi.com/blog/2017/2017-11-11-animated_net/</link>
       <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
       
-      <guid>/blog/2017/2017-11-11-animated_net/</guid>
+      <guid>http://tamaszilagyi.com/blog/2017/2017-11-11-animated_net/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Yet another neural net from scratch tutorial? One would be forgiven to think that artificial neural networks are the newest and shiniest of modern data science. On the contrary, the main concepts have been around for decades. But it is recent progress in computational resources and the availability of massive datasets that these learning architectures revealed their true powers.</description>
     </item>
     

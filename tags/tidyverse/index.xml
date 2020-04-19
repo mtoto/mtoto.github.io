@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tidyverse on Coding with Data</title>
-    <link>/tags/tidyverse/</link>
+    <link>http://tamaszilagyi.com/tags/tidyverse/</link>
     <description>Recent content in Tidyverse on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 07 Oct 2017 23:15:14 -0500</lastBuildDate>
     
-	<atom:link href="/tags/tidyverse/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://tamaszilagyi.com/tags/tidyverse/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>A tidy text analysis of Rick and Morty</title>
-      <link>/blog/2017/2017-10-07-tidyrick/</link>
+      <link>http://tamaszilagyi.com/blog/2017/2017-10-07-tidyrick/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>/blog/2017/2017-10-07-tidyrick/</guid>
+      <guid>http://tamaszilagyi.com/blog/2017/2017-10-07-tidyrick/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Adventures in the multiverse For those unfamiliar with the show, Rick and Morty is an animated series about the interuniversal exploits of a half-drunk mad scientist Rick, and his daft grandson Morty. Living under one roof with his daughter, Rick constantly drags his grandson Morty along for adventures into unusual worlds inhabited by surreal creatures.</description>
     </item>
     
