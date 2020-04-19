@@ -119,13 +119,13 @@
   </url>
   
   <url>
-    <loc>/tags/cloud/</loc>
+    <loc>/categories/cloud/</loc>
     <lastmod>2019-03-05T23:15:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/cloud/</loc>
+    <loc>/tags/cloud/</loc>
     <lastmod>2019-03-05T23:15:14-05:00</lastmod>
     <priority>0</priority>
   </url>
@@ -206,13 +206,13 @@
   </url>
   
   <url>
-    <loc>/tags/mma/</loc>
+    <loc>/categories/mma/</loc>
     <lastmod>2020-04-19T23:15:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/mma/</loc>
+    <loc>/tags/mma/</loc>
     <lastmod>2020-04-19T23:15:14-05:00</lastmod>
     <priority>0</priority>
   </url>
@@ -230,25 +230,25 @@
   </url>
   
   <url>
-    <loc>/tags/python/</loc>
-    <lastmod>2019-02-07T23:15:14-05:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>/categories/python/</loc>
     <lastmod>2019-02-07T23:15:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/r/</loc>
-    <lastmod>2020-04-19T23:15:14-05:00</lastmod>
+    <loc>/tags/python/</loc>
+    <lastmod>2019-02-07T23:15:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/categories/r/</loc>
+    <lastmod>2020-04-19T23:15:14-05:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/r/</loc>
     <lastmod>2020-04-19T23:15:14-05:00</lastmod>
     <priority>0</priority>
   </url>
@@ -329,13 +329,13 @@
   </url>
   
   <url>
-    <loc>/tags/ufc/</loc>
+    <loc>/categories/ufc/</loc>
     <lastmod>2020-04-19T23:15:14-05:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/ufc/</loc>
+    <loc>/tags/ufc/</loc>
     <lastmod>2020-04-19T23:15:14-05:00</lastmod>
     <priority>0</priority>
   </url>
