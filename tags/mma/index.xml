@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mma on Coding with Data</title>
+    <link>/tags/mma/</link>
+    <description>Recent content in Mma on Coding with Data</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 19 Apr 2020 23:15:14 -0500</lastBuildDate>
+    
+	<atom:link href="/tags/mma/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>UFC Stats: Understanding striking performance</title>
+      <link>/blog/2020/2020-04-15-striking/</link>
+      <pubDate>Sun, 19 Apr 2020 23:15:14 -0500</pubDate>
+      
+      <guid>/blog/2020/2020-04-15-striking/</guid>
+      <description>A brief history of the Ultimate Fighter The first UFC event was held over a quarter century ago on November 12th 1993 in Denver, CO. The concept was to pit different martial arts and fighting styles against each other to see which one is truly superior. The event was the brainchild of Rorion Gracie, member of the legendary Brazilian jiu-jitsu (BJJ) family. In the late eighties and early nineties Rorion produced and appeared on several VHS tapes demonstrating the power of jiu jitsu over judo, karate, sambo and other martial arts.</description>
+    </item>
+    
+  </channel>
+</rss>

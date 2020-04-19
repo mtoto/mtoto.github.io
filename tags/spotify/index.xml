@@ -2,30 +2,30 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Spotify on Coding with Data</title>
-    <link>/tags/spotify/</link>
+    <link>http://tamaszilagyi.com/tags/spotify/</link>
     <description>Recent content in Spotify on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 22 Jul 2017 21:13:14 -0500</lastBuildDate>
     
-	<atom:link href="/tags/spotify/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://tamaszilagyi.com/tags/spotify/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Creating a Spotify Playlist using Luigi</title>
-      <link>/blog/2017/2017-07-22-spotifyluigi/</link>
+      <link>http://tamaszilagyi.com/blog/2017/2017-07-22-spotifyluigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>/blog/2017/2017-07-22-spotifyluigi/</guid>
+      <guid>http://tamaszilagyi.com/blog/2017/2017-07-22-spotifyluigi/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Introduction In the previous post, I shared an analysis of my Spotify listening history using R. In this post, I will discuss what came before having the data: collecting, cleaning and saving it. As the title suggest, we will even go a step further and automate the creation of a weekly top 10 playlist in Spotify using the very same dataset.</description>
     </item>
     
     <item>
       <title>Analyzing My Spotify Listening History</title>
-      <link>/blog/2017/2017-06-02-spotifyr/</link>
+      <link>http://tamaszilagyi.com/blog/2017/2017-06-02-spotifyr/</link>
       <pubDate>Sun, 02 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>/blog/2017/2017-06-02-spotifyr/</guid>
+      <guid>http://tamaszilagyi.com/blog/2017/2017-06-02-spotifyr/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  A new endpoint Following an avalanche of +1 comments on the GitHub issue requesting access to a user’s play history, on March 1st Spotify released a new endpoint to their Web API that allows anyone with a Spotify account to pull data on his or her most recently played tracks. To access it, you need go through the Authorization Code Flow, where you get keys and tokens needed for making calls to the API.</description>
     </item>
     

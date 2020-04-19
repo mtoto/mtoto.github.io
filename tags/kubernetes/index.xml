@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Kubernetes on Coding with Data</title>
-    <link>/tags/kubernetes/</link>
+    <link>http://tamaszilagyi.com/tags/kubernetes/</link>
     <description>Recent content in Kubernetes on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 07 Aug 2018 22:13:14 -0500</lastBuildDate>
     
-	<atom:link href="/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://tamaszilagyi.com/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Parallelizing R code on Kubernetes</title>
-      <link>/blog/2018/2018-08-06-kubernetes-parallel/</link>
+      <link>http://tamaszilagyi.com/blog/2018/2018-08-06-kubernetes-parallel/</link>
       <pubDate>Tue, 07 Aug 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/2018/2018-08-06-kubernetes-parallel/</guid>
+      <guid>http://tamaszilagyi.com/blog/2018/2018-08-06-kubernetes-parallel/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Kubernetes who? The hype around kubernetes is real, but likely also justified. Kubernetes is an open-source tool that facilitates deployment of jobs and services onto computer clusters. It provides different patterns for different type of workloads, be it API servers, databases or running batch jobs. Not only makes kubernetes running workloads and services easy, it also keeps them running.</description>
     </item>
     

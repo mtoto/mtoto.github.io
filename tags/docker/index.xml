@@ -2,40 +2,40 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Docker on Coding with Data</title>
-    <link>/tags/docker/</link>
+    <link>http://tamaszilagyi.com/tags/docker/</link>
     <description>Recent content in Docker on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 02 Oct 2018 22:13:14 -0500</lastBuildDate>
     
-	<atom:link href="/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://tamaszilagyi.com/tags/docker/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Lightweight streaming analytics with NATS</title>
-      <link>/blog/2018/2018-09-17-nats-shiny/</link>
+      <link>http://tamaszilagyi.com/blog/2018/2018-09-17-nats-shiny/</link>
       <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/2018/2018-09-17-nats-shiny/</guid>
+      <guid>http://tamaszilagyi.com/blog/2018/2018-09-17-nats-shiny/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; } library(knitr) eng_go Go in the fast lane Fast data is the new big data. But how difficult is it really to set up a complete streaming analytics solution from the ground up? It turns out not that hard, not if you are using NATS Streaming. Developed in Go
  “…NATS Streaming is an extremely performant, lightweight reliable streaming platform built on NATS.</description>
     </item>
     
     <item>
       <title>Parallelizing R code on Kubernetes</title>
-      <link>/blog/2018/2018-08-06-kubernetes-parallel/</link>
+      <link>http://tamaszilagyi.com/blog/2018/2018-08-06-kubernetes-parallel/</link>
       <pubDate>Tue, 07 Aug 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/2018/2018-08-06-kubernetes-parallel/</guid>
+      <guid>http://tamaszilagyi.com/blog/2018/2018-08-06-kubernetes-parallel/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Kubernetes who? The hype around kubernetes is real, but likely also justified. Kubernetes is an open-source tool that facilitates deployment of jobs and services onto computer clusters. It provides different patterns for different type of workloads, be it API servers, databases or running batch jobs. Not only makes kubernetes running workloads and services easy, it also keeps them running.</description>
     </item>
     
     <item>
       <title>Dockerized Shiny App development</title>
-      <link>/blog/2018/2018-01-16-shiny_docker/</link>
+      <link>http://tamaszilagyi.com/blog/2018/2018-01-16-shiny_docker/</link>
       <pubDate>Tue, 16 Jan 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/2018/2018-01-16-shiny_docker/</guid>
+      <guid>http://tamaszilagyi.com/blog/2018/2018-01-16-shiny_docker/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Getting on the Docker (container) ship Containers are everywhere, including the realms of data science. You can think of them as small self-contained environments, encapsulating an application and its dependencies. If that sounds a lot like a virtual machine, you are not entirely wrong. But unlike VM’s, containers run on the host system’s kernel and the processes inside can only see and access their immediate surroundings.</description>
     </item>
     

@@ -2,131 +2,131 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blog on Coding with Data</title>
-    <link>/blog/</link>
+    <link>http://tamaszilagyi.com/blog/</link>
     <description>Recent content in Blog on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 05 Mar 2019 23:15:14 -0500</lastBuildDate>
     
-	<atom:link href="/blog/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://tamaszilagyi.com/blog/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>No frills data warehousing with dbt</title>
-      <link>/blog/2019/2019-03-05-dbt/</link>
+      <link>http://tamaszilagyi.com/blog/2019/2019-03-05-dbt/</link>
       <pubDate>Tue, 05 Mar 2019 23:15:14 -0500</pubDate>
       
-      <guid>/blog/2019/2019-03-05-dbt/</guid>
+      <guid>http://tamaszilagyi.com/blog/2019/2019-03-05-dbt/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  ETL with ease Analytics databases more often than not contain a multitude of tables and views, depicting facts, dimensions or aggregate statistics. Responsibility for the underlying data pipelines traditionally belonged to Data Architects or Data Engineers. However modern tools like dbt are lowering the barrier to doing ETL.
 To use dbt, you only need to be familiar with SQL.</description>
     </item>
     
     <item>
       <title>Serverless data ingestion into BigQuery</title>
-      <link>/blog/2019/2019-02-10-serverless/</link>
+      <link>http://tamaszilagyi.com/blog/2019/2019-02-10-serverless/</link>
       <pubDate>Thu, 07 Feb 2019 23:15:14 -0500</pubDate>
       
-      <guid>/blog/2019/2019-02-10-serverless/</guid>
+      <guid>http://tamaszilagyi.com/blog/2019/2019-02-10-serverless/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Least effort required For a recent project I needed to find an efficient way to extract data from API’s and load the response into a database residing in the cloud. It’s a fairly common use case, as most online platforms expose data via callable API’s. My personal goal was to introduce as little tooling and code as possible.</description>
     </item>
     
     <item>
       <title>Transfer Learning with Tensornets and Dataset API</title>
-      <link>/blog/2019/2019-01-14-tensornets/</link>
+      <link>http://tamaszilagyi.com/blog/2019/2019-01-14-tensornets/</link>
       <pubDate>Mon, 14 Jan 2019 23:15:14 -0500</pubDate>
       
-      <guid>/blog/2019/2019-01-14-tensornets/</guid>
+      <guid>http://tamaszilagyi.com/blog/2019/2019-01-14-tensornets/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  They grow up so fast It’s been at least a year since I last dabbled in TensorFlow, and the ecosystem seems to have grown a lot. The general trend is towards higher-level abstractions for building models, defining data pipelines or serving predictions. Then there is also the relentless community-driven development, spawning many useful extensions to the official library.</description>
     </item>
     
     <item>
       <title>Lightweight streaming analytics with NATS</title>
-      <link>/blog/2018/2018-09-17-nats-shiny/</link>
+      <link>http://tamaszilagyi.com/blog/2018/2018-09-17-nats-shiny/</link>
       <pubDate>Tue, 02 Oct 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/2018/2018-09-17-nats-shiny/</guid>
+      <guid>http://tamaszilagyi.com/blog/2018/2018-09-17-nats-shiny/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; } library(knitr) eng_go Go in the fast lane Fast data is the new big data. But how difficult is it really to set up a complete streaming analytics solution from the ground up? It turns out not that hard, not if you are using NATS Streaming. Developed in Go
  “…NATS Streaming is an extremely performant, lightweight reliable streaming platform built on NATS.</description>
     </item>
     
     <item>
       <title>Parallelizing R code on Kubernetes</title>
-      <link>/blog/2018/2018-08-06-kubernetes-parallel/</link>
+      <link>http://tamaszilagyi.com/blog/2018/2018-08-06-kubernetes-parallel/</link>
       <pubDate>Tue, 07 Aug 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/2018/2018-08-06-kubernetes-parallel/</guid>
+      <guid>http://tamaszilagyi.com/blog/2018/2018-08-06-kubernetes-parallel/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Kubernetes who? The hype around kubernetes is real, but likely also justified. Kubernetes is an open-source tool that facilitates deployment of jobs and services onto computer clusters. It provides different patterns for different type of workloads, be it API servers, databases or running batch jobs. Not only makes kubernetes running workloads and services easy, it also keeps them running.</description>
     </item>
     
     <item>
       <title>Interpretable GDPR Classifiers</title>
-      <link>/blog/2018/2018-07-19_gdpr/</link>
+      <link>http://tamaszilagyi.com/blog/2018/2018-07-19_gdpr/</link>
       <pubDate>Tue, 19 Jun 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/2018/2018-07-19_gdpr/</guid>
+      <guid>http://tamaszilagyi.com/blog/2018/2018-07-19_gdpr/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  We have updated our privacy policies… Whether internet companies are now compliant with GDPR is hard to say, but they sure left updating their privacy policies to the last minute. What happened in the last days of May was the greatest corporate email tsunami since Y2K. I hardly read the updated policies, or remember what the old ones looked like.</description>
     </item>
     
     <item>
       <title>Dockerized Shiny App development</title>
-      <link>/blog/2018/2018-01-16-shiny_docker/</link>
+      <link>http://tamaszilagyi.com/blog/2018/2018-01-16-shiny_docker/</link>
       <pubDate>Tue, 16 Jan 2018 22:13:14 -0500</pubDate>
       
-      <guid>/blog/2018/2018-01-16-shiny_docker/</guid>
+      <guid>http://tamaszilagyi.com/blog/2018/2018-01-16-shiny_docker/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Getting on the Docker (container) ship Containers are everywhere, including the realms of data science. You can think of them as small self-contained environments, encapsulating an application and its dependencies. If that sounds a lot like a virtual machine, you are not entirely wrong. But unlike VM’s, containers run on the host system’s kernel and the processes inside can only see and access their immediate surroundings.</description>
     </item>
     
     <item>
       <title>An animated neuRal net implementation</title>
-      <link>/blog/2017/2017-11-11-animated_net/</link>
+      <link>http://tamaszilagyi.com/blog/2017/2017-11-11-animated_net/</link>
       <pubDate>Thu, 09 Nov 2017 21:00:30 -0500</pubDate>
       
-      <guid>/blog/2017/2017-11-11-animated_net/</guid>
+      <guid>http://tamaszilagyi.com/blog/2017/2017-11-11-animated_net/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Yet another neural net from scratch tutorial? One would be forgiven to think that artificial neural networks are the newest and shiniest of modern data science. On the contrary, the main concepts have been around for decades. But it is recent progress in computational resources and the availability of massive datasets that these learning architectures revealed their true powers.</description>
     </item>
     
     <item>
       <title>A tidy text analysis of Rick and Morty</title>
-      <link>/blog/2017/2017-10-07-tidyrick/</link>
+      <link>http://tamaszilagyi.com/blog/2017/2017-10-07-tidyrick/</link>
       <pubDate>Sat, 07 Oct 2017 23:15:14 -0500</pubDate>
       
-      <guid>/blog/2017/2017-10-07-tidyrick/</guid>
+      <guid>http://tamaszilagyi.com/blog/2017/2017-10-07-tidyrick/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Adventures in the multiverse For those unfamiliar with the show, Rick and Morty is an animated series about the interuniversal exploits of a half-drunk mad scientist Rick, and his daft grandson Morty. Living under one roof with his daughter, Rick constantly drags his grandson Morty along for adventures into unusual worlds inhabited by surreal creatures.</description>
     </item>
     
     <item>
       <title>Self-learning Hue Lights</title>
-      <link>/blog/2017/2017-05-14-hue/</link>
+      <link>http://tamaszilagyi.com/blog/2017/2017-05-14-hue/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>/blog/2017/2017-05-14-hue/</guid>
+      <guid>http://tamaszilagyi.com/blog/2017/2017-05-14-hue/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  The rise of the API Rich API interfaces are one of the main ingredients of today’s smart devices. They are by definition built for interconnectivity and there is an active community of developers creating apps as microservices on top of them. Philips Hue is no exception with it’s wide variety of apps available to users.</description>
     </item>
     
     <item>
       <title>Creating a Spotify Playlist using Luigi</title>
-      <link>/blog/2017/2017-07-22-spotifyluigi/</link>
+      <link>http://tamaszilagyi.com/blog/2017/2017-07-22-spotifyluigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>/blog/2017/2017-07-22-spotifyluigi/</guid>
+      <guid>http://tamaszilagyi.com/blog/2017/2017-07-22-spotifyluigi/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Introduction In the previous post, I shared an analysis of my Spotify listening history using R. In this post, I will discuss what came before having the data: collecting, cleaning and saving it. As the title suggest, we will even go a step further and automate the creation of a weekly top 10 playlist in Spotify using the very same dataset.</description>
     </item>
     
     <item>
       <title>Analyzing My Spotify Listening History</title>
-      <link>/blog/2017/2017-06-02-spotifyr/</link>
+      <link>http://tamaszilagyi.com/blog/2017/2017-06-02-spotifyr/</link>
       <pubDate>Sun, 02 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>/blog/2017/2017-06-02-spotifyr/</guid>
+      <guid>http://tamaszilagyi.com/blog/2017/2017-06-02-spotifyr/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  A new endpoint Following an avalanche of +1 comments on the GitHub issue requesting access to a user’s play history, on March 1st Spotify released a new endpoint to their Web API that allows anyone with a Spotify account to pull data on his or her most recently played tracks. To access it, you need go through the Authorization Code Flow, where you get keys and tokens needed for making calls to the API.</description>
     </item>
     
     <item>
       <title>Starting a blog(down)</title>
-      <link>/blog/2017/2017-05-14-blogdown/</link>
+      <link>http://tamaszilagyi.com/blog/2017/2017-05-14-blogdown/</link>
       <pubDate>Sun, 14 May 2017 21:13:14 -0500</pubDate>
       
-      <guid>/blog/2017/2017-05-14-blogdown/</guid>
+      <guid>http://tamaszilagyi.com/blog/2017/2017-05-14-blogdown/</guid>
       <description>Starting an analytics blog Having learned lots from the open source community over the past years - from blogs and videos to attending meetups and awesome conferences - I have decided to start a blog myself, and share some of the things I find interesting. I expect most of the posts to be R specific, because that’s what I am most comfortable with. However I do enjoy fiddling with other technologies such as Python or Spark, so watch out!</description>
     </item>
     

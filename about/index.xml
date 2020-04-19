@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>About on Coding with Data</title>
-    <link>/about/</link>
+    <link>http://tamaszilagyi.com/about/</link>
     <description>Recent content in About on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 05 May 2016 21:48:51 -0700</lastBuildDate>
     
-	<atom:link href="/about/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://tamaszilagyi.com/about/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>About</title>
-      <link>/about/about/</link>
+      <link>http://tamaszilagyi.com/about/about/</link>
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
       
-      <guid>/about/about/</guid>
-      <description>My name is Tamas and I am a self-employed Data Scientist available for consulting on data analytics projects. I was born in Budapest, studied in Leuven and St. Andrews, and have worked in Montreal and Amsterdam.
+      <guid>http://tamaszilagyi.com/about/about/</guid>
+      <description>My name is Tamas and I am a currently working as a Senior Data Analyst at komoot. I was born in Budapest, studied in Leuven and St. Andrews, and have worked in Montreal and Amsterdam.
 My main area of expertise is digital analytics, however I have worked on projects in a variety of industries such as online media, e-commerce, travel and banking. I love solving business problems with data, discovering new insights and building scalable solutions.</description>
     </item>
     
