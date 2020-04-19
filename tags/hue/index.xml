@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Hue on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/hue/</link>
+    <link>/tags/hue/</link>
     <description>Recent content in Hue on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 30 Aug 2017 23:15:14 -0500</lastBuildDate>
     
-	<atom:link href="http://tamaszilagyi.com/tags/hue/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/hue/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Self-learning Hue Lights</title>
-      <link>http://tamaszilagyi.com/blog/2017/2017-05-14-hue/</link>
+      <link>/blog/2017/2017-05-14-hue/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/2017/2017-05-14-hue/</guid>
+      <guid>/blog/2017/2017-05-14-hue/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  The rise of the API Rich API interfaces are one of the main ingredients of today’s smart devices. They are by definition built for interconnectivity and there is an active community of developers creating apps as microservices on top of them. Philips Hue is no exception with it’s wide variety of apps available to users.</description>
     </item>
     

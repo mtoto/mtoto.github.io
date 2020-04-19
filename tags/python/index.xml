@@ -2,48 +2,48 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Python on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/python/</link>
+    <link>/tags/python/</link>
     <description>Recent content in Python on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 07 Feb 2019 23:15:14 -0500</lastBuildDate>
     
-	<atom:link href="http://tamaszilagyi.com/tags/python/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Serverless data ingestion into BigQuery</title>
-      <link>http://tamaszilagyi.com/blog/2019/2019-02-10-serverless/</link>
+      <link>/blog/2019/2019-02-10-serverless/</link>
       <pubDate>Thu, 07 Feb 2019 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/2019/2019-02-10-serverless/</guid>
+      <guid>/blog/2019/2019-02-10-serverless/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Least effort required For a recent project I needed to find an efficient way to extract data from API’s and load the response into a database residing in the cloud. It’s a fairly common use case, as most online platforms expose data via callable API’s. My personal goal was to introduce as little tooling and code as possible.</description>
     </item>
     
     <item>
       <title>Transfer Learning with Tensornets and Dataset API</title>
-      <link>http://tamaszilagyi.com/blog/2019/2019-01-14-tensornets/</link>
+      <link>/blog/2019/2019-01-14-tensornets/</link>
       <pubDate>Mon, 14 Jan 2019 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/2019/2019-01-14-tensornets/</guid>
+      <guid>/blog/2019/2019-01-14-tensornets/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  They grow up so fast It’s been at least a year since I last dabbled in TensorFlow, and the ecosystem seems to have grown a lot. The general trend is towards higher-level abstractions for building models, defining data pipelines or serving predictions. Then there is also the relentless community-driven development, spawning many useful extensions to the official library.</description>
     </item>
     
     <item>
       <title>Self-learning Hue Lights</title>
-      <link>http://tamaszilagyi.com/blog/2017/2017-05-14-hue/</link>
+      <link>/blog/2017/2017-05-14-hue/</link>
       <pubDate>Wed, 30 Aug 2017 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/2017/2017-05-14-hue/</guid>
+      <guid>/blog/2017/2017-05-14-hue/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  The rise of the API Rich API interfaces are one of the main ingredients of today’s smart devices. They are by definition built for interconnectivity and there is an active community of developers creating apps as microservices on top of them. Philips Hue is no exception with it’s wide variety of apps available to users.</description>
     </item>
     
     <item>
       <title>Creating a Spotify Playlist using Luigi</title>
-      <link>http://tamaszilagyi.com/blog/2017/2017-07-22-spotifyluigi/</link>
+      <link>/blog/2017/2017-07-22-spotifyluigi/</link>
       <pubDate>Sat, 22 Jul 2017 21:13:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/2017/2017-07-22-spotifyluigi/</guid>
+      <guid>/blog/2017/2017-07-22-spotifyluigi/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Introduction In the previous post, I shared an analysis of my Spotify listening history using R. In this post, I will discuss what came before having the data: collecting, cleaning and saving it. As the title suggest, we will even go a step further and automate the creation of a weekly top 10 playlist in Spotify using the very same dataset.</description>
     </item>
     

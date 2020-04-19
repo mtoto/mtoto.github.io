@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Gcp on Coding with Data</title>
-    <link>http://tamaszilagyi.com/tags/gcp/</link>
+    <link>/tags/gcp/</link>
     <description>Recent content in Gcp on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 05 Mar 2019 23:15:14 -0500</lastBuildDate>
     
-	<atom:link href="http://tamaszilagyi.com/tags/gcp/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/gcp/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>No frills data warehousing with dbt</title>
-      <link>http://tamaszilagyi.com/blog/2019/2019-03-05-dbt/</link>
+      <link>/blog/2019/2019-03-05-dbt/</link>
       <pubDate>Tue, 05 Mar 2019 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/2019/2019-03-05-dbt/</guid>
+      <guid>/blog/2019/2019-03-05-dbt/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  ETL with ease Analytics databases more often than not contain a multitude of tables and views, depicting facts, dimensions or aggregate statistics. Responsibility for the underlying data pipelines traditionally belonged to Data Architects or Data Engineers. However modern tools like dbt are lowering the barrier to doing ETL.
 To use dbt, you only need to be familiar with SQL.</description>
     </item>
     
     <item>
       <title>Serverless data ingestion into BigQuery</title>
-      <link>http://tamaszilagyi.com/blog/2019/2019-02-10-serverless/</link>
+      <link>/blog/2019/2019-02-10-serverless/</link>
       <pubDate>Thu, 07 Feb 2019 23:15:14 -0500</pubDate>
       
-      <guid>http://tamaszilagyi.com/blog/2019/2019-02-10-serverless/</guid>
+      <guid>/blog/2019/2019-02-10-serverless/</guid>
       <description>pre code, pre, code { white-space: pre !important; overflow-x: scroll !important; word-break: keep-all !important; word-wrap: initial !important; }  Least effort required For a recent project I needed to find an efficient way to extract data from API’s and load the response into a database residing in the cloud. It’s a fairly common use case, as most online platforms expose data via callable API’s. My personal goal was to introduce as little tooling and code as possible.</description>
     </item>
     

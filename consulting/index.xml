@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Consulting on Coding with Data</title>
-    <link>http://tamaszilagyi.com/consulting/</link>
+    <link>/consulting/</link>
     <description>Recent content in Consulting on Coding with Data</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
-	<atom:link href="http://tamaszilagyi.com/consulting/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/consulting/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Consulting</title>
-      <link>http://tamaszilagyi.com/consulting/consulting/</link>
+      <link>/consulting/consulting/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://tamaszilagyi.com/consulting/consulting/</guid>
+      <guid>/consulting/consulting/</guid>
       <description>I consult both small and large business on all aspects of data analytics, including:
  Creating robust data pipelines for data of all sizes. Building interactive dashboards for all audiences. Implementing principled A/B testing workflows. Developing and analyzing models to solve business problems. Integrating predictive analytics into production systems. Communicating insights and results to stakeholders.  Feel free to contact me for any questions!</description>
     </item>
